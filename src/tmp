@@ -1,0 +1,40 @@
+@@TAGLINE@@ = "kernels / networking / offensive security\nnix btw / nvim btw"
+@@HOST@@ = "wasdhjkl.xyz"
+@@URL@@ = "https://@@HOST@@/"
+
+@@STYLE@@ -> read from _style.css
+
+@@COLOR_BG@@ = "#000000"
+@@COLOR_FG@@ = "#cecece"
+@@COLOR_DIM@@ = "#454545"
+@@COLOR_DARK@@ = "#101010"
+
+@@FONT@@ = "ui-monospace"
+
+@@FONT_WEIGHT_NORM@@ = 400
+@@FONT_WEIGHT_BOLD@@ = 600
+
+@@LINE_HEIGHT@@ = 1.6
+@@LINE_HEIGHT_ART@@ = 0.85
+
+@@LETTER_SPACING@@ = 0.5rem
+
+@@SPACE_XS@@ = 0.25rem
+@@SPACE_SM@@ = 0.5rem
+@@SPACE_MD@@ = 1rem
+@@SPACE_LG@@ = 1.5rem
+@@SPACE_XL@@ = 4rem
+@@SPACE_SEPARATOR@@ = 0.1rem
+
+@@FONT_SIZE@@    = 1rem
+@@FONT_SIZE_SM@@ = 0.8rem
+@@FONT_SIZE_MD@@ = 0.85rem
+@@FONT_SIZE_LG@@ = 1.25rem
+@@FONT_SIZE_XL@@ = 1.5rem
+
+@@MAX_WIDTH@@ = 44rem
+
+@@BORDER_THICKNESS@@ = 1px
+
+@@BUTTON_WIDTH@@ = 88px
+@@BUTTON_HEIGHT@@ = 31px
