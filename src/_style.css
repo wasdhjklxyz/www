@@ -90,13 +90,13 @@ header {
   overflow: hidden;
 }
 
-.site {
+h1 {
   text-align: center;
   font-size: var(--fs-xl);
   font-weight: var(--fw-b);
   letter-spacing: var(--ls);
 }
-.tagline {
+small {
   margin: var(--sp-xs) 0 var(--sp-xs);
   text-align: center;
   font-size: var(--fs-md);
