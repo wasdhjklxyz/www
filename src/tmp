@@ -3,6 +3,9 @@
 @@URL@@ = "https://@@HOST@@/"
 
 @@STYLE@@ -> read from _style.css
+@@HEADER@@ -> read from _header.html
+@@MAIN@@ -> read from _main.html
+@@FOOTER@@ -> read from _footer.html
 
 @@COLOR_BG@@ = "#000000"
 @@COLOR_FG@@ = "#cecece"
