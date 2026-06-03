@@ -20,6 +20,12 @@
                  (href (% (string-append "https://" host)))))
         (style (% css))
         (title (% host)))
+      (header
+        (pre (@ (class "art")
+                (aria-hidden "true"))
+             "TODO: art")
+        (h1 (% host))
+        (small (% tagline)))
       (footer
         (a (@ (href "https://github.com/wasdhjklxyz")) "github" )
         (span (@ (class "sep")) " · " )
