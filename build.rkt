@@ -3,7 +3,10 @@
 (define *host* "wasdhjkl.xyz")
 (define *tagline* "kernels / networking / offensive security / nix btw / nvim btw")
 (define *color-bg* "#000000")
-(define *style* "") ; TODO
+
+(define html-style (css-expr
+                     [body #:background: |#000|]
+                     [h1 #:color |#ff0000|]))
 
 (define html-head (html-template
                     (head
@@ -16,7 +19,7 @@
                                (content (% *color-bg*))))
                       (link (@ (rel "canonical")
                                (href (% (string-append "https://" *host*)))))
-                      (style (% *style*))
+                      (style (% (css-expr->css html-style)))
                       (title (% *host*)))))
 
 (display html-head)
