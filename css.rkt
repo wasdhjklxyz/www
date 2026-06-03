@@ -68,19 +68,17 @@
                   #:font-size ,font-size
                   #:font-weight ,font-weight-normal]
 
-      [header #:border-bottom (,border-width solid ,color-dark)
-              #:margin-bottom ,space-md]
-
       [|.art| #:display block
               #:width max-content
               #:max-width |100%|
-              #:margin (0 auto ,space-sm)
+              #:margin (0 auto)
               #:white-space pre
               #:font-size |clamp(1px, 2vw, 6px)|
               #:line-height ,line-height-art
               #:overflow hidden]
 
       [h1 #:text-align center
+          #:margin (,space-sm 0 0)
           #:font-size ,font-size-xl
           #:font-weight ,font-weight-bold
           #:letter-spacing ,letter-spacing]
