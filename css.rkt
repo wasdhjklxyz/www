@@ -20,7 +20,7 @@
 
 (define line-height     1.6)
 (define line-height-art 0.85)
-(define letter-spacing  '|0.5rem|)
+(define letter-spacing  '|0.05rem|)
 
 (define space-xxs '|0.1rem|) ; separator lines
 (define space-xs  '|0.25rem|)
