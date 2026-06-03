@@ -9,7 +9,7 @@
 (define color-dim  '|#454545|)
 (define color-dark '|#101010|)
 
-(define font               'ui-monospace)
+(define font               'monospace)
 (define font-weight-normal 400)
 (define font-weight-bold   600)
 (define font-size          '|1rem|)
