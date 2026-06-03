@@ -1,12 +1,10 @@
-(require html-template css-expr)
+#lang racket
+
+(require "css.rkt")
+(require html-template)
 
 (define *host* "wasdhjkl.xyz")
 (define *tagline* "kernels / networking / offensive security / nix btw / nvim btw")
-(define *color-bg* '|#000000|)
-
-(define html-style (css-expr
-                     [body #:background ,*color-bg*]
-                     [h1 #:color |#ff0000|]))
 
 (define html-head (html-template
                     (head
@@ -19,7 +17,7 @@
                                (content (% (symbol->string *color-bg*)))))
                       (link (@ (rel "canonical")
                                (href (% (string-append "https://" *host*)))))
-                      (style (% (css-expr->css html-style)))
+                      (style (% *css*))
                       (title (% *host*)))))
 
 (display html-head)
