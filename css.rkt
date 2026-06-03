@@ -76,7 +76,7 @@
               #:max-width |100%|
               #:margin (0 auto ,space-sm)
               #:white-space pre
-              #:font-size (clamp |1px| |2vw| |6px|) ; TODO
+              #:font-size |clamp(1px, 2vw, 6px)|
               #:line-height ,line-height-art
               #:overflow hidden]
 

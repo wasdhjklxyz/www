@@ -4,6 +4,7 @@
 
 (define host    "wasdhjkl.xyz")
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
+(define art     (file->string "art.txt"))
 
 (define html
   (html-template
@@ -23,7 +24,7 @@
       (header
         (pre (@ (class "art")
                 (aria-hidden "true"))
-             "TODO: art")
+             (% art))
         (h1 (% host))
         (small (% tagline)))
       (footer
