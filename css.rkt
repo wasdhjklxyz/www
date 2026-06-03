@@ -39,16 +39,14 @@
     (css-expr
       [* #:box-sizing border-box]
 
-      [body #:margin 0
+      [body #:margin (0 auto)
             #:padding (,space-lg ,space-md ,space-xl)
             #:background ,color-bg
             #:color ,color-fg
             #:font-family ,font
             #:font-size ,font-size
-            #:line-height ,line-height]
-
-      [|.wrap| #:max-width ,max-width
-               #:margin (0 auto)]
+            #:line-height ,line-height
+            #:max-width ,max-width]
 
       [a #:color ,color-fg #:text-decoration none]
       [|a:hover| #:text-decoration underline]
