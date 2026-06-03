@@ -1,4 +1,4 @@
-(require html-template)
+(require html-template css-expr)
 
 (define *host* "wasdhjkl.xyz")
 (define *tagline* "kernels / networking / offensive security / nix btw / nvim btw")
