@@ -86,6 +86,7 @@
           #:letter-spacing ,letter-spacing]
 
       [small #:margin (,space-xs 0 ,space-xs)
+             #:display block
              #:text-align center
              #:font-size ,font-size-md
              #:color ,color-dim]
