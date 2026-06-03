@@ -1,6 +1,6 @@
 #lang racket
 
-(provide html-head)
+(provide html-head html-footer)
 
 (require html-template)
 
@@ -22,3 +22,15 @@
                (href (% (string-append "https://" host)))))
       (style (% css))
       (title (% host)))))
+
+(define html-footer
+  (html-template
+    (footer
+      (a (@ (href "https://github.com/wasdhjklxyz")) "github" )
+      (span (@ (class "sep")))
+      (a (@ (href "https://x.com/wasdhjklxyz")) "twitter" )
+      (span (@ (class "sep")))
+      (a (@ (href "mailto://uiop@wasdhjkl.xyz")) "email" )
+      (span (@ (class "sep")))
+      (a (@ (href "https://creativecommons.org/licenses/by-sa/4.0"))
+         "© 2026 uiop. Licensed under CC BY-SA 4.0"))))
