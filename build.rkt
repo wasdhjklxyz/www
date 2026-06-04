@@ -1,6 +1,6 @@
 #lang racket
 
-(require html-writing "css.rkt")
+(require html-writing "css.rkt" "articles/about.rkt")
 
 ;; Config
 (define host    "wasdhjkl.xyz")
@@ -112,7 +112,7 @@
                      (h1 ,host)
                      (small ,tagline))
                   `(main
-                     ,(section-xexp "about" '(p "hello world"))
+                     ,about-xexp
                      ,(section-xexp "blog" '(p "hello world"))
                      ,(section-xexp "projects" '(p "hello world"))
                      ,(section-xexp "contact" '(p "hello world"))
