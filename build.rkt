@@ -5,6 +5,22 @@
 (define host    "wasdhjkl.xyz")
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
 (define art     (file->string "art.txt"))
+(define email   (string-append "uiop@" host))
+
+(define (link url label) `(a (@ (href ,url)) ,label))
+(define (link-site site label) (link (string-append "https://" site) label))
+(define (link-email email label) (link (string-append "mailto:" email) label))
+(define footer-sep '(span (@ (class "sep")) " · "))
+
+(define footer-links
+  (list (link-site "github.com/wasdhjklxyz" "github")
+        footer-sep
+        (link-site "x.com/wasdhjklxyz" "twitter")
+        footer-sep
+        (link-email email "email")
+        footer-sep
+        (link-site "creativecommons.org/licenses/by-sa/4.0"
+                   "© 2026 uiop. Licensed under CC BY-SA 4.0")))
 
 (define html
   (html-template
@@ -27,12 +43,4 @@
              (% art))
         (h1 (% host))
         (small (% tagline)))
-      (footer
-        (a (@ (href "https://github.com/wasdhjklxyz")) "github" )
-        (span (@ (class "sep")) " · " )
-        (a (@ (href "https://x.com/wasdhjklxyz")) "twitter" )
-        (span (@ (class "sep")) " · " )
-        (a (@ (href "mailto://uiop@wasdhjkl.xyz")) "email" )
-        (span (@ (class "sep")) " · " )
-        (a (@ (href "https://creativecommons.org/licenses/by-sa/4.0"))
-           "© 2026 uiop. Licensed under CC BY-SA 4.0")))))
+      (footer (% footer-links)))))
