@@ -2,14 +2,18 @@
 
 (require html-writing "css.rkt")
 
+;; Config
 (define host    "wasdhjkl.xyz")
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
 (define art     (file->string "art.txt"))
 (define email   (string-append "uiop@" host))
 
+;; Links
 (define (link url label) `(a (@ (href ,url)) ,label))
 (define (link-site site label) (link (string-append "https://" site) label))
 (define (link-email email label) (link (string-append "mailto:" email) label))
+
+;; Footer
 (define footer-sep '(span (@ (class "sep")) " · "))
 
 (define footer-links
@@ -23,6 +27,7 @@
 (define (footer-xexp links license)
   `(footer ,@(add-between (append links (list license)) footer-sep)))
 
+;; Page
 (define xexp
   `(html (@ (lang "en"))
      (head
@@ -43,6 +48,7 @@
                      "creativecommons.org/licenses/by-sa/4.0"
                      "CC BY-SA 4.0"))))
 
+;; Build
 (define (build path xexp)
   (call-with-output-file path #:exists 'replace
                          (lambda (out)
