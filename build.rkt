@@ -13,6 +13,18 @@
 (define (link-site site label) (link (string-append "https://" site) label))
 (define (link-email email label) (link (string-append "mailto:" email) label))
 
+;; Head
+(define (head-xexp title description path)
+  `(head
+     (meta (@ (charset "utf-8")))
+     (meta (@ (name "viewport")
+              (content "width=device-width, initial-scale=1")))
+     (meta (@ (name "description") (content ,description)))
+     (meta (@ (name "theme-color") (content ,(symbol->string color-bg))))
+     (link (@ (rel "canonical") (href ,(string-append "https://" host path))))
+     (style ,css)
+     (title ,title)))
+
 ;; Footer
 (define footer-sep '(span (@ (class "sep")) " · "))
 
@@ -30,15 +42,7 @@
 ;; Page
 (define xexp
   `(html (@ (lang "en"))
-     (head
-       (meta (@ (charset "utf-8")))
-       (meta (@ (name "viewport")
-                (content "width=device-width, initial-scale=1")))
-       (meta (@ (name "description") (content ,tagline)))
-       (meta (@ (name "theme-color") (content ,(symbol->string color-bg))))
-       (link (@ (rel "canonical") (href ,(string-append "https://" host))))
-       (style ,css)
-       (title ,host))
+     ,(head-xexp host tagline "/")
      (header
        (pre (@ (class "art") (aria-hidden "true")) ,art)
        (h1 ,host)
