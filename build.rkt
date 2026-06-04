@@ -43,6 +43,38 @@
 (define (section-xexp title . content)
   `(section (@ (id ,title)) (h2 ,title) ,@content))
 
+;; Buttons
+(define (auto-href alt) ; If alt contains a . and no space auto link it
+  (if (and (string-contains? alt ".")
+           (not (string-contains? alt " ")))
+      (string-append "https://" alt)
+      #f))
+
+(define (button src alt [href (auto-href alt)])
+  (define img
+    `(img (@ (src ,(string-append "/buttons/" src)) (alt ,alt))))
+  (if href (link href img) img))
+
+(define my-buttons
+  (list (button "uiop1.png" "wasdhjkl.xyz")
+        (button "uiop2.png" "wasdhjkl.xyz")))
+
+(define buttons
+  (list (button "neovim.gif"      "neovim.io")
+        (button "nix.png"         "nixos.org")
+        (button "IA.gif"          "archive.org")
+        (button "ublock.png"      "ublockorigin.com")
+        (button "upallnight.gif"  "up all night")
+        (button "firefox4.gif"    "firefox.com")
+        (button "cookie-free.png" "cookie free")
+        (button "88x31.gif"       "88x31.nl")
+        (button "lain.gif"        "lain" "https://en.wikipedia.org/wiki/Serial_Experiments_Lain")
+        (button "hasmile.gif"     "have a smile")
+        (button "by-sa.png"       "creativecommons.org/licenses/by-sa/4.0")))
+
+(define (buttons-xexp buttons)
+  `(div (@ (class "buttons")) ,@buttons))
+
 ;; Page Skeleton
 (define (page-xexp title description path . body)
   `(html (@ (lang "en"))
@@ -71,4 +103,6 @@
                      ,(section-xexp "about" '(p "hello world"))
                      ,(section-xexp "blog" '(p "hello world"))
                      ,(section-xexp "projects" '(p "hello world"))
-                     ,(section-xexp "contact" '(p "hello world")))))
+                     ,(section-xexp "contact" '(p "hello world"))
+                     ,(buttons-xexp my-buttons)
+                     ,(buttons-xexp buttons))))
