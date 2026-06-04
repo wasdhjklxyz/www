@@ -8,6 +8,7 @@
 (define color-fg   '|#cecece|)
 (define color-dim  '|#454545|)
 (define color-dark '|#101010|)
+(define color-link '|#ececec|)
 
 (define font               'monospace)
 (define font-weight-normal 400)
@@ -48,8 +49,8 @@
             #:line-height ,line-height
             #:max-width ,max-width]
 
-      [a #:color ,color-fg #:text-decoration none]
-      [|a:hover| #:text-decoration underline]
+      [a #:color ,color-link #:text-decoration underline]
+      [|a:hover| #:color ,color-fg #:text-decoration underline]
 
       [img #:image-rendering auto]
 
