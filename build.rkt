@@ -40,7 +40,7 @@
   `(footer ,@(add-between (append links (list license)) footer-sep)))
 
 ;; Page Skeleton
-(define (page-xexp title description path . body-)
+(define (page-xexp title description path . body)
   `(html (@ (lang "en"))
      ,(head-xexp title description path)
      ,@body
