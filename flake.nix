@@ -13,11 +13,13 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in {
           default = pkgs.mkShell {
-            packages = with pkgs; [ racket ];
+            packages = with pkgs; [ racket python3 ];
             shellHook = ''
               export PLTADDONDIR="$PWD/.racket"
               raco pkg install --auto --skip-installed --no-docs \
                 html-writing css-expr
+              echo "build: racket build.rkt"
+              echo "serve: python3 -m http.server -d dist 8080"
             '';
           };
         });
