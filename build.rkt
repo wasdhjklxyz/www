@@ -14,13 +14,14 @@
 
 (define footer-links
   (list (link-site "github.com/wasdhjklxyz" "github")
-        footer-sep
         (link-site "x.com/wasdhjklxyz" "twitter")
-        footer-sep
-        (link-email email "email")
-        footer-sep
-        (link-site "creativecommons.org/licenses/by-sa/4.0"
-                   "© 2026 uiop. Licensed under CC BY-SA 4.0")))
+        (link-email email "email")))
+
+(define (footer-license site label)
+  (link-site site (string-append "© 2026 uiop. Licensed under " label)))
+
+(define (footer-xexp links license)
+  `(footer ,@(add-between (append links (list license)) footer-sep)))
 
 (define xexp
   `(html (@ (lang "en"))
@@ -37,7 +38,10 @@
        (pre (@ (class "art") (aria-hidden "true")) ,art)
        (h1 ,host)
        (small ,tagline))
-     (footer ,@footer-links)))
+     ,(footer-xexp footer-links
+                   (footer-license
+                     "creativecommons.org/licenses/by-sa/4.0"
+                     "CC BY-SA 4.0"))))
 
 (define (build path xexp)
   (call-with-output-file path #:exists 'replace
