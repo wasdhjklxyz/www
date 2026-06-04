@@ -39,6 +39,10 @@
 (define (footer-xexp links license)
   `(footer ,@(add-between (append links (list license)) footer-sep)))
 
+;; Section
+(define (section-xexp title . content)
+  `(section (@ (id ,title)) (h2 ,title) ,@content))
+
 ;; Page Skeleton
 (define (page-xexp title description path . body)
   `(html (@ (lang "en"))
@@ -63,4 +67,8 @@
                      (pre (@ (class "art") (aria-hidden "true")) ,art)
                      (h1 ,host)
                      (small ,tagline))
-                  `(main (p "hello world"))))
+                  `(main
+                     ,(section-xexp "about" '(p "hello world"))
+                     ,(section-xexp "blog" '(p "hello world"))
+                     ,(section-xexp "projects" '(p "hello world"))
+                     ,(section-xexp "contact" '(p "hello world")))))
