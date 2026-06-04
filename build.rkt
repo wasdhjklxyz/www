@@ -7,6 +7,8 @@
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
 (define art     (file->string "art.txt"))
 (define email   (string-append "uiop@" host))
+(define out-dir "dist")
+(define assets  (list "buttons" "favicon.ico"))
 
 ;; Links
 (define (link url label) `(a (@ (href ,url)) ,label))
@@ -86,11 +88,21 @@
                      "CC BY-SA 4.0"))))
 
 ;; Build
-(define (build path xexp)
+(when (directory-exists? out-dir) (delete-directory/files out-dir))
+(make-directory* out-dir)
+
+(define (build rel xexp)
+  (define path (build-path out-dir rel))
+  (make-directory* (path-only path))
   (call-with-output-file path #:exists 'replace
                          (lambda (out)
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
+
+;; Copy Assets
+(for ([asset assets]
+      #:when (or (file-exists? asset) (directory-exists? asset)))
+  (copy-directory/files asset (build-path out-dir asset)))
 
 ;; Pages
 (build "index.html"
