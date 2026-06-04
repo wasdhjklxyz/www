@@ -17,7 +17,7 @@
             shellHook = ''
               export PLTADDONDIR="$PWD/.racket"
               raco pkg install --auto --skip-installed --no-docs \
-                html-template css-expr
+                html-writing css-expr
             '';
           };
         });

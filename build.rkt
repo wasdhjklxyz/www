@@ -1,6 +1,6 @@
 #lang racket
 
-(require html-template "css.rkt")
+(require html-writing "css.rkt")
 
 (define host    "wasdhjkl.xyz")
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
@@ -22,25 +22,20 @@
         (link-site "creativecommons.org/licenses/by-sa/4.0"
                    "© 2026 uiop. Licensed under CC BY-SA 4.0")))
 
-(define html
-  (html-template
-    (html
-      (head
-        (meta (@ (charset "utf-8")))
-        (meta (@ (name "viewport")
-                 (content "width=device-width, initial-scale=1")))
-        (meta (@ (name "description")
-                 (content (% tagline))))
-        (meta (@ (name "theme-color")
-                 (content (% (symbol->string color-bg)))))
-        (link (@ (rel "canonical")
-                 (href (% (string-append "https://" host)))))
-        (style (% css))
-        (title (% host)))
-      (header
-        (pre (@ (class "art")
-                (aria-hidden "true"))
-             (% art))
-        (h1 (% host))
-        (small (% tagline)))
-      (footer (% footer-links)))))
+(write-html
+  `(html
+     (head
+       (meta (@ (charset "utf-8")))
+       (meta (@ (name "viewport")
+                (content "width=device-width, initial-scale=1")))
+       (meta (@ (name "description") (content ,tagline)))
+       (meta (@ (name "theme-color") (content ,(symbol->string color-bg))))
+       (link (@ (rel "canonical") (href ,(string-append "https://" host))))
+       (style ,css)
+       (title ,host))
+     (header
+       (pre (@ (class "art") (aria-hidden "true")) ,art)
+       (h1 ,host)
+       (small ,tagline))
+     (footer ,@footer-links))
+  (current-output-port))
