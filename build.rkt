@@ -22,7 +22,7 @@
         (link-site "creativecommons.org/licenses/by-sa/4.0"
                    "© 2026 uiop. Licensed under CC BY-SA 4.0")))
 
-(write-html
+(define xexp
   `(html (@ (lang "en"))
      (head
        (meta (@ (charset "utf-8")))
@@ -37,5 +37,12 @@
        (pre (@ (class "art") (aria-hidden "true")) ,art)
        (h1 ,host)
        (small ,tagline))
-     (footer ,@footer-links))
-  (current-output-port))
+     (footer ,@footer-links)))
+
+(define (build path xexp)
+  (call-with-output-file path #:exists 'replace
+                         (lambda (out)
+                           (display "<!DOCTYPE html>" out)
+                           (write-html xexp out))))
+
+(build "index.html" xexp)
