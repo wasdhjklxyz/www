@@ -39,21 +39,15 @@
 (define (footer-xexp links license)
   `(footer ,@(add-between (append links (list license)) footer-sep)))
 
-;; Pages
-(define (page-xexp title description path body-xexp)
+;; Page Skeleton
+(define (page-xexp title description path . body-)
   `(html (@ (lang "en"))
      ,(head-xexp title description path)
-     ,body-xexp
+     ,@body
      ,(footer-xexp footer-links
                    (footer-license
                      "creativecommons.org/licenses/by-sa/4.0"
                      "CC BY-SA 4.0"))))
-
-(define index-body-xexp
-  `(header
-     (pre (@ (class "art") (aria-hidden "true")) ,art)
-     (h1 ,host)
-     (small ,tagline)))
 
 ;; Build
 (define (build path xexp)
@@ -62,5 +56,11 @@
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
 
+;; Pages
 (build "index.html"
-       (page-xexp host tagline "/" index-body-xexp))
+       (page-xexp host tagline "/"
+                  `(header
+                     (pre (@ (class "art") (aria-hidden "true")) ,art)
+                     (h1 ,host)
+                     (small ,tagline))
+                  `(main (p "hello world"))))
