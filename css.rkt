@@ -157,4 +157,5 @@
               #:font-size ,font-size-sm
               #:color ,color-dim]
       [|footer a| #:color ,color-dim #:text-decoration none]
+      [|footer a:hover| #:color ,color-dim]
       [|footer .sep| #:margin (0 ,space-xxs)])))
