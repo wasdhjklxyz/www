@@ -1,0 +1,6 @@
+new! red tag for something posted that week automatic removal once a week has
+passed since upload
+
+automatic blog fucky thing the title and everything
+
+automatic table of contents thing
