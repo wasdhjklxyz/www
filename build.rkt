@@ -118,7 +118,7 @@
   (string-trim (regexp-replace* #rx"[^a-z0-9]+" (string-downcase s) "-") "-"))
 
 (define (heading? x)
-  (and (pair? x) (memq (car x) '(h2 h3 h4 h5 h6))))
+  (and (pair? x) (memq (car x) '(h2 h3 h4))))
 
 (define (link-heading h)
   (define children

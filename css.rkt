@@ -148,19 +148,7 @@
       [|h4 a:hover| #:text-decoration underline #:color ,color-lfg]
       [|h4 a:hover::after| #:opacity 1]
 
-      [h5 #:margin (0 0 ,space-xs)
-          #:font-size ,font-size-lg
-          #:position relative
-          #:font-weight ,font-weight-bold]
-      [|h5 a::after| #:content "§ "
-                   #:color ,color-lfg
-                   #:position absolute
-                   #:left ,space-lg-neg
-                   #:opacity 0]
-      [|h5 a:hover| #:text-decoration underline #:color ,color-lfg]
-      [|h5 a:hover::after| #:opacity 1]
-
-      [|h1 a, h2 a, h3 a, h4 a, h5 a| #:color inherit #:text-decoration none]
+      [|h1 a, h2 a, h3 a, h4 a| #:color inherit #:text-decoration none]
 
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 0) #:padding-left ,space-md]
