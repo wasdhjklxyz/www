@@ -60,7 +60,7 @@
            #:margin-bottom ,space-sm
            #:padding-bottom ,space-md
            #:border-bottom (,border-width solid ,color-dark)]
-      [|nav a|
+      [|nav a| #:color ,color-dim
                #:font-size ,font-size
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
@@ -68,7 +68,7 @@
 
       [|.links| #:align-self flex-end #:margin-left ,space-sm]
       [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
-      [|.links a| 
+      [|.links a|
                 #:margin-right ,space-sm
                 #:font-size ,font-size-md
                 #:display flex
@@ -84,7 +84,7 @@
               #:max-width |100%|
               #:margin (0 auto)
               #:white-space pre
-              #:font-size |clamp(1px, 2vw, 6px)|
+              #:font-size |clamp(1px, 2vw, 4px)|
               #:line-height ,line-height-art
               #:overflow hidden]
 
