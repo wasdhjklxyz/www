@@ -80,6 +80,14 @@
      (h1 ,host)
      (small ,tagline)))
 
+(define nav-xexp
+  (let ([links (list (link "/" "home")
+                     (link "/#about" "about")
+                     (link "/#articles" "articles")
+                     (link "/#contact" "contact"))])
+    `(nav (a (@ (href "/")) (p ,host))
+          (div (@ (class "links")) ,@(add-between links "\n")))))
+
 ;; Page Skeleton
 (define (page-xexp title description path . body)
   `(html (@ (lang "en"))
@@ -118,7 +126,7 @@
   (define foobar-path (string-append "articles/" foobar))
   (build (string-append foobar-path ".html")
          (page-xexp foobar tagline "/"
-                    `(header (pre (@ (class "art") (aria-hidden "true")) ,art))
+                    nav-xexp
                     (article-xexp foobar
                                   (string-append "./" foobar-path ".md")))))
 
