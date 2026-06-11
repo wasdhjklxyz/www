@@ -6,6 +6,7 @@
 
 (define color-bg         '|#0d0d0d|)
 (define color-fg         '|#bebebe|)
+(define color-lfg        '|#cecece|)
 (define color-dim        '|#5e5e5e|)
 (define color-ldim       '|#7d7d7d|)
 (define color-dark       '|#1d1d1d|)
@@ -112,54 +113,54 @@
           #:font-weight ,font-weight-bold]
 
       [h2 #:margin (0 0 ,space-xs)
-          #:font-size ,font-size-lg
+          #:font-size ,font-size-xl
           #:position relative
           #:font-weight ,font-weight-bold]
-      [|h2::after| #:content "§ "
-                   #:color ,color-ldim
+      [|h2 a::after| #:content "§ "
+                   #:color ,color-lfg
                    #:position absolute
                    #:left ,space-lg-neg
                    #:opacity 0]
-      [|h2:hover| #:text-decoration underline #:color ,color-ldim]
-      [|h2:hover::after| #:opacity 1]
+      [|h2 a:hover| #:text-decoration underline #:color ,color-lfg]
+      [|h2 a:hover::after| #:opacity 1]
 
       [h3 #:margin (0 0 ,space-xs)
           #:position relative
-#:font-size ,font-size
+          #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h3::after| #:content "§ "
-                   #:color ,color-ldim
+      [|h3 a::after| #:content "§ "
+                   #:color ,color-lfg
                    #:position absolute
                    #:left ,space-lg-neg
                    #:opacity 0]
-      [|h3:hover| #:text-decoration underline #:color ,color-ldim]
-      [|h3:hover::after| #:opacity 1]
+      [|h3 a:hover| #:text-decoration underline #:color ,color-lfg]
+      [|h3 a:hover::after| #:opacity 1]
 
       [h4 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:position relative
           #:font-weight ,font-weight-bold]
-      [|h4::before| #:content "#### " #:color ,color-ldim]
-      [|h4::after| #:content "§ "
-                   #:color ,color-ldim
+      [|h4 a::after| #:content "§ "
+                   #:color ,color-lfg
                    #:position absolute
                    #:left ,space-lg-neg
                    #:opacity 0]
-      [|h4:hover| #:text-decoration underline #:color ,color-ldim]
-      [|h4:hover::after| #:opacity 1]
+      [|h4 a:hover| #:text-decoration underline #:color ,color-lfg]
+      [|h4 a:hover::after| #:opacity 1]
 
       [h5 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:position relative
           #:font-weight ,font-weight-bold]
-      [|h5::before| #:content "##### " #:color ,color-ldim]
-      [|h5::after| #:content "§ "
-                   #:color ,color-ldim
+      [|h5 a::after| #:content "§ "
+                   #:color ,color-lfg
                    #:position absolute
                    #:left ,space-lg-neg
                    #:opacity 0]
-      [|h5:hover| #:text-decoration underline #:color ,color-ldim]
-      [|h5:hover::after| #:opacity 1]
+      [|h5 a:hover| #:text-decoration underline #:color ,color-lfg]
+      [|h5 a:hover::after| #:opacity 1]
+
+      [|h1 a, h2 a, h3 a, h4 a, h5 a| #:color inherit #:text-decoration none]
 
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 0) #:padding-left ,space-md]

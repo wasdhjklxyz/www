@@ -104,10 +104,36 @@
 ;; Markdown
 (current-strict-markdown? #t)
 
+(define (node-text x)
+  (cond
+    [(string? x) x]
+    [(pair? x)
+     (apply string-append
+            (map node-text
+                 (filter (lambda (c) (not (and (pair? c) (eq? (car c) '@))))
+                         (cdr x))))]
+    [else ""]))
+
+(define (slugify s)
+  (string-trim (regexp-replace* #rx"[^a-z0-9]+" (string-downcase s) "-") "-"))
+
+(define (heading? x)
+  (and (pair? x) (memq (car x) '(h2 h3 h4 h5 h6))))
+
+(define (link-heading h)
+  (define children
+    (if (and (pair? (cdr h)) (pair? (cadr h)) (eq? (caadr h) '@))
+        (cddr h)
+        (cdr h)))
+  (define slug (slugify (node-text h)))
+  `(,(car h) (@ (id ,slug))
+             (a (@ (href ,(string-append "#" slug))) ,@children)))
+
 (define (md->sxml path)
   (define xs (parse-markdown path))
   (define html-string (string-join (map xexpr->string xs) ""))
-  (cdr (html->xexp html-string))) ; strip *TOP* wrapper
+  (define nodes (cdr (html->xexp html-string)))
+  (map (lambda (n) (if (heading? n) (link-heading n) n)) nodes))
 
 (define (article-xexp title path-str)
   `(article-xexp (@ (id ,title))
