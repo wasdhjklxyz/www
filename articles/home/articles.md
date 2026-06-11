@@ -1,4 +1,4 @@
-# articles
+## articles
 
 <time>2026-06-09</time>
 [TODO: title](articles/atomics)  
