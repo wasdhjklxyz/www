@@ -50,8 +50,8 @@
             #:line-height ,line-height
             #:max-width ,max-width]
 
-      [a #:color ,color-link #:text-decoration underline]
-      [|a:hover| #:color ,color-fg #:text-decoration underline]
+      [a #:color ,color-fg #:text-decoration underline]
+      [|a:hover| #:color ,color-link #:text-decoration underline]
 
       [img #:image-rendering auto]
 
