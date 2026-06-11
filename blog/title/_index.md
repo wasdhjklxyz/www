@@ -1,5 +1,5 @@
 # title
-<time>Jun 9, 2026</time>
+<time datetime="2026-06-09">Jun 9, 2026</time>
 
 ## intro
 
