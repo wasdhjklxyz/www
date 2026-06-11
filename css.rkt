@@ -65,7 +65,7 @@
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
       [|nav a:hover| #:color ,color-dim #:text-decoration none]
-      [|nav .art| #:font-size |clamp(1px, 2vw, 1.5px)| #:margin 0]
+      [|nav .art| #:font-size |clamp(1px, 2vw, 2px)| #:margin 0 #:align-self flex-end]
 
       [|.links| #:align-self flex-end #:margin-left ,space-sm]
       [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
