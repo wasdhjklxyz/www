@@ -76,7 +76,7 @@
                 #:flex-direction column
                 #:line-height ,line-height-nav
                 #:font-weight ,font-weight-normal]
-      [|.links a:hover| #:text-decoration underline]
+      [|.links a:hover| #:color ,color-dim #:text-decoration underline]
       [|.links div| #:display flex #:flex-direction horizontal]
 
       [|.art| #:display block
