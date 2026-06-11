@@ -107,6 +107,14 @@
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
 
+(define (build-article foobar)
+  (define foobar-path (string-append "articles/" foobar))
+  (build (string-append foobar-path ".html")
+         (page-xexp foobar tagline "/"
+                    `(header (pre (@ (class "art") (aria-hidden "true")) ,art))
+                    (article-xexp foobar
+                                  (string-append "./" foobar-path ".md")))))
+
 ;; Copy Assets
 (for ([asset assets]
       #:when (or (file-exists? asset) (directory-exists? asset)))
@@ -125,3 +133,5 @@
                      ,(article-xexp "contact" "./articles/home/contact.md")
                      ,(buttons-xexp my-buttons)
                      ,(buttons-xexp buttons))))
+
+(build-article "name-origins")
