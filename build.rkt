@@ -142,7 +142,7 @@
 ;; Pages
 (build "index.html"
        (page-xexp host tagline "/"
-                  header-xexp
+                  nav-xexp
                   `(main
                      ,(article-xexp "about" "./articles/home/about.md")
                      ,(article-xexp "articles" "./articles/home/articles.md")

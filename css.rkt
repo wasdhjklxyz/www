@@ -58,16 +58,16 @@
       [nav #:display flex
            #:align-items left
            #:margin-bottom ,space-sm
-           #:padding-bottom ,space-sm
+           #:padding-bottom ,space-md
            #:border-bottom (,border-width solid ,color-dark)]
-      [|nav a| #:color ,color-dim
+      [|nav a|
                #:font-size ,font-size
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
       [|nav .art| #:color ,color-fg #:font-size |clamp(1px, 2vw, 1px)| #:margin 0 #:align-self flex-end]
 
       [|.links| #:align-self flex-end #:margin-left ,space-sm]
-      [|.links span| #:color ,color-dim #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
+      [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
       [|.links a| 
                 #:margin-right ,space-sm
                 #:font-size ,font-size-md
