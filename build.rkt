@@ -83,12 +83,12 @@
 ;; Page Skeleton
 (define (page-xexp title description path . body)
   `(html (@ (lang "en"))
-     ,(head-xexp title description path)
-     ,@body
-     ,(footer-xexp footer-links
-                   (footer-license
-                     "creativecommons.org/licenses/by-sa/4.0"
-                     "CC BY-SA 4.0"))))
+         ,(head-xexp title description path)
+         ,@body
+         ,(footer-xexp footer-links
+                       (footer-license
+                         "creativecommons.org/licenses/by-sa/4.0"
+                         "CC BY-SA 4.0"))))
 
 ;; Markdown
 (current-strict-markdown? #t)
@@ -100,7 +100,7 @@
 
 (define (article-xexp title path-str)
   `(article-xexp (@ (id ,title))
-            ,@(md->sxml (string->path path-str))))
+                 ,@(md->sxml (string->path path-str))))
 
 ;; Build
 (when (directory-exists? out-dir) (delete-directory/files out-dir))
