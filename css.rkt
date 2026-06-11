@@ -8,7 +8,6 @@
 (define color-fg         '|#bebebe|)
 (define color-lfg        '|#cecece|)
 (define color-dim        '|#5e5e5e|)
-(define color-ldim       '|#7d7d7d|)
 (define color-dark       '|#1d1d1d|)
 (define color-link       '|#7fb0c0|)
 (define color-link-hover '|#8fc0d0|)
@@ -33,7 +32,7 @@
 (define space-md  '|1rem|)
 (define space-lg  '|1.5rem|)
 (define space-xl  '|4rem|)
-(define space-lg-neg '|-1.2rem|)
+(define space-neg '|-1.2rem|)
 
 (define max-width     '|44rem|)
 (define border-width  '|1px|)
@@ -54,34 +53,38 @@
             #:line-height ,line-height
             #:max-width ,max-width]
 
-      [a #:color ,color-link #:text-decoration underline]
-      [|a:hover| #:color ,color-link-hover #:text-decoration underline]
+      [a #:color ,color-link
+         #:text-decoration underline]
+      [|a:hover| #:color ,color-link-hover
+                 #:text-decoration underline]
 
       [img #:image-rendering auto]
 
       [nav #:display flex
-           #:align-items left
            #:margin-bottom ,space-md
            #:padding-bottom ,space-sm
            #:border-bottom (,border-width solid ,color-dark)]
       [|nav a| #:color ,color-dim
-               #:font-size ,font-size
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
-      [|nav .art| #:color ,color-fg #:font-size |clamp(1px, 2vw, 1px)| #:margin 0 #:align-self flex-end]
+      [|nav .art| #:color ,color-fg
+                  #:font-size |1px|
+                  #:margin 0 #:align-self flex-end]
 
-      [|.links| #:align-self flex-end #:margin-left ,space-sm]
-      [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
-      [|.links a|
-                #:margin-right ,space-sm
-                #:font-size ,font-size-md
-                #:display flex
-                #:text-align left
-                #:flex-direction column
-                #:line-height ,line-height-nav
-                #:font-weight ,font-weight-normal]
-      [|.links a:hover| #:color ,color-dim #:text-decoration underline]
-      [|.links div| #:display flex #:flex-direction horizontal]
+      [|.links| #:align-self flex-end
+                #:margin-left ,space-sm]
+      [|.links span| #:font-weight ,font-weight-bold 
+                     #:margin-bottom ,space-sm]
+      [|.links a| #:margin-right ,space-sm
+                  #:font-size ,font-size-md
+                  #:display flex
+                  #:text-align left
+                  #:flex-direction column
+                  #:line-height ,line-height-nav
+                  #:font-weight ,font-weight-normal]
+      [|.links a:hover| #:color ,color-dim 
+                        #:text-decoration underline]
+      [|.links div| #:display flex]
 
       [|.art| #:display block
               #:width max-content
@@ -109,51 +112,36 @@
 
       [h1 #:margin 0
           #:font-size ,font-size-xl
-          #:position relative
           #:font-weight ,font-weight-bold]
 
       [h2 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-xl
           #:position relative
           #:font-weight ,font-weight-bold]
-      [|h2 a::after| #:content "§ "
-                   #:color ,color-lfg
-                   #:position absolute
-                   #:left ,space-lg-neg
-                   #:opacity 0]
-      [|h2 a:hover| #:text-decoration underline #:color ,color-lfg]
-      [|h2 a:hover::after| #:opacity 1]
 
-      [h3 #:margin (0 0 ,space-xs)
-          #:position relative
-          #:font-size ,font-size-lg
-          #:font-weight ,font-weight-bold]
-      [|h3 a::after| #:content "§ "
-                   #:color ,color-lfg
-                   #:position absolute
-                   #:left ,space-lg-neg
-                   #:opacity 0]
-      [|h3 a:hover| #:text-decoration underline #:color ,color-lfg]
-      [|h3 a:hover::after| #:opacity 1]
+      [|h3, h4| #:margin (0 0 ,space-xs)
+                #:font-size ,font-size-lg
+                #:position relative
+                #:font-weight ,font-weight-bold]
 
-      [h4 #:margin (0 0 ,space-xs)
-          #:font-size ,font-size-lg
-          #:position relative
-          #:font-weight ,font-weight-bold]
-      [|h4 a::after| #:content "§ "
-                   #:color ,color-lfg
-                   #:position absolute
-                   #:left ,space-lg-neg
-                   #:opacity 0]
-      [|h4 a:hover| #:text-decoration underline #:color ,color-lfg]
-      [|h4 a:hover::after| #:opacity 1]
+      [|h2 a, h3 a, h4 a| #:color inherit
+                          #:text-decoration none]
 
-      [|h1 a, h2 a, h3 a, h4 a| #:color inherit #:text-decoration none]
+      [|h2 a::after, h3 a::after, h4 a::after| #:content "§ "
+                                               #:color ,color-lfg
+                                               #:position absolute
+                                               #:left ,space-neg
+                                               #:opacity 0]
+      [|h2 a:hover, h3 a:hover, h4 a:hover| #:text-decoration underline
+                                            #:color ,color-lfg]
+      [|h2 a:hover::after, h3 a:hover::after, h4 a:hover::after| #:opacity 1]
 
       [p  #:margin (0 0 ,space-md)]
-      [ul #:margin (0 0 0) #:padding-left ,space-md]
+      [ul #:margin 0
+          #:padding-left ,space-md]
 
-      [time #:color ,color-dim #:white-space nowrap]
+      [time #:color ,color-dim
+            #:white-space nowrap]
 
       [|.buttons| #:display flex
                   #:flex-wrap wrap
@@ -178,6 +166,7 @@
               #:text-align center
               #:font-size ,font-size-sm
               #:color ,color-dim]
-      [|footer a| #:color ,color-dim #:text-decoration none]
+      [|footer a| #:color ,color-dim
+                  #:text-decoration none]
       [|footer a:hover| #:color ,color-dim]
       [|footer .sep| #:margin (0 ,space-xxs)])))
