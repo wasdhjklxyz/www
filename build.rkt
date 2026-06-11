@@ -10,6 +10,7 @@
 (define out-dir "dist")
 (define assets  (list "buttons" "favicon.ico"))
 (define blog-dir "blog")
+(define content-file "_index.md")
 
 ;; Links
 (define (link url label) `(a (@ (href ,url)) ,label))
@@ -115,6 +116,21 @@
                          (cdr x))))]
     [else ""]))
 
+(define (find-first tag nodes)
+  (for/or ([n (in-list nodes)])
+    (and (pair? n)
+         (if (eq? (car n) tag)
+             n
+             (find-first tag (filter pair? (cdr n)))))))
+
+(define (attr node name)
+  (and (pair? node)
+       (pair? (cdr node))
+       (pair? (cadr node))
+       (eq? (car (cadr node)) '@)
+       (let ([p (assq name (cdr (cadr node)))])
+         (and p (cadr p)))))
+
 (define (slugify s)
   (string-trim (regexp-replace* #rx"[^a-z0-9]+" (string-downcase s) "-") "-"))
 
@@ -131,14 +147,14 @@
              (a (@ (href ,(string-append "#" slug))) ,@children)))
 
 (define (md->sxml path)
-  (define xs (parse-markdown path))
+  (define p (if (path? path) path (string->path path)))
+  (define xs (parse-markdown p))
   (define html-string (string-join (map xexpr->string xs) ""))
   (define nodes (cdr (html->xexp html-string)))
   (map (lambda (n) (if (heading? n) (link-heading n) n)) nodes))
 
-(define (blog-xexp title path-str)
-  `(section (@ (id ,title))
-                 ,@(md->sxml (string->path path-str))))
+(define (section-xexp id . nodes)
+  `(section (@ (id ,id)) ,@nodes))
 
 ;; Build
 (when (directory-exists? out-dir) (delete-directory/files out-dir))
@@ -152,24 +168,41 @@
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
 
-(define (build-blog slug)
+(define (build-blog slug nodes)
   (define src-dir (build-path blog-dir slug))
   (define out-rel (build-path "blog" slug))
   (build (build-path out-rel "index.html")
          (page-xexp slug tagline (string-append "/blog/" slug "/")
                     nav-xexp
-                    (blog-xexp slug
-                               (path->string (build-path src-dir
-                                                         "_index.md")))))
+                    (section-xexp slug nodes)))
   (for ([f (in-list (directory-list src-dir))]
-        #:unless (equal? (path->string f) "_index.md"))
+        #:unless (equal? (path->string f) content-file))
     (copy-directory/files (build-path src-dir f)
                           (build-path out-dir out-rel f))))
 
-(define (build-all-blogs)
-  (for ([slug (in-list (directory-list blog-dir))]
-        #:when (directory-exists? (build-path blog-dir slug)))
-    (build-blog (path->string slug))))
+(define (blog-slugs)
+  (for/list ([d (in-list (directory-list blog-dir))]
+             #:when (directory-exists? (build-path blog-dir d)))
+    (path->string d)))
+
+(define (build-blogs)
+  (define metas
+    (for/list ([slug (in-list (blog-slugs))])
+      (define nodes (md->sxml (build-path blog-dir slug content-file)))
+      (build-blog slug nodes)
+      (define tnode (find-first 'time nodes))
+      (define date-text (node-text tnode))
+      (define date-sort (or (attr tnode 'datetime) date-text))
+      (list slug (node-text (find-first 'h1 nodes)) date-text date-sort)))
+  (sort metas string>? #:key (lambda (m) (list-ref m 3))))
+
+(define (blog-list metas)
+  (for/list ([m (in-list metas)])
+    (match-define (list slug title date-text date-sort) m)
+    `(p (@ (class "blog-list"))
+        (time (@ (datetime ,date-sort)) ,date-text)
+        " "
+        (a (@ (href ,(string-append "/blog/" slug "/"))) ,title))))
 
 ;; Copy Assets
 (for ([asset assets]
@@ -177,12 +210,17 @@
   (copy-directory/files asset (build-path out-dir asset)))
 
 ;; Pages
+(define metas (build-blogs))
+
 (build "index.html"
        (page-xexp host tagline "/"
                   art-xexp
                   `(main
-                     ,(blog-xexp "index" "./index.md")
+                     ,(section-xexp "about" (md->sxml "home/about.md"))
+                     ,(section-xexp "blog"
+                                    (md->sxml "home/blog.md")
+                                    (blog-list metas)
+                                    `(p (@ (class "blog-list-end"))))
+                     ,(section-xexp "contact" (md->sxml "home/contact.md"))
                      ,(buttons-xexp my-buttons)
                      ,(buttons-xexp buttons))))
-
-(build-all-blogs)
