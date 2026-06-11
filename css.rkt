@@ -6,7 +6,8 @@
 
 (define color-bg         '|#0d0d0d|)
 (define color-fg         '|#bebebe|)
-(define color-dim        '|#7d7d7d|)
+(define color-dim        '|#5e5e5e|)
+(define color-ldim       '|#7d7d7d|)
 (define color-dark       '|#1d1d1d|)
 (define color-link       '|#7fb0c0|)
 (define color-link-hover '|#8fc0d0|)
@@ -107,27 +108,27 @@
       [h1 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h1::before| #:content "# "]
+      [|h1::before| #:content "# " #:color ,color-ldim]
 
       [h2 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h2::before| #:content "## "]
+      [|h2::before| #:content "## " #:color ,color-ldim]
 
       [h3 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h3::before| #:content "### "]
+      [|h3::before| #:content "### " #:color ,color-ldim]
 
       [h4 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h4::before| #:content "#### "]
+      [|h4::before| #:content "#### " #:color ,color-ldim]
 
       [h5 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h5::before| #:content "##### "]
+      [|h5::before| #:content "##### " #:color ,color-ldim]
 
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 ,space-md) #:padding-left ,space-md]
