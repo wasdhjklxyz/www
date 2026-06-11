@@ -97,6 +97,21 @@
           #:font-weight ,font-weight-bold]
       [|h2::before| #:content "# "]
 
+      [h3 #:margin (0 0 ,space-xs)
+          #:font-size ,font-size-lg
+          #:font-weight ,font-weight-bold]
+      [|h3::before| #:content "## "]
+
+      [h4 #:margin (0 0 ,space-xs)
+          #:font-size ,font-size-lg
+          #:font-weight ,font-weight-bold]
+      [|h4::before| #:content "### "]
+
+      [h5 #:margin (0 0 ,space-xs)
+          #:font-size ,font-size-lg
+          #:font-weight ,font-weight-bold]
+      [|h5::before| #:content "#### "]
+
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 ,space-md) #:padding-left ,space-md]
 
