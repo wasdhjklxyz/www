@@ -76,12 +76,6 @@
 ;; Headers
 (define art-xexp `(pre (@ (class "art") (aria-hidden "true")) ,art))
 
-(define header-xexp
-  `(header
-     ,art-xexp
-     (big ,host)
-     (small ,tagline)))
-
 (define nav-xexp
   (let ([links (list (link "/#about" "about")
                      (link "/#articles" "articles")
@@ -142,7 +136,7 @@
 ;; Pages
 (build "index.html"
        (page-xexp host tagline "/"
-                  header-xexp
+                  art-xexp
                   `(main
                      ,(article-xexp "about" "./articles/home/about.md")
                      ,(article-xexp "articles" "./articles/home/articles.md")
