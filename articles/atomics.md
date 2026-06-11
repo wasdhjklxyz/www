@@ -1,4 +1,5 @@
 # title
+<time>Jun 9, 2026</time>
 
 ## intro
 
