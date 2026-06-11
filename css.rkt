@@ -4,11 +4,12 @@
 
 (require css-expr)
 
-(define color-bg   '|#000000|)
-(define color-fg   '|#cecece|)
-(define color-dim  '|#454545|)
-(define color-dark '|#101010|)
-(define color-link '|#ececec|)
+(define color-bg         '|#0d0d0d|)
+(define color-fg         '|#bebebe|)
+(define color-dim        '|#7d7d7d|)
+(define color-dark       '|#1d1d1d|)
+(define color-link       '|#7fb0c0|)
+(define color-link-hover '|#8fc0d0|)
 
 (define font               'monospace)
 (define font-weight-normal 400)
@@ -50,8 +51,8 @@
             #:line-height ,line-height
             #:max-width ,max-width]
 
-      [a #:color ,color-fg #:text-decoration underline]
-      [|a:hover| #:color ,color-link #:text-decoration underline]
+      [a #:color ,color-link #:text-decoration underline]
+      [|a:hover| #:color ,color-link-hover #:text-decoration underline]
 
       [img #:image-rendering auto]
 
