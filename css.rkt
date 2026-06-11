@@ -63,11 +63,14 @@
       [|nav a| #:color ,color-dim
                #:font-size ,font-size
                #:font-weight ,font-weight-bold
+               #:text-decoration none
                #:letter-spacing ,letter-spacing]
+      [|nav a:hover| #:color ,color-dim #:text-decoration none]
 
       [|.links a| #:color ,color-dim
                   #:font-size ,font-size
                   #:font-weight ,font-weight-normal]
+      [|.links a:hover| #:text-decoration underline]
 
       [|.art| #:display block
               #:width max-content
