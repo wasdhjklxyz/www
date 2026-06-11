@@ -73,6 +73,13 @@
 (define (buttons-xexp buttons)
   `(div (@ (class "buttons")) ,@buttons))
 
+;; Headers
+(define art-xexp
+  `(header
+     (pre (@ (class "art") (aria-hidden "true")) ,art)
+     (h1 ,host)
+     (small ,tagline)))
+
 ;; Page Skeleton
 (define (page-xexp title description path . body)
   `(html (@ (lang "en"))
@@ -123,10 +130,7 @@
 ;; Pages
 (build "index.html"
        (page-xexp host tagline "/"
-                  `(header
-                     (pre (@ (class "art") (aria-hidden "true")) ,art)
-                     (h1 ,host)
-                     (small ,tagline))
+                  art-xexp
                   `(main
                      ,(article-xexp "about" "./articles/home/about.md")
                      ,(article-xexp "articles" "./articles/home/articles.md")
