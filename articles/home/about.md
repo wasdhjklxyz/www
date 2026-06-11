@@ -1,4 +1,4 @@
-## about
+# about
 
 Hello! I'm uiop. I own three Thinkpads. I daily-drive a
 [T420s](https://thinkwiki.de/T420s), my [X220](https://thinkwiki.de/X220) is

@@ -77,7 +77,7 @@
 (define art-xexp
   `(header
      (pre (@ (class "art") (aria-hidden "true")) ,art)
-     (h1 ,host)
+     (big ,host)
      (small ,tagline)))
 
 (define nav-xexp

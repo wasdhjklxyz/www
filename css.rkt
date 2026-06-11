@@ -81,11 +81,12 @@
               #:line-height ,line-height-art
               #:overflow hidden]
 
-      [h1 #:text-align center
-          #:margin (,space-sm 0 0)
-          #:font-size ,font-size-xl
-          #:font-weight ,font-weight-bold
-          #:letter-spacing ,letter-spacing]
+      [big #:text-align center
+           #:display block
+           #:margin (,space-sm 0 0)
+           #:font-size ,font-size-xl
+           #:font-weight ,font-weight-bold
+           #:letter-spacing ,letter-spacing]
 
       [small #:margin (,space-xs 0 ,space-xs)
              #:display block
@@ -95,25 +96,30 @@
 
       [article #:margin (,space-md 0)]
 
+      [h1 #:margin (0 0 ,space-xs)
+          #:font-size ,font-size-lg
+          #:font-weight ,font-weight-bold]
+      [|h1::before| #:content "# "]
+
       [h2 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h2::before| #:content "# "]
+      [|h2::before| #:content "## "]
 
       [h3 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h3::before| #:content "## "]
+      [|h3::before| #:content "### "]
 
       [h4 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h4::before| #:content "### "]
+      [|h4::before| #:content "#### "]
 
       [h5 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
           #:font-weight ,font-weight-bold]
-      [|h5::before| #:content "#### "]
+      [|h5::before| #:content "##### "]
 
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 ,space-md) #:padding-left ,space-md]
