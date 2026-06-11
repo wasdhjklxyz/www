@@ -1,6 +1,6 @@
 #lang racket
 
-(require html-writing "css.rkt" "articles/about.rkt")
+(require html-writing html-parsing markdown "css.rkt")
 
 ;; Config
 (define host    "wasdhjkl.xyz")
@@ -87,6 +87,18 @@
                      "creativecommons.org/licenses/by-sa/4.0"
                      "CC BY-SA 4.0"))))
 
+;; Markdown
+(current-strict-markdown? #t)
+
+(define (md->sxml path)
+  (define xs (parse-markdown path))
+  (define html-string (string-join (map xexpr->string xs) ""))
+  (cdr (html->xexp html-string))) ; strip *TOP* wrapper
+
+(define (article-xexp title path-str)
+  `(article-xexp (@ (id ,title))
+            ,@(md->sxml (string->path path-str))))
+
 ;; Build
 (when (directory-exists? out-dir) (delete-directory/files out-dir))
 (make-directory* out-dir)
@@ -112,7 +124,7 @@
                      (h1 ,host)
                      (small ,tagline))
                   `(main
-                     ,about-xexp
+                     ,(article-xexp "about" "./articles/about.md")
                      ,(section-xexp "blog" '(p "hello world"))
                      ,(section-xexp "projects" '(p "hello world"))
                      ,(section-xexp "contact" '(p "hello world"))

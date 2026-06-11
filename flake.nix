@@ -17,7 +17,7 @@
             shellHook = ''
               export PLTADDONDIR="$PWD/.racket"
               raco pkg install --auto --skip-installed --no-docs \
-                html-writing css-expr
+                html-writing css-expr html-parsing markdown
               echo "build: racket build.rkt"
               echo "serve: python3 -m http.server -d dist 8080"
             '';
