@@ -76,6 +76,11 @@
 ;; Headers
 (define art-xexp `(pre (@ (class "art") (aria-hidden "true")) ,art))
 
+(define header-xexp
+  `(header
+     ,art-xexp
+     (big ,host)))
+
 (define nav-xexp
   (let ([links (list (link "/#about" "about")
                      (link "/#articles" "articles")
