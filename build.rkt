@@ -8,7 +8,7 @@
 (define art     (file->string "art.txt"))
 (define email   (string-append "uiop@" host))
 (define out-dir "dist")
-(define assets  (list "buttons" "favicon.ico"))
+(define assets  (list "blog" "buttons" "favicon.ico"))
 
 ;; Links
 (define (link url label) `(a (@ (href ,url)) ,label))
@@ -83,7 +83,7 @@
 
 (define nav-xexp
   (let ([links (list (link "/#about" "about")
-                     (link "/#articles" "articles")
+                     (link "/#blog" "blog")
                      (link "/#contact" "contact"))])
     `(nav ,art-xexp
           (div (@ (class "links"))
@@ -135,8 +135,8 @@
   (define nodes (cdr (html->xexp html-string)))
   (map (lambda (n) (if (heading? n) (link-heading n) n)) nodes))
 
-(define (article-xexp title path-str)
-  `(article-xexp (@ (id ,title))
+(define (blog-xexp title path-str)
+  `(section (@ (id ,title))
                  ,@(md->sxml (string->path path-str))))
 
 ;; Build
@@ -151,13 +151,13 @@
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
 
-(define (build-article foobar)
-  (define foobar-path (string-append "articles/" foobar))
-  (build (string-append foobar-path ".html")
+(define (build-blog foobar)
+  (define foobar-path (string-append "blog/" foobar))
+  (build (string-append foobar-path "/index.html")
          (page-xexp foobar tagline "/"
                     nav-xexp
-                    (article-xexp foobar
-                                  (string-append "./" foobar-path ".md")))))
+                    (blog-xexp foobar
+                               (string-append foobar-path "/_index.md")))))
 
 ;; Copy Assets
 (for ([asset assets]
@@ -169,11 +169,9 @@
        (page-xexp host tagline "/"
                   art-xexp
                   `(main
-                     ,(article-xexp "about" "./articles/home/about.md")
-                     ,(article-xexp "articles" "./articles/home/articles.md")
-                     ,(article-xexp "contact" "./articles/home/contact.md")
+                     ,(blog-xexp "index" "./index.md")
                      ,(buttons-xexp my-buttons)
                      ,(buttons-xexp buttons))))
 
-(build-article "name-origins")
-(build-article "atomics")
+(build-blog "name-origins")
+(build-blog "atomics")
