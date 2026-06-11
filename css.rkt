@@ -108,8 +108,6 @@
              #:font-size ,font-size-md
              #:color ,color-dim]
 
-      [article #:margin (,space-md 0)]
-
       [h1 #:margin 0
           #:font-size ,font-size-xl
           #:font-weight ,font-weight-bold]
