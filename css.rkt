@@ -20,6 +20,7 @@
 (define font-size-xl       '|1.5rem|)
 
 (define line-height     1.6)
+(define line-height-nav 1)
 (define line-height-art 0.85)
 (define letter-spacing  '|0.05rem|)
 
@@ -55,21 +56,26 @@
       [img #:image-rendering auto]
 
       [nav #:display flex
-           #:justify-content space-between
-           #:align-items center
+           #:align-items left
            #:margin-bottom ,space-sm
            #:padding-bottom ,space-sm
            #:border-bottom (,border-width solid ,color-dark)]
       [|nav a| #:color ,color-dim
                #:font-size ,font-size
-               #:font-weight ,font-weight-bold
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
       [|nav a:hover| #:color ,color-dim #:text-decoration none]
+      [|nav .art| #:font-size |clamp(1px, 2vw, 1.5px)| #:margin 0]
 
+      [|.links| #:align-self flex-end #:margin-left ,space-sm]
+      [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
       [|.links a| #:color ,color-dim
-                  #:font-size ,font-size
-                  #:font-weight ,font-weight-normal]
+                #:font-size ,font-size
+                #:display flex
+                #:text-align left
+                #:flex-direction column
+                #:line-height ,line-height-nav
+                #:font-weight ,font-weight-normal]
       [|.links a:hover| #:text-decoration underline]
 
       [|.art| #:display block

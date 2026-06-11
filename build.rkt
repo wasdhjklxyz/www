@@ -86,8 +86,10 @@
   (let ([links (list (link "/#about" "about")
                      (link "/#articles" "articles")
                      (link "/#contact" "contact"))])
-    `(nav ,(link "/" host)
-          (div (@ (class "links")) ,@(add-between links "\n")))))
+    `(nav ,art-xexp
+          (div (@ (class "links"))
+               (span ,host)
+               ,@links))))
 
 ;; Page Skeleton
 (define (page-xexp title description path . body)
