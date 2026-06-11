@@ -150,3 +150,4 @@
                      ,(buttons-xexp buttons))))
 
 (build-article "name-origins")
+(build-article "atomics")
