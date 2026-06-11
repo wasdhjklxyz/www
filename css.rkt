@@ -90,7 +90,7 @@
              #:font-size ,font-size-md
              #:color ,color-dim]
 
-      [section #:margin (,space-md 0)]
+      [article #:margin (,space-md 0)]
 
       [h2 #:margin (0 0 ,space-xs)
           #:font-size ,font-size-lg
@@ -115,15 +115,7 @@
       [p  #:margin (0 0 ,space-md)]
       [ul #:margin (0 0 ,space-md) #:padding-left ,space-md]
 
-      [|.posts| #:list-style none #:padding 0]
-      [|.posts li| #:display flex #:gap ,space-md #:padding (,space-xs 0)]
-      [|.posts time| #:color ,color-dim #:white-space nowrap]
-
-      [|.projects| #:list-style none #:padding 0]
-      [|.projects li| #:display flex
-                      #:gap ,space-md
-                      #:padding (,space-xs 0)]
-      [|.projects span| #:color ,color-dim]
+      [time #:color ,color-dim #:white-space nowrap]
 
       [|.buttons| #:display flex
                   #:flex-wrap wrap
@@ -148,5 +140,5 @@
               #:text-align center
               #:font-size ,font-size-sm
               #:color ,color-dim]
-      [|footer a| #:color ,color-dim]
+      [|footer a| #:color ,color-dim #:text-decoration none]
       [|footer .sep| #:margin (0 ,space-xxs)])))
