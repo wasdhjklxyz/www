@@ -8,7 +8,8 @@
 (define art     (file->string "art.txt"))
 (define email   (string-append "uiop@" host))
 (define out-dir "dist")
-(define assets  (list "blog" "buttons" "favicon.ico"))
+(define assets  (list "buttons" "favicon.ico"))
+(define blog-dir "blog")
 
 ;; Links
 (define (link url label) `(a (@ (href ,url)) ,label))
@@ -151,13 +152,24 @@
                            (display "<!DOCTYPE html>" out)
                            (write-html xexp out))))
 
-(define (build-blog foobar)
-  (define foobar-path (string-append "blog/" foobar))
-  (build (string-append foobar-path "/index.html")
-         (page-xexp foobar tagline "/"
+(define (build-blog slug)
+  (define src-dir (build-path blog-dir slug))
+  (define out-rel (build-path "blog" slug))
+  (build (build-path out-rel "index.html")
+         (page-xexp slug tagline (string-append "/blog/" slug "/")
                     nav-xexp
-                    (blog-xexp foobar
-                               (string-append foobar-path "/_index.md")))))
+                    (blog-xexp slug
+                               (path->string (build-path src-dir
+                                                         "_index.md")))))
+  (for ([f (in-list (directory-list src-dir))]
+        #:unless (equal? (path->string f) "_index.md"))
+    (copy-directory/files (build-path src-dir f)
+                          (build-path out-dir out-rel f))))
+
+(define (build-all-blogs)
+  (for ([slug (in-list (directory-list blog-dir))]
+        #:when (directory-exists? (build-path blog-dir slug)))
+    (build-blog (path->string slug))))
 
 ;; Copy Assets
 (for ([asset assets]
@@ -173,5 +185,4 @@
                      ,(buttons-xexp my-buttons)
                      ,(buttons-xexp buttons))))
 
-(build-blog "name-origins")
-(build-blog "atomics")
+(build-all-blogs)
