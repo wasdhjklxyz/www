@@ -74,9 +74,11 @@
   `(div (@ (class "buttons")) ,@buttons))
 
 ;; Headers
-(define art-xexp
+(define art-xexp `(pre (@ (class "art") (aria-hidden "true")) ,art))
+
+(define header-xexp
   `(header
-     (pre (@ (class "art") (aria-hidden "true")) ,art)
+     ,art-xexp
      (big ,host)
      (small ,tagline)))
 
@@ -137,7 +139,7 @@
 ;; Pages
 (build "index.html"
        (page-xexp host tagline "/"
-                  art-xexp
+                  header-xexp
                   `(main
                      ,(article-xexp "about" "./articles/home/about.md")
                      ,(article-xexp "articles" "./articles/home/articles.md")
