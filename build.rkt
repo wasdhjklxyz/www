@@ -41,10 +41,6 @@
 (define (footer-xexp links license)
   `(footer ,@(add-between (append links (list license)) footer-sep)))
 
-;; Section
-(define (section-xexp title . content)
-  `(section (@ (id ,title)) (h2 ,title) ,@content))
-
 ;; Buttons
 (define (auto-href alt) ; If alt contains a . and no space auto link it
   (if (and (string-contains? alt ".")
@@ -124,9 +120,8 @@
                      (h1 ,host)
                      (small ,tagline))
                   `(main
-                     ,(article-xexp "about" "./articles/about.md")
-                     ,(section-xexp "blog" '(p "hello world"))
-                     ,(section-xexp "projects" '(p "hello world"))
-                     ,(section-xexp "contact" '(p "hello world"))
+                     ,(article-xexp "about" "./articles/home/about.md")
+                     ,(article-xexp "articles" "./articles/home/articles.md")
+                     ,(article-xexp "contact" "./articles/home/contact.md")
                      ,(buttons-xexp my-buttons)
                      ,(buttons-xexp buttons))))
