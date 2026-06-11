@@ -81,11 +81,10 @@
      (small ,tagline)))
 
 (define nav-xexp
-  (let ([links (list (link "/" "home")
-                     (link "/#about" "about")
+  (let ([links (list (link "/#about" "about")
                      (link "/#articles" "articles")
                      (link "/#contact" "contact"))])
-    `(nav (a (@ (href "/")) (p ,host))
+    `(nav ,(link "/" host)
           (div (@ (class "links")) ,@(add-between links "\n")))))
 
 ;; Page Skeleton
