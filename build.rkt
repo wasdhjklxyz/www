@@ -89,7 +89,8 @@
     `(nav ,art-xexp
           (div (@ (class "links"))
                (span ,host)
-               ,@links))))
+               (div
+                 ,@(add-between links ""))))))
 
 ;; Page Skeleton
 (define (page-xexp title description path . body)

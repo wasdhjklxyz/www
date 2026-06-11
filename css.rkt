@@ -60,16 +60,17 @@
            #:margin-bottom ,space-sm
            #:padding-bottom ,space-sm
            #:border-bottom (,border-width solid ,color-dark)]
-      [|nav a| #:color ,color-dim
+      [|nav a| #:color ,color-fg
                #:font-size ,font-size
                #:text-decoration none
                #:letter-spacing ,letter-spacing]
       [|nav a:hover| #:color ,color-dim #:text-decoration none]
-      [|nav .art| #:font-size |clamp(1px, 2vw, 2px)| #:margin 0 #:align-self flex-end]
+      [|nav .art| #:font-size |clamp(1px, 2vw, 1px)| #:margin 0 #:align-self flex-end]
 
       [|.links| #:align-self flex-end #:margin-left ,space-sm]
       [|.links span| #:font-weight ,font-weight-bold #:margin-bottom ,space-sm]
-      [|.links a| #:color ,color-dim
+      [|.links a|
+                #:margin-right ,space-sm
                 #:font-size ,font-size
                 #:display flex
                 #:text-align left
@@ -77,6 +78,7 @@
                 #:line-height ,line-height-nav
                 #:font-weight ,font-weight-normal]
       [|.links a:hover| #:text-decoration underline]
+      [|.links div| #:display flex #:flex-direction horizontal]
 
       [|.art| #:display block
               #:width max-content
