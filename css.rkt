@@ -138,6 +138,9 @@
       [ul #:margin 0
           #:padding-left ,space-md]
 
+      [|#blog p| #:margin 0]
+      [|#blog .blog-list-end| #:margin (0 0 ,space-md)]
+
       [time #:color ,color-dim
             #:white-space nowrap]
 
