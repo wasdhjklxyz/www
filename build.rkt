@@ -7,7 +7,7 @@
 (define tagline "kernels / networking / offensive security / nix btw / nvim btw")
 (define art     (file->string "art.txt"))
 (define email   (string-append "uiop@" host))
-(define out-dir "dist")
+(define out-dir "./")
 (define assets  (list "buttons" "favicon.ico"))
 (define blog-dir "blog")
 (define content-file "_index.md")
@@ -191,12 +191,12 @@
       pre)) ; lexer failed -> leave plain
 
 ;; Build
-(when (directory-exists? out-dir) (delete-directory/files out-dir))
-(make-directory* out-dir)
+;(when (directory-exists? out-dir) (delete-directory/files out-dir))
+;(make-directory* out-dir)
 
 (define (build rel xexp)
   (define path (build-path out-dir rel))
-  (make-directory* (path-only path))
+  ;(make-directory* (path-only path))
   (call-with-output-file path #:exists 'replace
                          (lambda (out)
                            (display "<!DOCTYPE html>" out)
@@ -208,11 +208,11 @@
   (build (build-path out-rel "index.html")
          (page-xexp slug tagline (string-append "/blog/" slug "/")
                     nav-xexp
-                    (section-xexp slug nodes)))
-  (for ([f (in-list (directory-list src-dir))]
-        #:unless (equal? (path->string f) content-file))
-    (copy-directory/files (build-path src-dir f)
-                          (build-path out-dir out-rel f))))
+                    (section-xexp slug nodes))))
+  ;; (for ([f (in-list (directory-list src-dir))]
+  ;;       #:unless (equal? (path->string f) content-file))
+  ;;   (copy-directory/files (build-path src-dir f)
+  ;;                         (build-path out-dir out-rel f))))
 
 (define (blog-slugs)
   (for/list ([d (in-list (directory-list blog-dir))]
@@ -248,9 +248,9 @@
         (a (@ (href ,(string-append "/blog/" slug "/"))) ,title))))
 
 ;; Copy Assets
-(for ([asset assets]
-      #:when (or (file-exists? asset) (directory-exists? asset)))
-  (copy-directory/files asset (build-path out-dir asset)))
+;; (for ([asset assets]
+;;       #:when (or (file-exists? asset) (directory-exists? asset)))
+;;   (copy-directory/files asset (build-path out-dir asset)))
 
 ;; Pages
 (define metas (build-blogs))

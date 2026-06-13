@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="kernels / networking / offensive security / nix btw / nvim btw"><meta name="theme-color" content="#000000"><link rel="canonical" href="https://wasdhjkl.xyz/blog/the-origin-of-uiop-and-wasdhjklxyz/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&#38;display=swap" rel="stylesheet"><style>.highlight .hll { background-color: #6e7681 }
+.highlight { background: transparent; color: #D4D2C8 }
+.highlight .c { color: #7E8AA1 } /* Comment */
+.highlight .err { color: #F88F7F } /* Error */
+.highlight .esc { color: #D4D2C8 } /* Escape */
+.highlight .g { color: #D4D2C8 } /* Generic */
+.highlight .k { color: #FFAD66 } /* Keyword */
+.highlight .l { color: #D5FF80 } /* Literal */
+.highlight .n { color: #D4D2C8 } /* Name */
+.highlight .o { color: #FFAD66 } /* Operator */
+.highlight .x { color: #D4D2C8 } /* Other */
+.highlight .p { color: #D4D2C8 } /* Punctuation */
+.highlight .ch { color: #F88F7F; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #7E8AA1 } /* Comment.Multiline */
+.highlight .cp { color: #FFAD66; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #7E8AA1 } /* Comment.PreprocFile */
+.highlight .c1 { color: #7E8AA1 } /* Comment.Single */
+.highlight .cs { color: #7E8AA1; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #F88F7F; background-color: #3D1E20 } /* Generic.Deleted */
+.highlight .ge { color: #D4D2C8; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #D4D2C8 } /* Generic.EmphStrong */
+.highlight .gr { color: #F88F7F } /* Generic.Error */
+.highlight .gh { color: #D4D2C8 } /* Generic.Heading */
+.highlight .gi { color: #6AD4AF; background-color: #19362C } /* Generic.Inserted */
+.highlight .go { color: #7E8AA1 } /* Generic.Output */
+.highlight .gp { color: #D4D2C8 } /* Generic.Prompt */
+.highlight .gs { color: #D4D2C8; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #D4D2C8 } /* Generic.Subheading */
+.highlight .gt { color: #F88F7F } /* Generic.Traceback */
+.highlight .kc { color: #FFAD66 } /* Keyword.Constant */
+.highlight .kd { color: #FFAD66 } /* Keyword.Declaration */
+.highlight .kn { color: #FFAD66 } /* Keyword.Namespace */
+.highlight .kp { color: #FFAD66 } /* Keyword.Pseudo */
+.highlight .kr { color: #FFAD66 } /* Keyword.Reserved */
+.highlight .kt { color: #73D0FF } /* Keyword.Type */
+.highlight .ld { color: #D5FF80 } /* Literal.Date */
+.highlight .m { color: #DFBFFF } /* Literal.Number */
+.highlight .s { color: #D5FF80 } /* Literal.String */
+.highlight .na { color: #FFD173 } /* Name.Attribute */
+.highlight .nb { color: #FFD173 } /* Name.Builtin */
+.highlight .nc { color: #73D0FF } /* Name.Class */
+.highlight .no { color: #FFD173 } /* Name.Constant */
+.highlight .nd { color: #7E8AA1; font-weight: bold; font-style: italic } /* Name.Decorator */
+.highlight .ni { color: #95E6CB } /* Name.Entity */
+.highlight .ne { color: #73D0FF } /* Name.Exception */
+.highlight .nf { color: #FFD173 } /* Name.Function */
+.highlight .nl { color: #D4D2C8 } /* Name.Label */
+.highlight .nn { color: #D4D2C8 } /* Name.Namespace */
+.highlight .nx { color: #D4D2C8 } /* Name.Other */
+.highlight .py { color: #FFD173 } /* Name.Property */
+.highlight .nt { color: #5CCFE6 } /* Name.Tag */
+.highlight .nv { color: #D4D2C8 } /* Name.Variable */
+.highlight .ow { color: #FFAD66 } /* Operator.Word */
+.highlight .pm { color: #D4D2C8 } /* Punctuation.Marker */
+.highlight .w { color: #D4D2C8 } /* Text.Whitespace */
+.highlight .mb { color: #DFBFFF } /* Literal.Number.Bin */
+.highlight .mf { color: #DFBFFF } /* Literal.Number.Float */
+.highlight .mh { color: #DFBFFF } /* Literal.Number.Hex */
+.highlight .mi { color: #DFBFFF } /* Literal.Number.Integer */
+.highlight .mo { color: #DFBFFF } /* Literal.Number.Oct */
+.highlight .sa { color: #F29E74 } /* Literal.String.Affix */
+.highlight .sb { color: #D5FF80 } /* Literal.String.Backtick */
+.highlight .sc { color: #D5FF80 } /* Literal.String.Char */
+.highlight .dl { color: #D5FF80 } /* Literal.String.Delimiter */
+.highlight .sd { color: #7E8AA1 } /* Literal.String.Doc */
+.highlight .s2 { color: #D5FF80 } /* Literal.String.Double */
+.highlight .se { color: #95E6CB } /* Literal.String.Escape */
+.highlight .sh { color: #D5FF80 } /* Literal.String.Heredoc */
+.highlight .si { color: #95E6CB } /* Literal.String.Interpol */
+.highlight .sx { color: #95E6CB } /* Literal.String.Other */
+.highlight .sr { color: #95E6CB } /* Literal.String.Regex */
+.highlight .s1 { color: #D5FF80 } /* Literal.String.Single */
+.highlight .ss { color: #DFBFFF } /* Literal.String.Symbol */
+.highlight .bp { color: #5CCFE6 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #FFD173 } /* Name.Function.Magic */
+.highlight .vc { color: #D4D2C8 } /* Name.Variable.Class */
+.highlight .vg { color: #D4D2C8 } /* Name.Variable.Global */
+.highlight .vi { color: #D4D2C8 } /* Name.Variable.Instance */
+.highlight .vm { color: #D4D2C8 } /* Name.Variable.Magic */
+.highlight .il { color: #DFBFFF } /* Literal.Number.Integer.Long */
+*{box-sizing:border-box;}body{margin:0 auto;padding:1.5rem 0 1.5rem;background:#000000;color:#bebebe;font-family:"Space Grotesk";font-size:1.25rem;line-height:1.6;max-width:64rem;}a{color:#7e8aa1;text-decoration:underline;}a:hover{color:#8e9ab1;text-decoration:underline;}img{image-rendering:auto;max-width:64rem;margin-bottom:1.5rem;}nav{display:flex;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1d1d1d;}nav .art{color:#bebebe;font-size:1px;margin:0;text-decoration:none;align-self:flex-end;}.links{align-self:flex-end;margin-left:0.5rem;}.links span{font-weight:600;margin-bottom:0.5rem;}.links a{margin-right:0.5rem;font-size:1rem;display:flex;color:#5e5e5e;text-align:left;text-decoration:none;letter-spacing:0.05rem;flex-direction:column;line-height:1;font-weight:400;}.links a:hover{color:#5e5e5e;text-decoration:underline;}.links div{display:flex;}.art{display:block;width:max-content;max-width:100%;margin:0 auto;white-space:pre;font-size:clamp(1px, 2vw, 4px);line-height:0.85;overflow:hidden;}big{text-align:center;display:block;margin:0.5rem 0 0;font-size:1.75rem;font-weight:600;letter-spacing:0.05rem;}small{margin:0.25rem 0 0.25rem;display:block;text-align:center;font-size:1rem;color:#5e5e5e;}h1{margin:0;font-size:1.75rem;font-weight:600;}h2{margin:0 0 0.25rem;font-size:1.75rem;position:relative;font-weight:600;}h3, h4{margin:0 0 0.25rem;font-size:1.5rem;position:relative;font-weight:600;}h2 a, h3 a, h4 a{color:inherit;text-decoration:none;}h2 a::after, h3 a::after, h4 a::after{content:"§ ";color:#cecece;position:absolute;left:-1.2rem;opacity:0;}h2 a:hover, h3 a:hover, h4 a:hover{text-decoration:underline;color:#cecece;}h2 a:hover::after, h3 a:hover::after, h4 a:hover::after{opacity:1;}p{margin:0 0 1.5rem;}ul{margin:0 1rem 1.5rem;padding-left:1rem;}ul ul{margin-bottom:0;}blockquote{color:#9e9e9e;margin-left:1rem;padding:0 1rem 0;border-left:0.25rem solid #1d1d1d;}code{color:#7e8aa1;border:1px solid #1d1d1d;}.figure{display:flex;justify-content:center;}.caption{display:none;}#blog p{margin:0;}#blog .blog-list-end{margin:0 0 1rem;}.highlight{margin:0 0 1.5rem;background:transparent;border:1px solid #1d1d1d;}.highlight pre{margin:0 auto 0;line-height:1.25;color:#7e8aa1;padding:0.5rem;}time{color:#5e5e5e;white-space:nowrap;}.new{color:#f88f7f;font-size:1rem;}.buttons-border{border-bottom:1px solid #1d1d1d;}.buttons{display:flex;flex-wrap:wrap;margin:0 auto;justify-content:center;gap:0.5rem;margin-top:1rem;max-width:60%;}.buttons + .buttons{border-top:none;margin-top:0.5rem;padding-top:0.5rem;}.buttons img{image-rendering:pixelated;display:block;margin-bottom:0;width:88px;height:31px;border:0;}.buttons a{line-height:0;}footer{margin-top:1rem;padding-top:0.5rem;border-top:1px solid #1d1d1d;text-align:center;font-size:0.85rem;color:#5e5e5e;}footer a{color:#5e5e5e;text-decoration:none;}footer a:hover{color:#5e5e5e;}footer .sep{margin:0 0.1rem;}</style><title>the-origin-of-uiop-and-wasdhjklxyz</title></head><nav><a href="/" style="color: transparent"><pre class="art" aria-hidden="true">                                          █▒░░░▒██     ██▓██                                                                                
+                                         ▓░░░░░░░░░█  ███▓▒█▒                                                                               
+                                        ▓░░░░░░░░░░░░███▓▒▒▒░░                                                                              
+                                         ░░▒░░░░░░░▒░░░▒▒▒▒▓░░░▒░░░░░░░░▒▒░░░░░                                                             
+                                         ░▒▒▒░░▒░░░░░░░░░▒░░░░░░░░░░░░▒▒▒░▒░░░░░▒▒▒                                                         
+                                         ░▒▒░░░▒░░░░░▒░░░░░░▒▒▒▒▒▒▒░▒▒▒░▒▒░░░░░▒▒░░▒▒▒                                                      
+                                         ▒▒░▒▒░░░░░░░▒▒░░░░░░░░░░░░░░░▒▒▒░░░░░ ░░░░░░▒▒▒▓                                                   
+                                         █▒▒▒░░░░▒░▒▒░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░▒░ ░░▒▒▓▒                                                 
+                                          ▓▒░░░░▒░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░▒░▒░░▒▒▒                                                
+                                         ▓▒▒▒░░░░░░░▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▓                                                
+                                       █▓▓▒░▓▒░░▒░░░░ ░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓                                                
+                                       ▓▓▓▒░░▒▒░░░░░░░░░░░░░░ ░░░░░░░  ░░░░░░░░░░░░░░░▒░▒▒▓▓▓                                               
+                                      ▒▓▓▒░░░  ░░░░░░░░░░░░░ ░░░░ ░░░  ░  ░ ░░░░░  ░░░░  ░▓▒▓▒                                              
+                                     ▓▓▓▒▒░░░         ░░░        ░░░░░  ░         ░░░░░▒  ▒▓▓▓▓▓                                            
+                                    ▓▓▒▓▓░░░░ ░      ░             ░░  ░░       ░░░░░░░░░░▒░▓▓▓█▓░                                          
+                                    ▓▓▒▓▒░░░░░ ░    ░                         ░░░░ ░░░░░░░░▒▒▓▓▓▓▓▒                                         
+                                   ▓▓▓▒▒▒▒░░   ░░░                  ░        ░░░░░░░░░░░░▒▒▒▓█▓▓▓▓▓▒                                        
+                                   ▓▓▓▓▒░░░░▒▒░   ░░░                      ░░░░▒░░▒░░░░ ░░░▒▓██▓▒░▒▓                                        
+                                  ▓▓▓▓▒▒▒▒░░░░ ░░░▒▒▒▒░░░░                 ░░ ░░░░░░░░░▒▒▒▒▒▓▓▓▓██▓                                         
+                                  ▓▓▓█▓▒▒▒░░░░░▒▒▒▒▓▒▒▒▒▒▒░░░░            ░   ░░░░░░▒░░▒▒▒▒▓▓▓██▓█▓                                         
+                                 ░▓▓▓▓▒▒░░░░░░░░░░░▒▒▓▓▓▓▓▓▒▒▒▒░▒░░░░░░ ░░░░░░░▒▒▒▒▓▓▓▒▓▒▓▒▒▓▓████                                          
+                                 ▒▓▓▓▓▒▒▒▒▒░▒▒░░░▒▒▒▓▓▓▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓█▓▓▒▒▓▓▓▓▓▓▓█▒                                          
+                                 ▓▓▓▓▓▒░░░▒░░░▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▓▒▒▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░░░░░▒▒▒▒░░                                     
+                                 ▓▓▓▒▒▒▒▒▒▒▒░░░░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒░░░░ ░░ ░ ░░░░░ ░▒▒▒░▓▒▒                                
+                                 ▓▓▓▓▒▒▓▒▒▒▒░▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░ ░ ░░    ░░░░░░░  ░░░▒░▒▒▓▓                              
+                                ░▓▓▓▒▒░▒░░░▒░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▒▒░░░░  ░ ░░░   ░░  ░░░░ ░░▒░░░░▒▒░░▒▒                            
+                                ░▓▓▒▓▓▒░▓▓▒▒▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▒░░░░░ ░  ░░░░    ░  ░   ░░  ░░░░▒▒░  ▒░░░░▒▒                          
+                                ░▓▓▓▓▓▓█▓▓▒▒▒▓▓▓▓▓▓▒▓▓▓▓▓▓▓▒▒▒▓▒▒▒░▒░░░ ░░    ░░    ░░    ░░░░░  ░░░░░▒ ░   ░▒░▓███▓░░                      
+                                ▒▓▓▓▓▒▒▓▒▒▓▒▓▓▒▓▓▒▒▓▓▒▓▒▓▓▓▒░▒░░░░░░        ░░      ░░ ░░  ░ ░   ░▒░░░░░  ░░░░░░▒▓██████▓▓                  
+                               ░▓▓▒▓▒▒▒▒▓▒▒░▓▒▓▓▒▒▒▒▒▒▓▓▒▒▒▒░░░░                     ░░░░░░     ░░░░░░░░░   ░▒░░░░▒▒▓████████▒░             
+                               ▒▓█▓▒░░░░▒░▒▒▒░░░░░░▒▒▒░░░░░ ░               ░   ░░ ░░ ░░░░░   ░░░░░░░░░░   ░░░░░░░▒▒▓▓▓██▓▓▓▓▓▓             
+                               ▒▓▓▓▓▓▒░░░░░░░ ░░░▒░░░░░            ░      ░ ░ ░░░     ░ ░░  ░░ ░  ░░░░░░   ░ ░░░░░▒▓▓██▓▓▓▓▓▓▓▓▒            
+                               ▒▓▓▓▒░▒░░   ░ ░░░░░░░░ ░  ░  ░      ░      ░          ░░ ░░  ░░ ░░░░░░░░░  ░    ▒▒░▓▓▓▓▓▓▓▓▓▓▓▓▓▓            
+                              ░░▒▒▒▒░░ ░        ░            ░     ░   ░░  ░        ░  ░░░  ░░  ░░░░░░░░░░     ▒░▒▓▒▓▓▓▓▓▓▓▓▓▓▒░░░░░░░░░░░░░
+                              ▒░▒▒▒░░░   ░  ░  ░   ░    ░  ░░░                   ░░     ░  ░ ░   ░░░░░░░░ ░  ░░░▒▓▒░░░▒░ ░░░░░░        ░░░░░
+                           ▒▒▒▒▒░░░ ░      ░░░░░  ░░  ░░░  ░      ░               ░       ░ ░      ░░░          ░▒░░░░▒▒▒▒▒▒▒▒▒░░░░ ░  ░░  ░
+                   ▒▒▒▒▒▓▒▒▒▒▒░░   ░   ░░░░▓░░░ ░░░  ░░░  ░      ░░░░░░░░                          ░ ░         ░░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░  ░░ ░░░
+                 ▒▒▒░▒▒▒▒░░░░░░░░░░░░░░░ ░ ░  ░░       ░      ▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   ░░░░░░       ░░░░▒▒▒▒▒▓▓▒▒▒▒▒▒░░░░░░░  ░░░░
+              ░▒▒▓▒▒▒░░░▒░░░░░░░░ ░ ░ ░░░ ░ ░░░░░░ ░░░░   ░ ░▒▒░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▓▓▓▒▒▒▓▒▒░░░░░░░░░░░░░░
+            ░▒▒▒▒░░░░▒░░░░░░░▒░░░ ░░       ░░  ░ ░░░ ▒  ░   ░▓▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▓▓▓▓▒▒▒░░░░░░░░░░░░░░░░
+          ░░░░░▒▒░▒░░░░░░░░ ░░░            ░░ ░░░░░   ░      ░█▓▒▒▒░░▒░░░▒▒░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▒▒▓▓▓▒▒▒▒░░░░░░░░░░░░░░░░
+         ░▓▓▒░░░░░░░ ░  ░ ░░░░░            ░ ░░░░░           ░░░██▒▒▒▒▒▒▒▒░░░░░░░░░░░░▒▒░░░▒░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░
+       ░░▒░▒░▒░░▒░░░   ░░░░░ ░        ░  ░ ░ ░░ ░░ ░    ░ ░   ░░░░▒██▒▒▒▒▒▒▒▒▒░▒▒░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░
+      ░░░░░░░░░░░░░░ ░░░░░░  ░ ░░   ░░░   ░░░░       ░   ░      ░░░░░▓██▓▒▒▒▒▒▒▒▒░▒▒▒▒░░░░▒░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒░▒░░░░░░░░░░░░░░░░░░░░░
+     ▒▒▒░░░░░░░  ░░░░░ ░ ░░░░░░░░░    ░ ░░    ░   ░              ░░░░░░▒████▒▒▒▒▒▒▒▒▒▒▒░░▒░▒▒░░░░▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░ 
+     ▒▒▒░░▒░░ ░░░░░░ ░░▒ ░  ░ ░  ░░░    ░ ░           ░              ░░░░░░░▒████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░▒▒▒▒░░░▒▒░░░▒▒▒▒░░░░░░░░░░░░░░░░░░░
+    ▒░░░░░░░░░░░░░▒░ ░░░  ░ ░░░  ░     ░░ ░ ░      ░       ░            ░░░░░░░░▒█████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░▒▒░░░░▒░░░▒░░░░░░░░░░░░░
+   ▒░░░░░░░  ░▒ ░░░░░░░  ░░░   ░  ░      ░        ░     ░                   ░░░░░░░░░▒▓████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░░░░░░░░░░░░░▒░░░░░░░░░░░░░
+  ▒▒▒▒▒▒▒░░░░░ ░░░    ░░░░    ░░ ░        ░  ░    ░ ░     ░                    ░░░░░░░░░░░░▒▓▓██▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░░░░░░░░░░░▒░░░░░░░░░░░░░
+ ░▒░░░░░░░░ ░ ░░   ▒   ░░ ░░░░░      ░░  ░░  ░░░░ ░░░░                              ░░░░░░░░░░░░▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░░░░░░░░░░░░▒░▒▒
+ ░░░░░░░░░░░░ ░░    ░░░   ░░░░░░  ░░   ░░░     ░                                         ░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░
+ ▒░░░░░░ ░░░░░ ░      ░░ ░░ ░  ░ ░ ░░░░░░░   ░░░                                              ░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░▒░░
+▒▒░░░    ░ ░   ░░       ░░░ ░░░ ░   ░░ ░░▒      ░                                       ░░░           ░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▒░▒▒
+░░░░░░░░  ░░░░   ░░   ░ ░░░  ░░░  ░░ ░░ ░      ░                                                             ░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒
+░▒░░░░░   ░   ░    ░░  ░  ░ ░  ░ ░░  ░  ░ ░   ░                                       ░          ░                  ░░░░░░  ░░░░░░░░░▒▒▒▒▒▒▒
+░░░░░ ░   ░░   ░     ░░░░       ░░░        ░                                             ░                                ░░ ░░ ░░░░░░░░░░░░
+░░░   ░ ░ ░░░      ░ ░  ░░         ░░░              ░             ░                       ░░░░                                  ░ ░░░░░░░░░░
+░░   ░ ░░░░░░░     ░░ ░ ░  ░░                ░░ ░░                                         ░░▒▒▓▒░                                  ░░ ░░░░░
+▒     ░ ▒▒ ░░░   ░  ░░ ░     ░  ░ ░     ░  ░                     ░                         ░░░▒▒▒▓▓▓▒░                                   ░░░
+░   ░░░░░░   ░   ░            ░ ░░         ░   ░ ░░                                     ░░░░░░▒▒▓▓▓▓▓▓▒░░                                   
+▒░    ░░░░░      ░░        ░   ░  ░░                                                        ░░░▒▒▓▓▓▓▒▒▒░░                                  
+▒░   ░░ ░░░░   ░   ░░               ░ ░                                                      ░░░▒▒▒▓▒▒▒░                                    
+ ░░    ░░░░            ░            ░   ░                                                 ░░░░░░▒▒▒▓▒▒░                                     
+  ░  ░░░       ░          ░           ░                                                    ░░░░▒▒▒▒▒░                                       
+   ░ ░ ░                  ░            ░                                                   ░░░░░▒▒░                                         
+     ▒ ░      ░       ░                 ░                                                 ░░░░░░                                            
+            ░         ░ ░                                                                                                                   
+                       ░       ░                                                                                                            
+</pre></a><div class="links"><span>wasdhjkl.xyz</span><div><a href="/#about">about</a><a href="/#blog">blog</a><a href="/#contact">contact</a></div></div></nav><section id="the-origin-of-uiop-and-wasdhjklxyz">
+<h1 id="the-origin-of-uiop-and-wasdhjklxyz">The Origin of uiop and wasdhjklxyz</h1>
+<p>
+ <time datetime="2026-05-29">May 29, 2026</time></p>
+<p>The site name, wasdhjklxyz, came to me when I was creating my twitter account. The most important aspect to me was that I wanted a username that could be its own domain name. I was planning to post blogs and general personalish stuff so I thought of &ldquo;wasd&rdquo; since I play computer games, and &ldquo;hjkl&rdquo; since I use Neovim religiously. The TLD .xyz seemed appropriate since the entire string, wasdhjklxyz, looks like random characters and I thought it was cool looking.</p>
+<p>Now you might be wondering &ldquo;wtf is a uiop?&rdquo; After wasdhjklxyz, I had to come up with a name/handle. I wanted something to look random like wasdhjklxyz, was short, and easy to remember. I remembered from the show <a href="https://en.wikipedia.org/wiki/Mr._Robot">Mr. Robot</a>, the protagonist named his fish &ldquo;qwerty&rdquo; - which I thought was a cool pet name. If you look down at your keyboard, you&rsquo;ll see that the next four keys after &ldquo;qewrty&rdquo; is &ldquo;uiop.&rdquo; That&rsquo;s where the name comes from!</p>
+<p>Since I hear my friends say &ldquo;uiop&rdquo; in person sometimes, I figured I would add how I pronounce &ldquo;uiop&rdquo; and &ldquo;wasdhjklxyz.&rdquo; Obviously these aren&rsquo;t real English words - there&rsquo;s no correct pronounciation, this is just what I say/think when I read them.</p>
+<p><strong>uiop</strong>
+ <br>/juːɒp/
+ <br><em>yoo-op</em></p>
+<p><strong>wasdhjklxyz</strong>
+ <br>/wɒz.diː.eɪtʃ.dʒeɪ.keɪ.ɛl.ɛks.waɪ.ziː/
+ <br><em>woz-dee-aych-jay-kay-el-ex-why-zee</em></p></section><div class="buttons-border"></div><div class="buttons"><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.png" alt="wasdhjkl.xyz"></a><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop2.png" alt="wasdhjkl.xyz"></a></div><div class="buttons"><a href="https://neovim.io"><img src="/buttons/neovim.gif" alt="neovim.io"></a><a href="https://nixos.org"><img src="/buttons/nix.png" alt="nixos.org"></a><a href="https://archive.org"><img src="/buttons/IA.gif" alt="archive.org"></a><a href="https://ublockorigin.com"><img src="/buttons/ublock.png" alt="ublockorigin.com"></a><img src="/buttons/upallnight.gif" alt="up all night"><a href="https://firefox.com"><img src="/buttons/firefox4.gif" alt="firefox.com"></a><img src="/buttons/cookie-free.png" alt="cookie free"><a href="https://88x31.nl"><img src="/buttons/88x31.gif" alt="88x31.nl"></a><a href="https://en.wikipedia.org/wiki/Serial_Experiments_Lain"><img src="/buttons/lain.gif" alt="lain"></a><img src="/buttons/hasmile.gif" alt="have a smile"><a href="https://creativecommons.org/licenses/by-sa/4.0"><img src="/buttons/by-sa.png" alt="creativecommons.org/licenses/by-sa/4.0"></a></div><footer><a href="https://github.com/wasdhjklxyz">github</a><span class="sep"> · </span><a href="https://x.com/wasdhjklxyz">twitter</a><span class="sep"> · </span><a href="mailto:uiop@wasdhjkl.xyz">email</a><span class="sep"> · </span><a href="https://creativecommons.org/licenses/by-sa/4.0">© 2026 uiop. Licensed under CC BY-SA 4.0</a></footer></html>

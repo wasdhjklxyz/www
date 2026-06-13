@@ -1,0 +1,715 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="kernels / networking / offensive security / nix btw / nvim btw"><meta name="theme-color" content="#000000"><link rel="canonical" href="https://wasdhjkl.xyz/blog/atomics/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&#38;display=swap" rel="stylesheet"><style>.highlight .hll { background-color: #6e7681 }
+.highlight { background: transparent; color: #D4D2C8 }
+.highlight .c { color: #7E8AA1 } /* Comment */
+.highlight .err { color: #F88F7F } /* Error */
+.highlight .esc { color: #D4D2C8 } /* Escape */
+.highlight .g { color: #D4D2C8 } /* Generic */
+.highlight .k { color: #FFAD66 } /* Keyword */
+.highlight .l { color: #D5FF80 } /* Literal */
+.highlight .n { color: #D4D2C8 } /* Name */
+.highlight .o { color: #FFAD66 } /* Operator */
+.highlight .x { color: #D4D2C8 } /* Other */
+.highlight .p { color: #D4D2C8 } /* Punctuation */
+.highlight .ch { color: #F88F7F; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #7E8AA1 } /* Comment.Multiline */
+.highlight .cp { color: #FFAD66; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #7E8AA1 } /* Comment.PreprocFile */
+.highlight .c1 { color: #7E8AA1 } /* Comment.Single */
+.highlight .cs { color: #7E8AA1; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #F88F7F; background-color: #3D1E20 } /* Generic.Deleted */
+.highlight .ge { color: #D4D2C8; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #D4D2C8 } /* Generic.EmphStrong */
+.highlight .gr { color: #F88F7F } /* Generic.Error */
+.highlight .gh { color: #D4D2C8 } /* Generic.Heading */
+.highlight .gi { color: #6AD4AF; background-color: #19362C } /* Generic.Inserted */
+.highlight .go { color: #7E8AA1 } /* Generic.Output */
+.highlight .gp { color: #D4D2C8 } /* Generic.Prompt */
+.highlight .gs { color: #D4D2C8; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #D4D2C8 } /* Generic.Subheading */
+.highlight .gt { color: #F88F7F } /* Generic.Traceback */
+.highlight .kc { color: #FFAD66 } /* Keyword.Constant */
+.highlight .kd { color: #FFAD66 } /* Keyword.Declaration */
+.highlight .kn { color: #FFAD66 } /* Keyword.Namespace */
+.highlight .kp { color: #FFAD66 } /* Keyword.Pseudo */
+.highlight .kr { color: #FFAD66 } /* Keyword.Reserved */
+.highlight .kt { color: #73D0FF } /* Keyword.Type */
+.highlight .ld { color: #D5FF80 } /* Literal.Date */
+.highlight .m { color: #DFBFFF } /* Literal.Number */
+.highlight .s { color: #D5FF80 } /* Literal.String */
+.highlight .na { color: #FFD173 } /* Name.Attribute */
+.highlight .nb { color: #FFD173 } /* Name.Builtin */
+.highlight .nc { color: #73D0FF } /* Name.Class */
+.highlight .no { color: #FFD173 } /* Name.Constant */
+.highlight .nd { color: #7E8AA1; font-weight: bold; font-style: italic } /* Name.Decorator */
+.highlight .ni { color: #95E6CB } /* Name.Entity */
+.highlight .ne { color: #73D0FF } /* Name.Exception */
+.highlight .nf { color: #FFD173 } /* Name.Function */
+.highlight .nl { color: #D4D2C8 } /* Name.Label */
+.highlight .nn { color: #D4D2C8 } /* Name.Namespace */
+.highlight .nx { color: #D4D2C8 } /* Name.Other */
+.highlight .py { color: #FFD173 } /* Name.Property */
+.highlight .nt { color: #5CCFE6 } /* Name.Tag */
+.highlight .nv { color: #D4D2C8 } /* Name.Variable */
+.highlight .ow { color: #FFAD66 } /* Operator.Word */
+.highlight .pm { color: #D4D2C8 } /* Punctuation.Marker */
+.highlight .w { color: #D4D2C8 } /* Text.Whitespace */
+.highlight .mb { color: #DFBFFF } /* Literal.Number.Bin */
+.highlight .mf { color: #DFBFFF } /* Literal.Number.Float */
+.highlight .mh { color: #DFBFFF } /* Literal.Number.Hex */
+.highlight .mi { color: #DFBFFF } /* Literal.Number.Integer */
+.highlight .mo { color: #DFBFFF } /* Literal.Number.Oct */
+.highlight .sa { color: #F29E74 } /* Literal.String.Affix */
+.highlight .sb { color: #D5FF80 } /* Literal.String.Backtick */
+.highlight .sc { color: #D5FF80 } /* Literal.String.Char */
+.highlight .dl { color: #D5FF80 } /* Literal.String.Delimiter */
+.highlight .sd { color: #7E8AA1 } /* Literal.String.Doc */
+.highlight .s2 { color: #D5FF80 } /* Literal.String.Double */
+.highlight .se { color: #95E6CB } /* Literal.String.Escape */
+.highlight .sh { color: #D5FF80 } /* Literal.String.Heredoc */
+.highlight .si { color: #95E6CB } /* Literal.String.Interpol */
+.highlight .sx { color: #95E6CB } /* Literal.String.Other */
+.highlight .sr { color: #95E6CB } /* Literal.String.Regex */
+.highlight .s1 { color: #D5FF80 } /* Literal.String.Single */
+.highlight .ss { color: #DFBFFF } /* Literal.String.Symbol */
+.highlight .bp { color: #5CCFE6 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #FFD173 } /* Name.Function.Magic */
+.highlight .vc { color: #D4D2C8 } /* Name.Variable.Class */
+.highlight .vg { color: #D4D2C8 } /* Name.Variable.Global */
+.highlight .vi { color: #D4D2C8 } /* Name.Variable.Instance */
+.highlight .vm { color: #D4D2C8 } /* Name.Variable.Magic */
+.highlight .il { color: #DFBFFF } /* Literal.Number.Integer.Long */
+*{box-sizing:border-box;}body{margin:0 auto;padding:1.5rem 0 1.5rem;background:#000000;color:#bebebe;font-family:"Space Grotesk";font-size:1.25rem;line-height:1.6;max-width:64rem;}a{color:#7e8aa1;text-decoration:underline;}a:hover{color:#8e9ab1;text-decoration:underline;}img{image-rendering:auto;max-width:64rem;margin-bottom:1.5rem;}nav{display:flex;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1d1d1d;}nav .art{color:#bebebe;font-size:1px;margin:0;text-decoration:none;align-self:flex-end;}.links{align-self:flex-end;margin-left:0.5rem;}.links span{font-weight:600;margin-bottom:0.5rem;}.links a{margin-right:0.5rem;font-size:1rem;display:flex;color:#5e5e5e;text-align:left;text-decoration:none;letter-spacing:0.05rem;flex-direction:column;line-height:1;font-weight:400;}.links a:hover{color:#5e5e5e;text-decoration:underline;}.links div{display:flex;}.art{display:block;width:max-content;max-width:100%;margin:0 auto;white-space:pre;font-size:clamp(1px, 2vw, 4px);line-height:0.85;overflow:hidden;}big{text-align:center;display:block;margin:0.5rem 0 0;font-size:1.75rem;font-weight:600;letter-spacing:0.05rem;}small{margin:0.25rem 0 0.25rem;display:block;text-align:center;font-size:1rem;color:#5e5e5e;}h1{margin:0;font-size:1.75rem;font-weight:600;}h2{margin:0 0 0.25rem;font-size:1.75rem;position:relative;font-weight:600;}h3, h4{margin:0 0 0.25rem;font-size:1.5rem;position:relative;font-weight:600;}h2 a, h3 a, h4 a{color:inherit;text-decoration:none;}h2 a::after, h3 a::after, h4 a::after{content:"§ ";color:#cecece;position:absolute;left:-1.2rem;opacity:0;}h2 a:hover, h3 a:hover, h4 a:hover{text-decoration:underline;color:#cecece;}h2 a:hover::after, h3 a:hover::after, h4 a:hover::after{opacity:1;}p{margin:0 0 1.5rem;}ul{margin:0 1rem 1.5rem;padding-left:1rem;}ul ul{margin-bottom:0;}blockquote{color:#9e9e9e;margin-left:1rem;padding:0 1rem 0;border-left:0.25rem solid #1d1d1d;}code{color:#7e8aa1;border:1px solid #1d1d1d;}.figure{display:flex;justify-content:center;}.caption{display:none;}#blog p{margin:0;}#blog .blog-list-end{margin:0 0 1rem;}.highlight{margin:0 0 1.5rem;background:transparent;border:1px solid #1d1d1d;}.highlight pre{margin:0 auto 0;line-height:1.25;color:#7e8aa1;padding:0.5rem;}time{color:#5e5e5e;white-space:nowrap;}.new{color:#f88f7f;font-size:1rem;}.buttons-border{border-bottom:1px solid #1d1d1d;}.buttons{display:flex;flex-wrap:wrap;margin:0 auto;justify-content:center;gap:0.5rem;margin-top:1rem;max-width:60%;}.buttons + .buttons{border-top:none;margin-top:0.5rem;padding-top:0.5rem;}.buttons img{image-rendering:pixelated;display:block;margin-bottom:0;width:88px;height:31px;border:0;}.buttons a{line-height:0;}footer{margin-top:1rem;padding-top:0.5rem;border-top:1px solid #1d1d1d;text-align:center;font-size:0.85rem;color:#5e5e5e;}footer a{color:#5e5e5e;text-decoration:none;}footer a:hover{color:#5e5e5e;}footer .sep{margin:0 0.1rem;}</style><title>atomics</title></head><nav><a href="/" style="color: transparent"><pre class="art" aria-hidden="true">                                          █▒░░░▒██     ██▓██                                                                                
+                                         ▓░░░░░░░░░█  ███▓▒█▒                                                                               
+                                        ▓░░░░░░░░░░░░███▓▒▒▒░░                                                                              
+                                         ░░▒░░░░░░░▒░░░▒▒▒▒▓░░░▒░░░░░░░░▒▒░░░░░                                                             
+                                         ░▒▒▒░░▒░░░░░░░░░▒░░░░░░░░░░░░▒▒▒░▒░░░░░▒▒▒                                                         
+                                         ░▒▒░░░▒░░░░░▒░░░░░░▒▒▒▒▒▒▒░▒▒▒░▒▒░░░░░▒▒░░▒▒▒                                                      
+                                         ▒▒░▒▒░░░░░░░▒▒░░░░░░░░░░░░░░░▒▒▒░░░░░ ░░░░░░▒▒▒▓                                                   
+                                         █▒▒▒░░░░▒░▒▒░░░░░░░░░░░░░░░░░░░▒░░░░░░░░░▒░ ░░▒▒▓▒                                                 
+                                          ▓▒░░░░▒░░░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░▒░▒░░▒▒▒                                                
+                                         ▓▒▒▒░░░░░░░▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▓                                                
+                                       █▓▓▒░▓▒░░▒░░░░ ░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓                                                
+                                       ▓▓▓▒░░▒▒░░░░░░░░░░░░░░ ░░░░░░░  ░░░░░░░░░░░░░░░▒░▒▒▓▓▓                                               
+                                      ▒▓▓▒░░░  ░░░░░░░░░░░░░ ░░░░ ░░░  ░  ░ ░░░░░  ░░░░  ░▓▒▓▒                                              
+                                     ▓▓▓▒▒░░░         ░░░        ░░░░░  ░         ░░░░░▒  ▒▓▓▓▓▓                                            
+                                    ▓▓▒▓▓░░░░ ░      ░             ░░  ░░       ░░░░░░░░░░▒░▓▓▓█▓░                                          
+                                    ▓▓▒▓▒░░░░░ ░    ░                         ░░░░ ░░░░░░░░▒▒▓▓▓▓▓▒                                         
+                                   ▓▓▓▒▒▒▒░░   ░░░                  ░        ░░░░░░░░░░░░▒▒▒▓█▓▓▓▓▓▒                                        
+                                   ▓▓▓▓▒░░░░▒▒░   ░░░                      ░░░░▒░░▒░░░░ ░░░▒▓██▓▒░▒▓                                        
+                                  ▓▓▓▓▒▒▒▒░░░░ ░░░▒▒▒▒░░░░                 ░░ ░░░░░░░░░▒▒▒▒▒▓▓▓▓██▓                                         
+                                  ▓▓▓█▓▒▒▒░░░░░▒▒▒▒▓▒▒▒▒▒▒░░░░            ░   ░░░░░░▒░░▒▒▒▒▓▓▓██▓█▓                                         
+                                 ░▓▓▓▓▒▒░░░░░░░░░░░▒▒▓▓▓▓▓▓▒▒▒▒░▒░░░░░░ ░░░░░░░▒▒▒▒▓▓▓▒▓▒▓▒▒▓▓████                                          
+                                 ▒▓▓▓▓▒▒▒▒▒░▒▒░░░▒▒▒▓▓▓▒▒▒▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓█▓▓▒▒▓▓▓▓▓▓▓█▒                                          
+                                 ▓▓▓▓▓▒░░░▒░░░▒▒▒▒▒▒▓▓▓▓▓▓▓▓▒▒▓▒▒▓▓▓▓▓▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░░░░░▒▒▒▒░░                                     
+                                 ▓▓▓▒▒▒▒▒▒▒▒░░░░▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒░░░░ ░░ ░ ░░░░░ ░▒▒▒░▓▒▒                                
+                                 ▓▓▓▓▒▒▓▒▒▒▒░▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒░░░ ░ ░░    ░░░░░░░  ░░░▒░▒▒▓▓                              
+                                ░▓▓▓▒▒░▒░░░▒░░▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒░░▒▒░░░░  ░ ░░░   ░░  ░░░░ ░░▒░░░░▒▒░░▒▒                            
+                                ░▓▓▒▓▓▒░▓▓▒▒▓▓▓▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▒░░░░░ ░  ░░░░    ░  ░   ░░  ░░░░▒▒░  ▒░░░░▒▒                          
+                                ░▓▓▓▓▓▓█▓▓▒▒▒▓▓▓▓▓▓▒▓▓▓▓▓▓▓▒▒▒▓▒▒▒░▒░░░ ░░    ░░    ░░    ░░░░░  ░░░░░▒ ░   ░▒░▓███▓░░                      
+                                ▒▓▓▓▓▒▒▓▒▒▓▒▓▓▒▓▓▒▒▓▓▒▓▒▓▓▓▒░▒░░░░░░        ░░      ░░ ░░  ░ ░   ░▒░░░░░  ░░░░░░▒▓██████▓▓                  
+                               ░▓▓▒▓▒▒▒▒▓▒▒░▓▒▓▓▒▒▒▒▒▒▓▓▒▒▒▒░░░░                     ░░░░░░     ░░░░░░░░░   ░▒░░░░▒▒▓████████▒░             
+                               ▒▓█▓▒░░░░▒░▒▒▒░░░░░░▒▒▒░░░░░ ░               ░   ░░ ░░ ░░░░░   ░░░░░░░░░░   ░░░░░░░▒▒▓▓▓██▓▓▓▓▓▓             
+                               ▒▓▓▓▓▓▒░░░░░░░ ░░░▒░░░░░            ░      ░ ░ ░░░     ░ ░░  ░░ ░  ░░░░░░   ░ ░░░░░▒▓▓██▓▓▓▓▓▓▓▓▒            
+                               ▒▓▓▓▒░▒░░   ░ ░░░░░░░░ ░  ░  ░      ░      ░          ░░ ░░  ░░ ░░░░░░░░░  ░    ▒▒░▓▓▓▓▓▓▓▓▓▓▓▓▓▓            
+                              ░░▒▒▒▒░░ ░        ░            ░     ░   ░░  ░        ░  ░░░  ░░  ░░░░░░░░░░     ▒░▒▓▒▓▓▓▓▓▓▓▓▓▓▒░░░░░░░░░░░░░
+                              ▒░▒▒▒░░░   ░  ░  ░   ░    ░  ░░░                   ░░     ░  ░ ░   ░░░░░░░░ ░  ░░░▒▓▒░░░▒░ ░░░░░░        ░░░░░
+                           ▒▒▒▒▒░░░ ░      ░░░░░  ░░  ░░░  ░      ░               ░       ░ ░      ░░░          ░▒░░░░▒▒▒▒▒▒▒▒▒░░░░ ░  ░░  ░
+                   ▒▒▒▒▒▓▒▒▒▒▒░░   ░   ░░░░▓░░░ ░░░  ░░░  ░      ░░░░░░░░                          ░ ░         ░░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░  ░░ ░░░
+                 ▒▒▒░▒▒▒▒░░░░░░░░░░░░░░░ ░ ░  ░░       ░      ▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   ░░░░░░       ░░░░▒▒▒▒▒▓▓▒▒▒▒▒▒░░░░░░░  ░░░░
+              ░▒▒▓▒▒▒░░░▒░░░░░░░░ ░ ░ ░░░ ░ ░░░░░░ ░░░░   ░ ░▒▒░░░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▓▓▓▒▒▒▓▒▒░░░░░░░░░░░░░░
+            ░▒▒▒▒░░░░▒░░░░░░░▒░░░ ░░       ░░  ░ ░░░ ▒  ░   ░▓▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▓▓▓▓▒▒▒░░░░░░░░░░░░░░░░
+          ░░░░░▒▒░▒░░░░░░░░ ░░░            ░░ ░░░░░   ░      ░█▓▒▒▒░░▒░░░▒▒░░▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▓▓▒▒▓▓▓▒▒▒▒░░░░░░░░░░░░░░░░
+         ░▓▓▒░░░░░░░ ░  ░ ░░░░░            ░ ░░░░░           ░░░██▒▒▒▒▒▒▒▒░░░░░░░░░░░░▒▒░░░▒░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░
+       ░░▒░▒░▒░░▒░░░   ░░░░░ ░        ░  ░ ░ ░░ ░░ ░    ░ ░   ░░░░▒██▒▒▒▒▒▒▒▒▒░▒▒░░░░▒░░░░░░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░
+      ░░░░░░░░░░░░░░ ░░░░░░  ░ ░░   ░░░   ░░░░       ░   ░      ░░░░░▓██▓▒▒▒▒▒▒▒▒░▒▒▒▒░░░░▒░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒░▒░░░░░░░░░░░░░░░░░░░░░
+     ▒▒▒░░░░░░░  ░░░░░ ░ ░░░░░░░░░    ░ ░░    ░   ░              ░░░░░░▒████▒▒▒▒▒▒▒▒▒▒▒░░▒░▒▒░░░░▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░░ 
+     ▒▒▒░░▒░░ ░░░░░░ ░░▒ ░  ░ ░  ░░░    ░ ░           ░              ░░░░░░░▒████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░▒▒▒▒░░░▒▒░░░▒▒▒▒░░░░░░░░░░░░░░░░░░░
+    ▒░░░░░░░░░░░░░▒░ ░░░  ░ ░░░  ░     ░░ ░ ░      ░       ░            ░░░░░░░░▒█████▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░▒▒░░░░▒░░░▒░░░░░░░░░░░░░
+   ▒░░░░░░░  ░▒ ░░░░░░░  ░░░   ░  ░      ░        ░     ░                   ░░░░░░░░░▒▓████▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░░░░░░░░░░░░░▒░░░░░░░░░░░░░
+  ▒▒▒▒▒▒▒░░░░░ ░░░    ░░░░    ░░ ░        ░  ░    ░ ░     ░                    ░░░░░░░░░░░░▒▓▓██▓▓▒▒▒▒▒▒▒▒▒▒▒▒░░▒▒░░░░░░░░░░░░▒░░░░░░░░░░░░░
+ ░▒░░░░░░░░ ░ ░░   ▒   ░░ ░░░░░      ░░  ░░  ░░░░ ░░░░                              ░░░░░░░░░░░░▒▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░▒░░░░░░░░░░░░░░▒░▒▒
+ ░░░░░░░░░░░░ ░░    ░░░   ░░░░░░  ░░   ░░░     ░                                         ░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░
+ ▒░░░░░░ ░░░░░ ░      ░░ ░░ ░  ░ ░ ░░░░░░░   ░░░                                              ░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░▒░░
+▒▒░░░    ░ ░   ░░       ░░░ ░░░ ░   ░░ ░░▒      ░                                       ░░░           ░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒░░▒░▒▒
+░░░░░░░░  ░░░░   ░░   ░ ░░░  ░░░  ░░ ░░ ░      ░                                                             ░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒
+░▒░░░░░   ░   ░    ░░  ░  ░ ░  ░ ░░  ░  ░ ░   ░                                       ░          ░                  ░░░░░░  ░░░░░░░░░▒▒▒▒▒▒▒
+░░░░░ ░   ░░   ░     ░░░░       ░░░        ░                                             ░                                ░░ ░░ ░░░░░░░░░░░░
+░░░   ░ ░ ░░░      ░ ░  ░░         ░░░              ░             ░                       ░░░░                                  ░ ░░░░░░░░░░
+░░   ░ ░░░░░░░     ░░ ░ ░  ░░                ░░ ░░                                         ░░▒▒▓▒░                                  ░░ ░░░░░
+▒     ░ ▒▒ ░░░   ░  ░░ ░     ░  ░ ░     ░  ░                     ░                         ░░░▒▒▒▓▓▓▒░                                   ░░░
+░   ░░░░░░   ░   ░            ░ ░░         ░   ░ ░░                                     ░░░░░░▒▒▓▓▓▓▓▓▒░░                                   
+▒░    ░░░░░      ░░        ░   ░  ░░                                                        ░░░▒▒▓▓▓▓▒▒▒░░                                  
+▒░   ░░ ░░░░   ░   ░░               ░ ░                                                      ░░░▒▒▒▓▒▒▒░                                    
+ ░░    ░░░░            ░            ░   ░                                                 ░░░░░░▒▒▒▓▒▒░                                     
+  ░  ░░░       ░          ░           ░                                                    ░░░░▒▒▒▒▒░                                       
+   ░ ░ ░                  ░            ░                                                   ░░░░░▒▒░                                         
+     ▒ ░      ░       ░                 ░                                                 ░░░░░░                                            
+            ░         ░ ░                                                                                                                   
+                       ░       ░                                                                                                            
+</pre></a><div class="links"><span>wasdhjkl.xyz</span><div><a href="/#about">about</a><a href="/#blog">blog</a><a href="/#contact">contact</a></div></div></nav><section id="atomics">
+<h1 id="atomicity-memory-ordering-and-the-x86-trap">Atomicity, Memory Ordering, and the x86 Trap</h1>
+<p>
+ <time datetime="2026-06-12">Jun 12, 2026</time></p>
+<h2 id="contents"><a href="#contents">Contents</a></h2>
+<ul>
+ <li><a href="#intro">Intro</a></li>
+ <li><a href="#rmw-and-mesi">RMW and MESI</a>
+  <ul>
+   <li><a href="#read-modify-write-in-one-operation">Read-modify-write in one operation??</a></li>
+   <li><a href="#mesi">MESI</a></li>
+   <li><a href="#did-mesi-fail-us">Did MESI fail us?</a></li></ul></li>
+ <li><a href="#the-lock-prefix">The LOCK Prefix</a>
+  <ul>
+   <li><a href="#what-lock-does">What LOCK does</a></li>
+   <li><a href="#one-word-fix">One-word fix</a></li>
+   <li><a href="#defining-the-atomic-op">Defining the atomic op</a></li>
+   <li><a href="#lock-free">&ldquo;Lock-free&rdquo;</a></li></ul></li>
+ <li><a href="#std-atomic">std::atomic</a>
+  <ul>
+   <li><a href="#a-quick-init-gotcha">A quick init gotcha</a></li></ul></li>
+ <li><a href="#benchmarks">Benchmarks</a></li>
+ <li><a href="#memory-ordering">Memory Ordering</a>
+  <ul>
+   <li><a href="#memory-order-the-portable-knob">memory_order, the portable knob</a></li>
+   <li><a href="#the-sb-litmus-test">The SB litmus test</a></li>
+   <li><a href="#fixing-it-with-a-fence">Fixing it with a fence</a></li>
+   <li><a href="#the-std-atomic-equivalent-of-mfence">The std::atomic equivalent of mfence</a></li>
+   <li><a href="#release-and-acquire">Release and acquire</a></li>
+   <li><a href="#breaking-it-on-arm">Breaking it on ARM</a></li></ul></li>
+ <li><a href="#the-ordering-ladder">The Ordering Ladder</a>
+  <ul>
+   <li><a href="#relaxed">Relaxed</a></li>
+   <li><a href="#acquire-release">Acquire/Release</a></li>
+   <li><a href="#sequential">Sequential</a></li></ul></li>
+ <li><a href="#conclusion">Conclusion</a></li>
+ <li><a href="#references">References</a></li></ul>
+<h2 id="intro"><a href="#intro">Intro</a></h2>
+<p>A low-level C++ role at a finance company got back to me with a take-home OA. I looked the company up, realized it was HFT, and went down a rabbit hole instead of taking the OA&hellip;</p>
+<p>I passed out that night watching Fedor Pikus&rsquo;s <em>C++ atomics, from basic to advanced</em> [<a href="#references">1</a>], got partway into the memory-ordering section, and woke up wanting to write this exact post.</p>
+<p>Going in, I&rsquo;d seen atomics in multithreaded code and assumed they were &ldquo;indivisible reads and writes&rdquo; because of some magic instruction. I never knew why. My prior usage was a thread-task counter and a &ldquo;should the loop keep running&rdquo; flag. Both global, both barely thought through and probably shit code. Everything else multithreading-wise I&rsquo;ve just been using mutexes.</p>
+<p>This blog is not going to be a regurgitation of docs. I&rsquo;m building atomics from the hardware up, x86&ndash;64 specifically, until we hit <code>std::atomic</code> and <code>std::memory_order</code> and can read exactly what they compile to. The thesis up front:</p>
+<blockquote>
+ <p>Atomic operations give you two separate things: atomicity and ordering. x86 does most of the ordering for free, which is exactly why it&rsquo;s a trap.</p></blockquote>
+<p>Everything below runs on my machine, an Intel i7&ndash;9700K (8 cores, no SMT), gcc 15.2.0.</p>
+<h2 id="rmw-and-mesi"><a href="#rmw-and-mesi">RMW and MESI</a></h2>
+<h3 id="read-modify-write-in-one-operation"><a href="#read-modify-write-in-one-operation">Read-modify-write in one operation??</a></h3>
+<p>Cppreference [<a href="#references">2</a>] promises that if one thread writes an atomic object while another reads it, the behavior is well-defined. No UB, no torn values. There are three kinds of atomic operations:</p>
+<ol>
+ <li><strong>store</strong>, a write</li>
+ <li><strong>load</strong>, a read</li>
+ <li><strong>read-modify-write (RMW)</strong>, read <em>and</em> write, as one operation</li></ol>
+<p>That third one stopped me. How does the CPU read a value, modify it, and write it back as <em>one</em> indivisible step? Wikipedia [<a href="#references">3</a>] describes RMW (test-and-set, fetch-and-add, compare-and-swap) as one shotting a read and write in a single atomic operation. Cool. What does that mean physically?</p>
+<p>The most useful thing I found was a Stack Overflow answer [<a href="#references">4</a>] quoting Linus Torvalds:</p>
+<blockquote>
+ <p>Atomic instructions bypass the store buffer or at least they act as if they do - they likely actually use the store buffer, but they flush it and the instruction pipeline before the load and wait for it to drain after, and have a lock on the cacheline that they take as part of the load, and release as part of the store - all to make sure that the cacheline doesn&rsquo;t go away in between and that nobody else can see the store buffer contents while this is going on.</p></blockquote>
+<p>That &ldquo;lock on the cache line&rdquo; is the thread to pull. I thought atomics were <em>lock-free</em>, so what lock? This reads like the CPU prevents other cores from touching the same cache line for the length of the operation. Let&rsquo;s look at how caches stay consistent.</p>
+<h3 id="mesi"><a href="#mesi">MESI</a></h3>
+<p>The key idea is <strong>coherence</strong>, specifically cache coherence on a multiprocessor. Two cores must never see different values for the same shared line. The classic protocol is <strong>MESI</strong>, where every cache line on every core sits in one of four states:</p>
+<p><strong>M (modified)</strong>
+ <br>This core has the only copy and it&rsquo;s dirty (differs from RAM). Must be written back before anyone else reads it.
+ <br><strong>E (exclusive)</strong>
+ <br>Only this core has it, and it&rsquo;s clean (matches RAM).
+ <br><strong>S (shared)</strong>
+ <br>Multiple cores have it, all clean.
+ <br><strong>I (invalid)</strong>
+ <br>Stale. Another core modified it, this copy can&rsquo;t be used.</p>
+<p>It&rsquo;s a state machine driven by two things: the core&rsquo;s own r/w requests, and &ldquo;snooped&rdquo; requests coming across the interconnect from other cores. Roughly, reading a line you don&rsquo;t have moves you <code>I -&gt; E/S</code>, wanting to write moves you <code>-&gt; M</code> and invalidates everyone else, getting snooped by another core&rsquo;s write knocks you <code>-&gt; I</code> [<a href="#references">5</a>]. The real machine has more edges.</p>
+<p>The one-liner that matters: <strong>before a core can write a line, every other core has to invalidate its copy.</strong></p>
+<div class="figure"><img src="mesi.png" alt="MESI state transitions">
+ <p class="caption">MESI state transitions</p></div>
+<blockquote>
+ <p><strong>Side note: your x86 machine probably isn&rsquo;t running plain MESI.</strong> Intel CPUs (including this 9700K) use <strong>MESIF</strong>, which adds a <strong>Forward (F)</strong> state. F designates one cache as the responder for read requests so you don&rsquo;t get redundant responses from every sharer. AMD uses <strong>MOESI</strong>, which adds an <strong>Owned (O)</strong> state. O is dirty-but-shareable, the owner serves reads from cache to other cores without writing back to RAM, so RAM is allowed to be stale. Same shape, different optimizations. People say &ldquo;MESI&rdquo; the way they say &ldquo;kleenex.&rdquo;</p></blockquote>
+<h3 id="did-mesi-fail-us"><a href="#did-mesi-fail-us">Did MESI fail us?</a></h3>
+<p>If coherence makes a single core&rsquo;s RMW look atomic, surely two threads both doing <code>x++</code> are fine, right? MESI&rsquo;s got us? Let&rsquo;s test. Two threads, each incrementing a shared <code>int</code> a million times, print at the end. Should be 2,000,000.</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">worker</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x</span><span class="o">++</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t1</span><span class="p">(</span><span class="n">worker</span><span class="p">),</span><span class="w"> </span><span class="n">t2</span><span class="p">(</span><span class="n">worker</span><span class="p">);</span>
+<span class="w">  </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">"{}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -O0 --std=c++23 mesi_naive.cpp
+$ ./a.out
+1047020
+$ ./a.out
+1006689
+$ ./a.out
+1046267
+</pre></div>
+<p>We all knew this would fail.. but why? Did MESI fail us?</p>
+<p><strong>MESI guarantees coherence, not atomicity of a read-modify-write.</strong> Coherence means you never read a <em>stale</em> line, it says nothing about preventing two cores from interleaving an RMW on the same value. <code>x++</code> is really <em>load, add, store</em>, three steps even when it&rsquo;s a single <code>inc [mem]</code> instruction (the microarchitecture does a read phase then a write phase, it&rsquo;s not indivisible). The race MESI can&rsquo;t stop:</p>
+<div class="highlight"><pre><span></span>core 1: load x=0 -&gt; reg=0
+core 2: load x=0 -&gt; reg=0     # both S
+core 1: reg+1=1, store x=1    # goes M, sends invalidate
+core 2: ACKs invalidate on x  # goes I, but reg still = 0
+core 2: store reg+1=1 -&gt; x=1  # writes 1 from stale reg!
+</pre></div>
+<p>The invalidation hits the cache line, not the register. Core 2 already pulled <code>0</code> into a register and the ALU already computed <code>1</code> on that old value. When the invalidate lands, core 2&rsquo;s <em>line</em> goes Invalid. When core 2 then goes to store, it does pull the latest line (now <code>1</code>) back into M before writing, but <strong>nothing reaches back and fixes the stale <code>0</code> sitting in its register</strong>. It overwrites the fresh <code>1</code> with <code>1</code> from its own ALU.</p>
+<div class="figure"><img src="race-conditions-meme.jpg" alt="Race Condition">
+ <p class="caption">Race Condition</p></div>
+<p>The write wasn&rsquo;t lost because coherence broke. Coherence did its job. It was lost because MESI <strong>has no jurisdiction over a value that&rsquo;s already been pulled into a register.</strong> What we need is to stop core 2 from even <em>loading</em> until core 1&rsquo;s whole RMW is done.</p>
+<h2 id="the-lock-prefix"><a href="#the-lock-prefix">The LOCK Prefix</a></h2>
+<p>Before we can read the manual&rsquo;s line on <code>LOCK</code>, two things from that Linus quote need actual definitions: the <strong>store buffer</strong> and the <strong>pipeline</strong>.</p>
+<p>The store buffer is the thing to understand. Writes land there before they hit coherent cache, same idea as buffering a string before flushing it to a socket. Writing to memory is slow even when &ldquo;memory&rdquo; is L1, so the core buffers stores and drains them later on one of a handful of trigger events (we&rsquo;ll get the list in a sec).</p>
+<blockquote>
+ <p>The CPU doesn&rsquo;t run one instruction at a time, it overlaps stages (fetch, decode, execute, writeback) the way a laundromat overlaps washing one load while drying the previous one. &ldquo;Stalling the pipeline&rdquo; means inserting a bubble where nothing advances until some condition holds. That&rsquo;s what fences and locked ops force on stores. An instruction <em>retires</em> when it exits the pipe for good and its result becomes permanent.</p></blockquote>
+<h3 id="what-lock-does"><a href="#what-lock-does">What LOCK does</a></h3>
+<p>The AMD64 manual (vol 2 rev 3.07) tells us that before completing a <code>LOCK</code>-prefixed instruction (1) all previous reads and writes must be to memory and (2) the locked instruction must complete before later writes [<a href="#references">8</a>].</p>
+<blockquote>
+ <p>Locked writes are never buffered although locked reads and writes are cacheable.</p></blockquote>
+<blockquote>
+ <p>The manual also lists events that force the processor to drain its write buffer: <code>sfence</code>, serializing instructions, I/O instructions, locked instructions, interrupts and exceptions, and uncacheable reads.</p></blockquote>
+<p>Quick definition since the manual is loose with the word. &ldquo;Memory&rdquo; here doesn&rsquo;t mean DRAM, it means <strong>globally visible</strong>, committed far enough into the coherent cache hierarchy that every core can see it. The slow part isn&rsquo;t reaching RAM, it&rsquo;s stalling the pipeline to drain the store buffer.</p>
+<p>Here&rsquo;s the part I had to get straight. We need one core to own that cache line through the <strong>entire</strong> RMW so no other core can sneak a valid load into the middle. That&rsquo;s exactly what the <code>LOCK</code> prefix does [<a href="#references">6</a>]. It piggybacks on MESI: the core takes the line into M, and refuses to give it up until the locked instruction retires. Another core can&rsquo;t RFO it (request-for-ownership, the invalidate-everyone-so-I-can-write message from the MESI section) mid-flight, so the read-then-write window is sealed.</p>
+<blockquote>
+ <p>While I&rsquo;m here, <code>XADD</code> looked promising. It exchanges dest and src, then writes their sum into dest [<a href="#references">7</a>]. One instruction, so it&rsquo;s atomic, right? Nope. One <em>instruction</em> isn&rsquo;t one <em>atomic operation</em>. <code>xadd</code> still has a read phase and a write phase another core can interleave between. You need the <code>LOCK</code> prefix on it. We&rsquo;ll see this.</p></blockquote>
+<h3 id="one-word-fix"><a href="#one-word-fix">One-word fix</a></h3>
+<p>Let&rsquo;s stretch <code>x++</code> into inline asm as a baseline:</p>
+<div class="highlight"><pre><span></span><span class="w"> </span>void worker(void) {
+<span class="w"> </span>  for (int i = 0; i &lt; 1000000; i++)
+<span class="gd">-    x++;</span>
+<span class="gi">+    asm("inc %0" : "+m"(x));</span>
+<span class="w"> </span>}
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -O1 --std=c++23 no_lock.cpp
+$ ./a.out
+1027212
+</pre></div>
+<p>This is, of course, still wrong. Now let&rsquo;s add the <code>LOCK</code> prefix:</p>
+<div class="highlight"><pre><span></span><span class="w"> </span>void worker(void) {
+<span class="w"> </span>  for (int i = 0; i &lt; 1000000; i++)
+<span class="gd">-    asm("inc %0" : "+m"(x));</span>
+<span class="gi">+    asm("lock inc %0" : "+m"(x));</span>
+<span class="w"> </span>}
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -O1 --std=c++23 lock.cpp
+$ ./a.out
+2000000
+</pre></div>
+<p>Magic ヽ(°〇°)ﾉ! The disassembly of <code>worker()</code> is literally a &ldquo;one word difference&rdquo; (<code>-g -O1</code> for a clean 1:1 loop):</p>
+<div class="figure"><img src="lock-disassembly.png" alt="LOCK prefix disassembly">
+ <p class="caption">LOCK prefix disassembly</p></div>
+<h3 id="defining-the-atomic-op"><a href="#defining-the-atomic-op">Defining the atomic op</a></h3>
+<p>So now we can define an atomic operation: one that reads, optionally modifies, and writes as a single indivisible step, guaranteeing:</p>
+<ul>
+ <li>Nobody reads a half-written value (no tearing)</li>
+ <li>No lost updates (no two cores RMW the same value at once)</li>
+ <li>Once it completes, every core sees the new value</li></ul>
+<p>The <code>LOCK</code> prefix is what buys this. It asserts the processor&rsquo;s <code>LOCK#</code> signal for the duration of the instruction, turning it atomic. It can only prefix a specific set of memory-destination instructions: <code>ADD</code>, <code>INC</code>, <code>DEC</code>, <code>XADD</code>, <code>XCHG</code>, <code>CMPXCHG</code>, and friends [<a href="#references">11</a>].</p>
+<p>How the lock itself works has history. On the 486, <code>LOCK</code> asserted a literal <strong>bus lock</strong>, it locked the whole memory bus for the operation, which was a massive performance hit because <em>everything</em> touching memory had to wait. Starting with the Pentium Pro / P6, it became a <strong>cache lock</strong>: the core takes exclusive ownership of the affected cache line via the coherence protocol (line goes M/E) for the single instruction, no global bus lock needed. The bus lock only comes back if the locked memory is uncacheable, or if the access straddles a cache-line boundary (a &ldquo;split lock&rdquo;). Both are rare [<a href="#references">9</a>]. The <code>LOCK#</code> signal itself isn&rsquo;t a register or a bit, it&rsquo;s a physical signal on the interconnect [<a href="#references">10</a>].</p>
+<h3 id="lock-free"><a href="#lock-free">&ldquo;Lock-free&rdquo;</a></h3>
+<p>One correction to a thing I believed going in. I assumed this meant atomics &ldquo;aren&rsquo;t really lock-free, the lock is just in hardware.&rdquo; That&rsquo;s wrong, and it&rsquo;s a common confusion of two different meanings of &ldquo;lock.&rdquo; <strong>Lock-free is a progress guarantee</strong>, it means suspending any single thread can never stop the others from making progress.</p>
+<div class="figure"><img src="lock-meme.jpg" alt="Lock meme">
+ <p class="caption">Lock meme</p></div>
+<p>The <code>LOCK</code> prefix holds a cache line for <em>one bounded instruction</em> that can&rsquo;t be interrupted mid-flight, so no thread can ever block another indefinitely with it. That makes <code>lock xadd</code> genuinely lock-free.</p>
+<p>A <strong>mutex</strong> is <em>not</em> lock-free: a thread that grabs it and gets descheduled stalls everyone waiting. So &ldquo;lock-free&rdquo; doesn&rsquo;t mean &ldquo;no serialization ever happens,&rdquo; it means the serialization is bounded and non-blocking. The <code>LOCK</code> prefix being spelled <em>lock</em> is a false friend.</p>
+<h2 id="std-atomic"><a href="#std-atomic">std::atomic</a></h2>
+<p>Now that we&rsquo;ve hand-rolled a (probably shit) atomic counter, let&rsquo;s see how the  C++ stdlib does it.</p>
+<p><code>std::atomic&lt;T&gt;</code> is an atomic type. Concurrent reads and writes are well-defined, and you can additionally control how surrounding non-atomic memory is ordered via <code>std::memory_order</code> (which connects straight back to those fence instructions.. more on that later). Cppreference also notes the standard requires every RMW to read the latest value in the modification order, so <strong>RMWs always see the freshest value</strong> [<a href="#references">2</a>].</p>
+<blockquote>
+ <p><code>std::atomic&lt;T&gt;</code> works on any <em>trivially copyable</em> <code>T</code>, basically a flat block of bytes you could <code>memcpy</code>. Mostly scalars, but trivially-copyable classes count too. I won&rsquo;t go down the move-semantics hole here [<a href="#references">12</a>].</p></blockquote>
+<h3 id="a-quick-init-gotcha"><a href="#a-quick-init-gotcha">A quick init gotcha</a></h3>
+<p>Fedor Pikus mentioned not to write <code>std::atomic_int x = 0;</code>. He didn&rsquo;t say why, so, tangent. If you set <code>-std=c++11</code>:</p>
+<div class="highlight"><pre><span></span>error: use of deleted function
+‘std::atomic&lt;int&gt;::atomic(const std::atomic&lt;int&gt;&amp;)’
+</pre></div>
+<p><code>std::atomic</code> has a deleted copy constructor (atomics aren&rsquo;t copyable). <code>x = 0</code> is <em>copy</em>-initialization: it builds a temporary <code>atomic_int</code> from <code>0</code> via the converting constructor, then wants to copy-construct <code>x</code> from it, and that copy ctor is deleted. C++17&rsquo;s guaranteed copy elision makes <code>= 0</code> compile now, but the idiom is <strong>direct-initialization</strong>, which calls the converting ctor straight, no copy:</p>
+<div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="kt">atomic_int</span><span class="w"> </span><span class="n">x</span><span class="p">{};</span><span class="w"> </span><span class="c1">// or x{0}</span>
+</pre></div>
+<p><code>++</code> is overloaded but I&rsquo;ll be explicit with <code>fetch_add</code>:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="kt">atomic_int</span><span class="w"> </span><span class="n">x</span><span class="p">{};</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">worker</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="n">x</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t1</span><span class="p">(</span><span class="n">worker</span><span class="p">),</span><span class="w"> </span><span class="n">t2</span><span class="p">(</span><span class="n">worker</span><span class="p">);</span>
+<span class="w">  </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">"{}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">load</span><span class="p">());</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -O1 -std=c++23 std_atomic.cpp
+$ ./a.out
+2000000
+</pre></div>
+<p>Now the disassembly:</p>
+<div class="figure"><img src="std-atomic-disassembly.png" alt="std::atomic_int disassembly">
+ <p class="caption">std::atomic_int disassembly</p></div>
+<p>Same <code>lock</code> prefix. The standard library picked <code>add</code> over <code>inc</code>, but it&rsquo;s the identical hardware primitive we hand-rolled. If I switch my asm to <code>lock add</code> too, the loops are line-for-line identical.</p>
+<blockquote>
+ <p>That <code>nop DWORD PTR [rax+0x0]</code> before the loop isn&rsquo;t doing anything, it&rsquo;s a multi-byte NOP the compiler inserts as <strong>alignment padding</strong> to put the loop head on a 16-byte boundary so it sits cleanly in an instruction-cache line. Pure padding, never meaningfully executed.</p></blockquote>
+<p>So the most basic multithreaded counter is <em>just the lock prefix</em>, and <code>std::atomic</code> is the portable wrapper that emits it for you. Tip of the iceberg, but a real foundation.</p>
+<h2 id="benchmarks"><a href="#benchmarks">Benchmarks</a></h2>
+<p>If <code>lock</code> is the whole story for the counter, let&rsquo;s measure it. Four cases, the first two are the <strong>wrong</strong> answers (no locking), included on purpose:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;benchmark/benchmark.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="c1">// NOTE: Omitted backslashes for better syntax highlighting</span>
+<span class="cp">#define M_BENCHMARK(name, t, e)</span>
+<span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">_</span><span class="err">##</span><span class="n">name</span><span class="p">(</span><span class="n">benchmark</span><span class="o">::</span><span class="n">State</span><span class="w"> </span><span class="o">&amp;</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">t</span><span class="w"> </span><span class="n">x</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="w">      </span><span class="k">auto</span><span class="w"> </span><span class="n">w</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="o">&amp;</span><span class="p">]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">e</span><span class="p">;</span><span class="w"> </span><span class="p">};</span>
+<span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="nf">t1</span><span class="p">(</span><span class="n">w</span><span class="p">),</span><span class="w"> </span><span class="n">t2</span><span class="p">(</span><span class="n">w</span><span class="p">);</span>
+<span class="w">      </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">      </span><span class="n">t2</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">      </span><span class="n">benchmark</span><span class="o">::</span><span class="n">DoNotOptimize</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">BENCHMARK</span><span class="p">(</span><span class="n">_</span><span class="err">##</span><span class="n">name</span><span class="p">);</span>
+
+<span class="n">M_BENCHMARK</span><span class="p">(</span><span class="n">naive</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">);</span>
+<span class="n">M_BENCHMARK</span><span class="p">(</span><span class="n">no_lock</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">"inc %0"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"+m"</span><span class="p">(</span><span class="n">x</span><span class="p">)));</span>
+<span class="n">M_BENCHMARK</span><span class="p">(</span><span class="n">lock</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="p">,</span><span class="w"> </span><span class="k">asm</span><span class="p">(</span><span class="s">"lock inc %0"</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">"+m"</span><span class="p">(</span><span class="n">x</span><span class="p">)));</span>
+<span class="n">M_BENCHMARK</span><span class="p">(</span><span class="n">std_atomic</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">atomic_int</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">fetch_add</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
+
+<span class="n">BENCHMARK_MAIN</span><span class="p">();</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -g -O1 -std=c++23 benchmark.cpp -lbenchmark
+$ ./a.out
+Run on (8 X 4900 MHz CPU s)
+CPU Caches:
+  L1 Data 32 KiB (x8)
+  L1 Instruction 32 KiB (x8)
+  L2 Unified 256 KiB (x8)
+  L3 Unified 12288 KiB (x1)
+Load Average: 0.72, 0.83, 0.85
+***WARNING*** CPU scaling is enabled, [...]
+------------------------------------------------------
+Benchmark            Time             CPU   Iterations
+------------------------------------------------------
+_naive         2667488 ns        52334 ns         1000
+_no_lock       2543247 ns        58533 ns         1000
+_lock         31105183 ns        66661 ns          100
+_std_atomic   32055394 ns        59998 ns         1000
+</pre></div>
+<blockquote>
+ <p>Wall times bounce run-to-run because CPU frequency scaling is on, the <em>relative</em> picture is stable.</p></blockquote>
+<p>Two things fall out.</p>
+<p><strong>1. <code>std::atomic</code> matches the hand-rolled <code>lock add</code> within noise.</strong>
+ <br>The abstraction costs nothing, it&rsquo;s the same instruction.</p>
+<p><strong>2. The unlocked versions are ~12× faster, but not because they have &ldquo;zero coherence overhead.&rdquo;</strong>
+ <br>That line was in my notes and it&rsquo;s wrong. The cache line is contended either way, there&rsquo;s coherence traffic regardless. The real difference is what the core is <em>allowed to do</em> with it.</p>
+<p>Without <code>LOCK</code>, a store can sit in the store buffer and the core pipelines straight into the next iteration, reading its own buffered value via store-forwarding. It never has to wait for each increment to become globally visible. With <code>LOCK</code>, every single increment must be globally visible before the next instruction can retire, so the core can&rsquo;t pipeline through it.</p>
+<p>The lock converts a pipelined burst into a synchronous round-trip per op. And the <em>same</em> buffering plus non-atomicity that makes the unlocked version fast is exactly what makes it lose ~half the counts.</p>
+<blockquote>
+ <p>On the wall vs CPU split. It&rsquo;s tempting to read the ~40ms wall vs ~60µs CPU as &ldquo;cores stalled waiting for cache-line ownership.&rdquo; Don&rsquo;t. Google benchmark&rsquo;s CPU time is the <em>benchmarking thread&rsquo;s</em> CPU time, and that thread spends most of its life asleep in <code>join()</code> waiting on the workers.</p></blockquote>
+<h2 id="memory-ordering"><a href="#memory-ordering">Memory Ordering</a></h2>
+<p>We covered the atomicity half. The lost-increment problem is fixed by <code>LOCK</code> because no other core can interleave a load between our read and our write. Done. Now the <em>other</em> axis.</p>
+<p>First, terms. <strong>Program order</strong> is the order operations appear in your source, what you <em>wrote</em>. The CPU and the memory model don&rsquo;t promise to execute or <em>make visible</em> memory operations in that order.</p>
+<blockquote>
+ <p>&ldquo;Program order&rdquo; and &ldquo;weak vs strong ordering&rdquo; are different things. Program order is source order, weak vs strong describes the memory model&rsquo;s <em>reordering rules</em>. x86 is <strong>strongly</strong> ordered, it&rsquo;s a TSO (total store order) machine, more on that in a sec (:</p></blockquote>
+<p>We already saw a flavor of disorder in the unsynchronized counter. The deeper version: on a multicore machine, one thread can observe another thread&rsquo;s writes happening in a <em>different order</em> than they were issued, and different reader threads can even disagree with each other.</p>
+<p>The mechanism is the <strong>store buffer</strong> again. Stores land in a per-core FIFO before they reach the coherent cache. The issuing core reads its own buffered writes (store-forwarding), but other cores can&rsquo;t see them until they drain. So a store you &ldquo;did&rdquo; can be invisible to everyone else for a while.</p>
+<h3 id="memory-order-the-portable-knob"><a href="#memory-order-the-portable-knob">memory_order, the portable knob</a></h3>
+<p><code>std::memory_order</code> is how you express ordering portably, it specifies how regular and atomic accesses get ordered around an atomic operation [<a href="#references">16</a>]. The three levels we&rsquo;ll see in this section:</p>
+<ul>
+ <li><code>seq_cst</code> - the default, gives a single total order all threads agree on</li>
+ <li><code>release</code> / <code>acquire</code> - pairwise happens-before between one writer and one reader</li>
+ <li><code>relaxed</code> - atomicity only, no ordering constraints</li></ul>
+<p>Start from the bottom. <code>relaxed</code> is atomicity with zero ordering, which makes it the perfect instrument for <em>watching</em> a reorder happen in the wild.</p>
+<h3 id="the-sb-litmus-test"><a href="#the-sb-litmus-test">The SB litmus test</a></h3>
+<p>The cleanest demonstration is <strong>SB (store buffering)</strong>, straight out of the x86-TSO paper [<a href="#references">13</a>]. Two locations, both 0:</p>
+<div class="highlight"><pre><span></span># Proc 0          # Proc 1
+MOV  [x] &lt;- 1     MOV  [y] &lt;- 1
+MOV  EAX &lt;- [y]   MOV  EBX &lt;- [x]
+
+# Allowed Final State: Proc 0: EAX=0 OR Proc 1: EBX=0
+</pre></div>
+<p>Here&rsquo;s what happens. The two processors each have their own store buffers and share the same memory. Nothing new. Same model we&rsquo;ve been working with.</p>
+<div class="figure"><img src="sb-1.png" alt="store buffer 1">
+ <p class="caption">store buffer 1</p></div>
+<p>Now, <code>p0</code> does <code>x = 1</code>. That write goes into core 0&rsquo;s <strong>store buffer</strong>, not memory.</p>
+<div class="figure"><img src="sb-2.png" alt="store buffer 2">
+ <p class="caption">store buffer 2</p></div>
+<p><code>p1</code> does <code>y = 1</code>&hellip;</p>
+<div class="figure"><img src="sb-3.png" alt="store buffer 3">
+ <p class="caption">store buffer 3</p></div>
+<p><code>p0</code> reads <code>y</code>. Core 1&rsquo;s <code>y = 1</code> is still sitting in <em>core 1&rsquo;s</em> store buffer, so core 0 reads <code>y = 0</code> from memory (core 1 reads <code>x = 0</code>).</p>
+<div class="figure"><img src="sb-4.png" alt="store buffer 4">
+ <p class="caption">store buffer 4</p></div>
+<p>Both buffers drain <em>afterward</em>. Final state: <code>EAX = 0, EBX = 0</code>. Wtf.</p>
+<div class="figure"><img src="sb-5.png" alt="store buffer 5">
+ <p class="caption">store buffer 5</p></div>
+<p>Under <strong>sequential consistency</strong>, <code>EAX == 0 &amp;&amp; EBX == 0</code> is impossible. One store must come first, so at least one load should see a 1. But on real x86 it&rsquo;s observable: both stores sit in their respective store buffers while both loads go to memory and read stale zeros.</p>
+<p>This is &ldquo;relaxed-memory behavior,&rdquo; and on x86 it&rsquo;s the <em>one</em> reorder TSO permits, <strong>StoreLoad</strong> (a store followed by a load to a different address). C++ version:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">p0</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">p1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t0</span><span class="p">{</span><span class="n">p0</span><span class="p">},</span><span class="w"> </span><span class="n">t1</span><span class="p">{</span><span class="n">p1</span><span class="p">};</span>
+<span class="w">    </span><span class="n">t0</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eax</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">"after {} iterations: eax={}, ebx={}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eax</span><span class="p">,</span><span class="w"> </span><span class="n">ebx</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -g -O1 --std=c++23 sb.cpp -o sb.out
+$ ./sb.out
+after 54396 iterations: eax=0, ebx=0
+</pre></div>
+<p>This program is <strong>undefined behavior</strong>: <code>x</code> and <code>y</code> are plain  <code>int</code>s touched by two threads with no atomic operation, which is a data race  in the C++ model.</p>
+<blockquote>
+ <p>The 9700K has no SMT, so the two threads land on separate physical cores, each with its own store buffer. Across runs, a wide range of iterations until it was caught was observed. It feels random, but absolutely happens.</p></blockquote>
+<p>It &ldquo;works&rdquo; here purely because of how x86 lowers plain loads and stores. I&rsquo;m keeping it because it&rsquo;s the clearest possible illustration, but the standards-correct way to write SB is with relaxed atomics for the shared locations:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="n">std</span><span class="o">::</span><span class="kt">atomic_int</span><span class="w"> </span><span class="n">x</span><span class="p">{},</span><span class="w"> </span><span class="n">y</span><span class="p">{};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">p0</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">x</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="w">  </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">y</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">p1</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">y</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">x</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">y</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">eax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t0</span><span class="p">{</span><span class="n">p0</span><span class="p">},</span><span class="w"> </span><span class="n">t1</span><span class="p">{</span><span class="n">p1</span><span class="p">};</span>
+<span class="w">    </span><span class="n">t0</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">eax</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ebx</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">"after {} iterations: eax={}, ebx={}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="n">eax</span><span class="p">,</span><span class="w"> </span><span class="n">ebx</span><span class="p">);</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<div class="highlight"><pre><span></span>$ g++ -g -O1 --std=c++23 sb_atomics.cpp -o sb_atomics.out
+$ ./sb_atomics.out
+after 5613 iterations: eax=0, ebx=0
+</pre></div>
+<p>Now let&rsquo;s look at the disassembly of each:</p>
+<div class="figure"><img src="sb-disassembly.png" alt="SB Disassembly">
+ <p class="caption">SB Disassembly</p></div>
+<p>It&rsquo;s identical (O‿o) <code>x.store(1, std::memory_order_relaxed)</code> is <code>mov DWORD PTR [x], 1</code> (vice versa with <code>y</code> not shown) on both versions. No <code>lock</code>, no fence, the exact instructions the UB version emitted.</p>
+<p>The <strong>correct code and the broken code are the same binary</strong>. That&rsquo;s the trap. The racy version doesn&rsquo;t run slower or look different here, it&rsquo;s the same <code>mov</code>s, so it passes every test you run on this machine and you ship it. But one of these is a program the standard defines, and the other is a program the compiler is <em>allowed to do anything to</em> the next time you bump a flag, a gcc version, or an inlining decision. Same binary today is not same binary tomorrow. And that&rsquo;s only half the trap, the other half shows up in release/acquire below, where annotations that cost zero instructions on x86 cost real ones on ARM.</p>
+<h3 id="fixing-it-with-a-fence"><a href="#fixing-it-with-a-fence">Fixing it with a fence</a></h3>
+<p>The manual&rsquo;s line is that when ordering must be strictly enforced, you use barrier instructions, <code>lfence</code>, <code>sfence</code>, <code>mfence</code>, to force memory ops to proceed in program order. <code>mfence</code> specifically [<a href="#references">14</a>] serializes <em>all</em> loads and stores: everything before it becomes globally visible before anything after it. These are &ldquo;memory barriers&rdquo; or &ldquo;fences,&rdquo; a standard concurrency primitive [<a href="#references">15</a>]. (<code>serialize</code>, <code>cpuid</code>, <code>iret</code> are also serializing, but they&rsquo;re heavier. The fences are the cheap, targeted option.)</p>
+<p>The fix: drop an <code>mfence</code> between the store and the load on each thread, so the store buffer drains before the load reads.</p>
+<div class="highlight"><pre><span></span><span class="w"> </span>void p0(void) {
+<span class="w"> </span>  x.store(1, std::memory_order_relaxed);
+<span class="gi">+  asm volatile("mfence" ::: "memory");</span>
+<span class="w"> </span>  eax = y.load(std::memory_order_relaxed);
+<span class="w"> </span>}
+</pre></div>
+<p>Disassembly confirms the <code>mfence</code> lands right after <code>mov DWORD PTR [rax], 0x1</code>. Left it looping for <strong>10+ minutes</strong>, the SB state never showed up again.</p>
+<blockquote>
+ <p>The <code>"memory"</code> clobber is load-bearing too, it&rsquo;s a <em>compiler</em> barrier telling gcc not to reorder the load above the asm. The <code>mfence</code> is the <em>hardware</em> barrier. You need both.</p></blockquote>
+<h3 id="the-std-atomic-equivalent-of-mfence"><a href="#the-std-atomic-equivalent-of-mfence">The std::atomic equivalent of mfence</a></h3>
+<p>Hand-rolled asm isn&rsquo;t portable. The 1:1 equivalent of a bare <code>mfence</code> is a standalone fence:</p>
+<div class="highlight"><pre><span></span><span class="gd">-  asm volatile("mfence" ::: "memory");</span>
+<span class="gi">+  std::atomic_thread_fence(std::memory_order_seq_cst);</span>
+</pre></div>
+<p>Here&rsquo;s the interesting bit, the disassembly of the <code>seq_cst</code> fence:</p>
+<div class="figure"><img src="fence-disassembly.png" alt="Fence disassembly">
+ <p class="caption">Fence disassembly</p></div>
+<p>It&rsquo;s not an <code>mfence</code>, it&rsquo;s a <code>lock or</code> of zero into the top of the stack. That&rsquo;s a <strong>dummy locked no-op</strong>: <code>or [rsp], 0</code> changes nothing, but the <code>LOCK</code> prefix triggers the full store-buffer drain and StoreLoad barrier we need. Gcc picks this because on most microarchitectures a dummy locked op is <em>cheaper</em> than <code>mfence</code> while giving the same StoreLoad ordering.</p>
+<blockquote>
+ <p>Remember, <code>lock</code> can only prefix specific instructions, and <code>or</code> is one of the cheapest.</p></blockquote>
+<h3 id="release-and-acquire"><a href="#release-and-acquire">Release and acquire</a></h3>
+<p><code>seq_cst</code> is where shit gets real, a real barrier instruction, real cost. But most synchronization doesn&rsquo;t need a global total order, it needs <em>pairwise</em> ordering between one writer and one reader. That&rsquo;s <strong>release/acquire</strong>, and the canonical example is message passing: a producer fills a payload then flips a flag, a consumer waits on the flag then reads the payload.</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;print&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="kt">atomic_bool</span><span class="w"> </span><span class="n">ready</span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">producer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">42</span><span class="p">;</span><span class="w">                                       </span><span class="c1">// (1) write payload</span>
+<span class="w">  </span><span class="n">ready</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_release</span><span class="p">);</span><span class="w">    </span><span class="c1">// (2) release</span>
+<span class="p">}</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ready</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_acquire</span><span class="p">));</span><span class="w">  </span><span class="c1">// (3) acquire</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">print</span><span class="p">(</span><span class="s">"{}</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="p">);</span><span class="w">  </span><span class="c1">// guaranteed 42</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t0</span><span class="p">(</span><span class="n">producer</span><span class="p">),</span><span class="w"> </span><span class="n">t1</span><span class="p">(</span><span class="n">consumer</span><span class="p">);</span>
+<span class="w">  </span><span class="n">t0</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+ <p>Note that <code>data</code> being a plain <code>int</code> is UB!!</p></blockquote>
+<div class="highlight"><pre><span></span>$ g++ -O0 --std=c++23 rel_acq.cpp
+$ ./a.out
+42
+</pre></div>
+<p>The guarantee comes from a <strong>happens-before chain</strong>. (1) is sequenced-before the release store (2) in program order, the release store <em>synchronizes-with</em> the acquire load (3) because they&rsquo;re the same atomic and the load reads what the store wrote, (3) is sequenced-before the read of <code>data</code>. Chain it together and <code>data = 42</code> <em>happens-before</em> the consumer&rsquo;s read. No <code>mfence</code>, no <code>seq_cst</code>, no torn read. You guessed it, now we&rsquo;re gonna disassemble it:</p>
+<div class="figure"><img src="rel-acq-disassembly.png" alt="rel-acq-disassembly producer">
+ <p class="caption">rel-acq-disassembly producer</p></div>
+<div class="figure"><img src="rel-acq-disassembly2.png" alt="rel-acq-disassembly consumer">
+ <p class="caption">rel-acq-disassembly consumer</p></div>
+<p>The release store is a plain <code>mov</code>. The acquire load is a plain <code>movzx</code> in the spin loop. <strong>No <code>lock</code>, no <code>mfence</code>, nothing extra.</strong> That&rsquo;s what &ldquo;free on x86&rdquo; means: TSO already gives you store-release and load-acquire semantics for plain <code>mov</code>s, so the ordering annotation costs <em>zero</em> instructions. Compare that to the <code>seq_cst</code> fence above, which cost a <code>lock or</code>. Same header, completely different price depending on which reorder you&rsquo;re fighting.</p>
+<p>One honesty note: on x86 you <strong>can&rsquo;t make this demo fail at runtime</strong> even with <code>relaxed</code> instead of acquire/release. TSO won&rsquo;t let the consumer observe <code>data
+== 0</code>. The proof that the ordering matters is twofold, the asm shows it&rsquo;s free, and the <em>portability</em> argument: on a weakly-ordered machine like ARM, downgrading to <code>relaxed</code> here genuinely breaks: which is the entire reason the  annotation exists [<a href="#references">16</a>].</p>
+<h3 id="breaking-it-on-arm"><a href="#breaking-it-on-arm">Breaking it on ARM</a></h3>
+<p>I&rsquo;m gonna be running this on my Raspberry Pi 5. Before we get into it check out my overkill case B)</p>
+<div class="figure"><img src="rpi5.webp" alt="rpi5">
+ <p class="caption">rpi5</p></div>
+<p>Anyways&hellip; here&rsquo;s the program I&rsquo;ll be using for this demonstration:</p>
+<div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;atomic&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;iostream&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;thread&gt;</span>
+
+<span class="k">alignas</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">atomic_int</span><span class="w"> </span><span class="n">data</span><span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+<span class="k">alignas</span><span class="p">(</span><span class="mi">64</span><span class="p">)</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">atomic_bool</span><span class="w"> </span><span class="n">ready</span><span class="p">{</span><span class="nb">false</span><span class="p">};</span>
+<span class="kt">int</span><span class="w"> </span><span class="n">observed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">producer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">data</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="w">  </span><span class="n">ready</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span><span class="w"> </span><span class="nf">consumer</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ready</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">));</span>
+<span class="w">  </span><span class="n">observed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">memory_order_relaxed</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="n">ready</span><span class="p">.</span><span class="n">store</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="n">observed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="kr">thread</span><span class="w"> </span><span class="n">t0</span><span class="p">(</span><span class="n">producer</span><span class="p">),</span><span class="w"> </span><span class="n">t1</span><span class="p">(</span><span class="n">consumer</span><span class="p">);</span>
+<span class="w">    </span><span class="n">t0</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">t1</span><span class="p">.</span><span class="n">join</span><span class="p">();</span>
+<span class="w">    </span><span class="n">i</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">observed</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">      </span><span class="k">break</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"iterations: "</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Couple of things to note here. First, the data payload has been upgraded to an  <code>std::atomic_int</code>. With the payload relaxed-atomic, the whole program is defined, so when it prints 0 nobody can wave it off as &ldquo;that&rsquo;s just UB bro.&rdquo;</p>
+<p>Second, <code>alignas(64)</code> on <strong>both</strong>. Remember when we went over cache lines earlier? Well since <code>data</code> and <code>ready</code> are adjacent globals, they would be on  the same cache line (64 bytes). So when the consumer fetches <code>ready</code>, it gets <code>data</code> in the same line - even with relaxed loads. Aligning them to 64 byte boundaries makes it so they get their own line.. meaning different coherence states, held by different cores, and transferred independently. This makes the window for the consumer to see <code>ready==true</code> and <code>data==0</code>, since the lines arrive in different order, actually has a chance to open.</p>
+<div class="highlight"><pre><span></span>$ g++ -O1 demo.cpp
+$ ./a.out
+iterations: 127290
+</pre></div>
+<p>You know the drill, here&rsquo;s the disassembly:</p>
+<div class="figure"><img src="arm-producer-relaxed.png" alt="ARM Producer Relaxed">
+ <p class="caption">ARM Producer Relaxed</p></div>
+<p>Both stores are bare <code>str</code>/<code>strb</code>. The CPU is free to retire them out of order to the coherence gods. <code>ready=true</code> can become visible to another core <em>before</em> <code>data=42</code> does.</p>
+<div class="figure"><img src="arm-consumer-relaxed.png" alt="ARM Consumer Relaxed">
+ <p class="caption">ARM Consumer Relaxed</p></div>
+<p>Same deal on the consumer side. Bare <code>ldr</code>, no acquire. Nothing prevents this load from being satisfied from a stale cache line state while <code>ready</code>&rsquo;s line already arrived.</p>
+<blockquote>
+ <p>The C++ memory model permits this. <code>std::memory_order_relaxed</code> makes no ordering guarantees between different variables. The compiler emitted the weakest legal sequence. ARM&rsquo;s weak memory model exposes it.</p></blockquote>
+<p>I&rsquo;ve been running the same program on x86 this entire time since I&rsquo;ve been writing this section. 11 minutes now and nothing. x86 TSO prevents this from happening!</p>
+<p>Now let&rsquo;s make some changes to our program:</p>
+<div class="highlight"><pre><span></span><span class="w"> </span>void producer(void) {
+<span class="w"> </span>  data.store(42, std::memory_order_relaxed);
+<span class="gd">-  ready.store(true, std::memory_order_relaxed);</span>
+<span class="gi">+  ready.store(true, std::memory_order_release);</span>
+<span class="w"> </span>}
+
+<span class="w"> </span>void consumer(void) {
+<span class="gd">-  while (!ready.load(std::memory_order_relaxed));</span>
+<span class="gi">+  while (!ready.load(std::memory_order_acquire));</span>
+<span class="w"> </span>  observed = data.load(std::memory_order_relaxed);
+<span class="w"> </span>}
+</pre></div>
+<p>We can see in the disassembly that <code>strb</code> changed to <code>stlrb</code> and <code>ldrb</code> to <code>ldarb</code>! This simple instruction change that&rsquo;s free for my 9700K costs actual hardware on the RPI.</p>
+<div class="figure"><img src="arm-producer-consumer-rel-acq.png" alt="ARM Producer Release Consumer Acquire">
+ <p class="caption">ARM Producer Release Consumer Acquire</p></div>
+<blockquote>
+ <p>Double check your memory ordering by using <code>-fsanatize=thread</code> (TSan). It checks memory accesses at runtime by catching threads touching the same data without proper synchronization.</p></blockquote>
+<blockquote>
+ <p>Check out <a href="https://github.com/herd/herdtools7">herdtools7</a>. Its a tool suite to test weak memory models if you want something a little more. Definetly out of scope for this blog!</p></blockquote>
+<h2 id="the-ordering-ladder"><a href="#the-ordering-ladder">The Ordering Ladder</a></h2>
+<p>So <code>std::memory_order</code> isn&rsquo;t one knob, it&rsquo;s a choice of strength and cost. Find a full list at [<a href="#references">17</a>]. The following are briefs on the ones I used.</p>
+<h3 id="relaxed"><a href="#relaxed">Relaxed</a></h3>
+<p>Atomicity only, no ordering, and the cheapest. The counter could&rsquo;ve used this, <code>fetch_add</code> doesn&rsquo;t need ordering to count right (the <code>join</code> is what publishes the final value to <code>main</code>).</p>
+<h3 id="acquire-release"><a href="#acquire-release">Acquire/Release</a></h3>
+<p>Pairwise happens-before between a release and the acquire that reads it. Free plain <code>mov</code>s on x86, TSO already disallows LoadLoad, LoadStore, and StoreStore reorders.</p>
+<h3 id="sequential"><a href="#sequential">Sequential</a></h3>
+<p>A single total order all threads agree on (the default). StoreLoad is the one reorder x86 permits, so this is the only level that costs a barrier (a <code>lock or</code>, or <code>mfence</code>).</p>
+<p><code>consume</code> exists too, but skip it. It&rsquo;s deprecated in C++26 and every real compiler just promotes it to <code>acquire</code> because the dependency tracking it specified was never implemented correctly.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h3 id="atomicity-and-ordering-are-two-different-things"><a href="#atomicity-and-ordering-are-two-different-things">Atomicity and ordering are two different things</a></h3>
+<p>Atomicity is the <code>LOCK</code> prefix, bounded exclusive ownership of a cache line through an entire RMW, so no update is lost and no value is torn. Ordering is a <em>separate</em> axis, how an operation constrains the memory accesses around it.</p>
+<h3 id="x86-tso-does-most-of-the-ordering-for-free-and-thats-a-trap"><a href="#x86-tso-does-most-of-the-ordering-for-free-and-thats-a-trap">x86 (TSO) does most of the ordering for free, and that&rsquo;s a trap</a></h3>
+<p>Store-release and load-acquire are just plain <code>mov</code>s here, and the only reorder the hardware permits is StoreLoad, which a single fence fixes. The danger is that code which is subtly wrong under the C++ memory model still <em>runs correctly on your x86 box</em>, then explodes on ARM. The annotations aren&rsquo;t decoration, they&rsquo;re what makes the code portable and what tells the compiler the truth about your intent.</p>
+<h3 id="std-atomic-is-the-portable-abstraction-over-both"><a href="#std-atomic-is-the-portable-abstraction-over-both">std::atomic is the portable abstraction over both</a></h3>
+<p>It emits the <code>LOCK</code> prefix for atomicity, and exactly the barriers (often zero, on x86) your chosen <code>memory_order</code> requires. We watched it compile to the same <code>lock add</code> we hand-rolled, and its <code>seq_cst</code> fence to a <code>lock or</code> standing in for our <code>mfence</code>.</p>
+<h3 id="lock-free-is-a-progress-guarantee"><a href="#lock-free-is-a-progress-guarantee">Lock-free is a progress guarantee</a></h3>
+<p><code>lock xadd</code> is lock-free, its serialization is bounded and can&rsquo;t block other threads indefinitely. A mutex isn&rsquo;t, because a suspended lock-holder stalls everyone. That&rsquo;s the real distinction behind &ldquo;atomics are faster than a mutex,&rdquo; not &ldquo;no locks anywhere.&rdquo;</p>
+<div class="figure"><img src="multithreading-meme.png" alt="Multithreading">
+ <p class="caption">Multithreading</p></div>
+<blockquote>
+ <p>No way I&rsquo;ll be assessed in the OA about any of this but honestly this rabbit hole was probably more beneficial (and fun!) to me than grinding LeetCode.</p></blockquote>
+<h2 id="references"><a href="#references">References</a></h2>
+<ol>
+ <li><a href="https://www.youtube.com/watch?v=ZQFzMfHIxng">Fedor Pikus, &ldquo;C++ atomics, from basic to advanced. What do they really do?&rdquo;, CppCon 2017</a></li>
+ <li><a href="https://en.cppreference.com/cpp/atomic/atomic">cppreference, <code>std::atomic</code></a></li>
+ <li><a href="https://en.wikipedia.org/wiki/Read%E2%80%93modify%E2%80%93write">Wikipedia, read-modify-write</a></li>
+ <li><a href="https://stackoverflow.com/a/43837970">Stack Overflow, Linus on atomic instructions and the store buffer</a></li>
+ <li><a href="https://en.wikipedia.org/wiki/MESI_protocol">Wikipedia, MESI protocol</a></li>
+ <li><a href="https://www.felixcloutier.com/x86/lock">felixcloutier, <code>LOCK</code> prefix</a></li>
+ <li><a href="https://www.felixcloutier.com/x86/xadd">felixcloutier, <code>XADD</code></a></li>
+ <li>(Hard-copy) AMD64 Architecture Programmer&rsquo;s Manual, vol 2 (System Programming), rev 3.07, Sept 2002, on locked operations and the write buffer (pp ~194&ndash;205)</li>
+ <li><a href="https://web.archive.org/web/20090227095314/http://software.intel.com/en-us/articles/implementing-scalable-atomic-locks-for-multi-core-intel-em64t-and-ia32-architectures">Intel, Implementing Scalable Atomic Locks for Multi-Core Intel EM64T and IA32 Architectures</a></li>
+ <li><a href="https://stackoverflow.com/a/65681049">Stack Overflow, on the <code>LOCK#</code> signal</a></li>
+ <li><a href="https://asm-docs.microagi.org/x86/lock.html">x86 instruction reference, <code>LOCK</code>-prefixable instructions</a></li>
+ <li><a href="https://en.cppreference.com/cpp/named_req/TriviallyCopyable">cppreference, TriviallyCopyable</a></li>
+ <li><a href="https://www.cl.cam.ac.uk/~pes20/weakmemory/cacm.pdf">Sewell et al., &ldquo;x86-TSO: A Rigorous and Usable Programmer&rsquo;s Model for x86 Multiprocessors,&rdquo; CACM</a></li>
+ <li><a href="https://www.felixcloutier.com/x86/mfence">felixcloutier, <code>mfence</code></a></li>
+ <li><a href="https://en.wikipedia.org/wiki/Memory_barrier">Wikipedia, memory barrier</a></li>
+ <li><a href="https://developer.arm.com/documentation/102336/0100/Memory-ordering">ARM Developer - Memory ordering</a></li>
+ <li><a href="https://en.cppreference.com/cpp/atomic/memory_order">cppreference, <code>std::memory_order</code></a></li></ol></section><div class="buttons-border"></div><div class="buttons"><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.png" alt="wasdhjkl.xyz"></a><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop2.png" alt="wasdhjkl.xyz"></a></div><div class="buttons"><a href="https://neovim.io"><img src="/buttons/neovim.gif" alt="neovim.io"></a><a href="https://nixos.org"><img src="/buttons/nix.png" alt="nixos.org"></a><a href="https://archive.org"><img src="/buttons/IA.gif" alt="archive.org"></a><a href="https://ublockorigin.com"><img src="/buttons/ublock.png" alt="ublockorigin.com"></a><img src="/buttons/upallnight.gif" alt="up all night"><a href="https://firefox.com"><img src="/buttons/firefox4.gif" alt="firefox.com"></a><img src="/buttons/cookie-free.png" alt="cookie free"><a href="https://88x31.nl"><img src="/buttons/88x31.gif" alt="88x31.nl"></a><a href="https://en.wikipedia.org/wiki/Serial_Experiments_Lain"><img src="/buttons/lain.gif" alt="lain"></a><img src="/buttons/hasmile.gif" alt="have a smile"><a href="https://creativecommons.org/licenses/by-sa/4.0"><img src="/buttons/by-sa.png" alt="creativecommons.org/licenses/by-sa/4.0"></a></div><footer><a href="https://github.com/wasdhjklxyz">github</a><span class="sep"> · </span><a href="https://x.com/wasdhjklxyz">twitter</a><span class="sep"> · </span><a href="mailto:uiop@wasdhjkl.xyz">email</a><span class="sep"> · </span><a href="https://creativecommons.org/licenses/by-sa/4.0">© 2026 uiop. Licensed under CC BY-SA 4.0</a></footer></html>
