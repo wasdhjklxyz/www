@@ -95,7 +95,6 @@
                      (link "/#blog" "blog")
                      (link "/#contact" "contact"))])
     `(nav
-       ,art-xexp
        (div (@ (class "links"))
             (span ,host)
             (div
