@@ -201,6 +201,8 @@
                       #:height ,button-height
                       #:border 0]
       [|.buttons a| #:line-height 0]
+      [|@media (max-width: 680px)|
+               [|.buttons| #:max-width |100%|]]
 
       [footer #:margin-top ,space-md
               #:padding-top ,space-sm
