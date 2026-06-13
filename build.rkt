@@ -82,22 +82,22 @@
   `(div (@ (class "buttons")) ,@buttons))
 
 ;; Headers
-(define art-xexp `(pre (@ (class "art") (aria-hidden "true")) ,art))
-
 (define header-xexp
   `(header
-     ,art-xexp
+     (pre (@ (class "art") (aria-hidden "true")) ,art)
      (big ,host)))
 
 (define nav-xexp
   (let ([links (list (link "/#about" "about")
                      (link "/#blog" "blog")
                      (link "/#contact" "contact"))])
-    `(nav ,art-xexp
-          (div (@ (class "links"))
-               (span ,host)
-               (div
-                 ,@(add-between links ""))))))
+    `(nav
+       (a (@ (href "/") (style "color: transparent"))
+          (pre (@ (class "art") (aria-hidden "true")) ,art))
+       (div (@ (class "links"))
+            (span ,host)
+            (div
+              ,@(add-between links ""))))))
 
 ;; Page Skeleton
 (define (page-xexp title description path . body)
@@ -245,7 +245,7 @@
 
 (build "index.html"
        (page-xexp host tagline "/"
-                  art-xexp
+                  header-xexp
                   `(main
                      ,(section-xexp "about" (md->sxml "home/about.md"))
                      ,(section-xexp "blog"

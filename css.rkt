@@ -73,13 +73,11 @@
            #:margin-bottom ,space-md
            #:padding-bottom ,space-sm
            #:border-bottom (,border-width solid ,color-dark)]
-      [|nav a| #:color ,color-dim
-               #:text-decoration none
-               #:letter-spacing ,letter-spacing]
       [|nav .art| #:color ,color-fg
                   #:font-size |1px|
-                  #:margin 0 #:align-self flex-end]
-
+                  #:margin 0
+                  #:text-decoration none
+                  #:align-self flex-end]
       [|.links| #:align-self flex-end
                 #:margin-left ,space-sm]
       [|.links span| #:font-weight ,font-weight-bold 
@@ -87,7 +85,10 @@
       [|.links a| #:margin-right ,space-sm
                   #:font-size ,font-size-md
                   #:display flex
+                  #:color ,color-dim
                   #:text-align left
+                  #:text-decoration none
+                  #:letter-spacing ,letter-spacing
                   #:flex-direction column
                   #:line-height ,line-height-nav
                   #:font-weight ,font-weight-normal]
