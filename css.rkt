@@ -58,6 +58,7 @@
             #:background ,color-bg
             #:color ,color-fg
             #:font-family ,font
+            #:overflow-x hidden
             #:font-size ,font-size
             #:line-height ,line-height
             #:max-width ,max-width]
@@ -169,12 +170,13 @@
 
       [|.highlight| #:margin (0 0 ,space-lg)
                     #:background transparent
+                    #:overflow-x auto
                     #:border (,border-width solid ,color-dark)]
       [|.highlight pre| #:margin (0 auto 0)
                         #:line-height ,line-height-code
                         #:color ,color-code
-                        #:white-space pre-wrap
-                        #:word-break break-all
+                        ;#:white-space pre-wrap
+                        ;#:word-break break-all
                         #:padding ,space-sm]
 
       [time #:color ,color-dim
