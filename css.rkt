@@ -19,7 +19,7 @@
 (define font "Space Grotesk")
 (define font-weight-normal 400)
 (define font-weight-bold   600)
-(define font-size          '|1.25rem|)
+(define font-size          '|1.15rem|)
 (define font-size-sm       '|0.85rem|)
 (define font-size-md       '|1rem|)
 (define font-size-lg       '|1.5rem|)
@@ -68,7 +68,7 @@
                  #:text-decoration underline]
 
       [img #:image-rendering auto
-           #:max-width ,max-width
+           #:max-width |100%|
            #:margin-bottom ,space-lg]
 
       [nav #:display flex
@@ -173,6 +173,8 @@
       [|.highlight pre| #:margin (0 auto 0)
                         #:line-height ,line-height-code
                         #:color ,color-code
+                        #:white-space pre-wrap
+                        #:word-break break-all
                         #:padding ,space-sm]
 
       [time #:color ,color-dim
