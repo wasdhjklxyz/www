@@ -147,8 +147,7 @@
       [|h2 a:hover::after, h3 a:hover::after, h4 a:hover::after| #:opacity 1]
 
       [p  #:margin (0 0 ,space-lg)]
-      [ul #:margin (,space-md ,space-md ,space-lg)
-          #:padding-left ,space-md]
+      [ul #:padding-left ,space-md]
 
       [blockquote #:color ,color-quote
                   #:margin-left ,space-md
