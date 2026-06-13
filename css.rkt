@@ -20,10 +20,10 @@
 (define font-weight-normal 400)
 (define font-weight-bold   600)
 (define font-size          '|1.15rem|)
-(define font-size-sm       '|0.85rem|)
+(define font-size-sm       '|0.75rem|)
 (define font-size-md       '|1rem|)
-(define font-size-lg       '|1.5rem|)
-(define font-size-xl       '|1.75rem|)
+(define font-size-lg       '|1.4rem|)
+(define font-size-xl       '|1.65rem|)
 
 (define line-height     1.6)
 (define line-height-nav 1)
@@ -54,7 +54,7 @@
       [* #:box-sizing border-box]
 
       [body #:margin (0 auto)
-            #:padding (,space-lg 0 ,space-lg)
+            #:padding (,space-lg ,space-md ,space-lg)
             #:background ,color-bg
             #:color ,color-fg
             #:font-family ,font

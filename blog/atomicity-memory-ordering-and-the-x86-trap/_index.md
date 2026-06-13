@@ -455,9 +455,8 @@ CPU Caches:
   L3 Unified 12288 KiB (x1)
 Load Average: 0.72, 0.83, 0.85
 ***WARNING*** CPU scaling is enabled, [...]
-------------------------------------------------------
+
 Benchmark            Time             CPU   Iterations
-------------------------------------------------------
 _naive         2667488 ns        52334 ns         1000
 _no_lock       2543247 ns        58533 ns         1000
 _lock         31105183 ns        66661 ns          100
