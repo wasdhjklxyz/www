@@ -13,7 +13,7 @@
           pkgs = nixpkgs.legacyPackages.${system};
         in {
           default = pkgs.mkShell {
-            packages = with pkgs; [ racket python3 ];
+            packages = with pkgs; [ racket python3 python3Packages.pygments ];
             shellHook = ''
               export PLTADDONDIR="$PWD/.racket"
               raco pkg install --auto --skip-installed --no-docs \
