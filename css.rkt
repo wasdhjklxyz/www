@@ -4,26 +4,30 @@
 
 (require css-expr)
 
-(define color-bg         '|#0d0d0d|)
+(define color-bg         '|#000000|)
+(define color-quote      '|#9e9e9e|)
 (define color-fg         '|#bebebe|)
 (define color-lfg        '|#cecece|)
 (define color-dim        '|#5e5e5e|)
 (define color-dark       '|#1d1d1d|)
-(define color-link       '|#7fb0c0|)
-(define color-link-hover '|#8fc0d0|)
+(define color-link       '|#7e8aa1|)
+(define color-link-hover '|#8e9ab1|)
+(define color-code       '|#7e8aa1|)
 
-(define font               'monospace)
+;(define font '|ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace|)
+(define font "Space Grotesk")
 (define font-weight-normal 400)
 (define font-weight-bold   600)
-(define font-size          '|1rem|)
-(define font-size-sm       '|0.8rem|)
-(define font-size-md       '|0.85rem|)
-(define font-size-lg       '|1.25rem|)
-(define font-size-xl       '|1.5rem|)
+(define font-size          '|1.25rem|)
+(define font-size-sm       '|0.85rem|)
+(define font-size-md       '|1rem|)
+(define font-size-lg       '|1.5rem|)
+(define font-size-xl       '|1.75rem|)
 
 (define line-height     1.6)
 (define line-height-nav 1)
 (define line-height-art 0.85)
+(define line-height-code 1.25)
 (define letter-spacing  '|0.05rem|)
 
 (define space-xxs '|0.1rem|) ; separator lines
@@ -34,18 +38,21 @@
 (define space-xl  '|4rem|)
 (define space-neg '|-1.2rem|)
 
-(define max-width     '|44rem|)
+(define max-width     '|64rem|)
 (define border-width  '|1px|)
+(define border-width-quote '|0.25rem|)
 (define button-width  '|88px|)
 (define button-height '|31px|)
 
 (define css
+  (string-append
+  (file->string "pygments.css")
   (css-expr->css
     (css-expr
       [* #:box-sizing border-box]
 
       [body #:margin (0 auto)
-            #:padding (,space-lg ,space-md ,space-xl)
+            #:padding (,space-lg 0 ,space-lg)
             #:background ,color-bg
             #:color ,color-fg
             #:font-family ,font
@@ -58,7 +65,9 @@
       [|a:hover| #:color ,color-link-hover
                  #:text-decoration underline]
 
-      [img #:image-rendering auto]
+      [img #:image-rendering auto
+           #:max-width ,max-width
+           #:margin-bottom ,space-lg]
 
       [nav #:display flex
            #:margin-bottom ,space-md
@@ -134,12 +143,33 @@
                                             #:color ,color-lfg]
       [|h2 a:hover::after, h3 a:hover::after, h4 a:hover::after| #:opacity 1]
 
-      [p  #:margin (0 0 ,space-md)]
-      [ul #:margin 0
+      [p  #:margin (0 0 ,space-lg)]
+      [ul #:margin (,space-md ,space-md ,space-lg)
           #:padding-left ,space-md]
+
+      [blockquote #:color ,color-quote
+                  #:margin-left ,space-md
+                  #:padding (0 ,space-md 0)
+                  #:border-left (,border-width-quote solid ,color-dark)]
+
+      [code #:color ,color-code
+            #:border (,border-width solid ,color-dark)]
+
+      [|.figure| #:display flex
+                 #:justify-content center]
+
+      [|.caption| #:display none]
 
       [|#blog p| #:margin 0]
       [|#blog .blog-list-end| #:margin (0 0 ,space-md)]
+
+      [|.highlight| #:margin (0 0 ,space-lg)
+                    #:background transparent
+                    #:border (,border-width solid ,color-dark)]
+      [|.highlight pre| #:margin (0 auto 0)
+                        #:line-height ,line-height-code
+                        #:color ,color-code
+                        #:padding ,space-sm]
 
       [time #:color ,color-dim
             #:white-space nowrap]
@@ -170,4 +200,4 @@
       [|footer a| #:color ,color-dim
                   #:text-decoration none]
       [|footer a:hover| #:color ,color-dim]
-      [|footer .sep| #:margin (0 ,space-xxs)])))
+      [|footer .sep| #:margin (0 ,space-xxs)]))))

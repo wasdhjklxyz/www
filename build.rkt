@@ -26,6 +26,12 @@
      (meta (@ (name "description") (content ,description)))
      (meta (@ (name "theme-color") (content ,(symbol->string color-bg))))
      (link (@ (rel "canonical") (href ,(string-append "https://" host path))))
+     (link (@ (rel "preconnect") (href "https://fonts.googleapis.com")))
+     (link (@ (rel "preconnect")
+              (href "https://fonts.gstatic.com")
+              (crossorigin)))
+     (link (@ (href "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap")
+              (rel "stylesheet")))
      (style ,css)
      (title ,title)))
 
@@ -104,7 +110,7 @@
                          "CC BY-SA 4.0"))))
 
 ;; Markdown
-(current-strict-markdown? #t)
+;(current-strict-markdown? #t)
 
 (define (node-text x)
   (cond
@@ -151,10 +157,35 @@
   (define xs (parse-markdown p))
   (define html-string (string-join (map xexpr->string xs) ""))
   (define nodes (cdr (html->xexp html-string)))
-  (map (lambda (n) (if (heading? n) (link-heading n) n)) nodes))
+  (map (lambda (n) (cond [(heading? n) (link-heading n)]
+                         [(code-block? n) (highlight-block n)]
+                         [else n])) nodes))
 
 (define (section-xexp id . nodes)
   `(section (@ (id ,id)) ,@nodes))
+
+;; Code Highlighter
+(define (code-block? x) ; (pre (@ (class "brush: LANG")) (code ...))
+  (and (pair? x) (eq? (car x) 'pre)
+       (let ([c (attr x 'class)])
+         (and c (string-prefix? c "brush: ")))))
+
+(define (pygmentize code lang)
+  (define-values (proc out in _err)
+    (subprocess #f #f #f (find-executable-path "pygmentize")
+                "-l" lang "-f" "html"))
+  (write-string code in)
+  (close-output-port in)
+  (define result (port->string out))
+  (subprocess-wait proc)
+  (and (zero? (subprocess-status proc)) result))
+
+(define (highlight-block pre)
+  (define lang (substring (attr pre 'class) 7)) ; drop "brush: "
+  (define html (pygmentize (node-text pre) lang))
+  (if html
+      (findf pair? (cdr (html->xexp html))) ; the <div class="highlight">
+      pre)) ; lexer failed -> leave plain
 
 ;; Build
 (when (directory-exists? out-dir) (delete-directory/files out-dir))
