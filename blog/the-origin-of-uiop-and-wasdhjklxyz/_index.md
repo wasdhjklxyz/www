@@ -8,8 +8,6 @@ thought of "wasd" since I play computer games, and "hjkl" since I use Neovim
 religiously. The TLD .xyz seemed appropriate since the entire string,
 wasdhjklxyz, looks like random characters and I thought it was cool looking.
 
-<img src="lain.gif"/>
-
 Now you might be wondering "wtf is a uiop?" After wasdhjklxyz, I had to come up
 with a name/handle. I wanted something to look random like wasdhjklxyz, was
 short, and easy to remember. I remembered from the show [Mr.
