@@ -82,9 +82,12 @@
   `(div (@ (class "buttons")) ,@buttons))
 
 ;; Headers
+(define art-xexp
+     `(pre (@ (class "art") (aria-hidden "true")) ,art))
+
 (define header-xexp
   `(header
-     (pre (@ (class "art") (aria-hidden "true")) ,art)
+     ,art-xexp
      (big ,host)))
 
 (define nav-xexp
@@ -92,8 +95,7 @@
                      (link "/#blog" "blog")
                      (link "/#contact" "contact"))])
     `(nav
-       (a (@ (href "/") (style "color: transparent"))
-          (pre (@ (class "art") (aria-hidden "true")) ,art))
+       ,art-xexp
        (div (@ (class "links"))
             (span ,host)
             (div
