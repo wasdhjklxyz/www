@@ -44,6 +44,7 @@
 (define border-width-quote '|0.25rem|)
 (define button-width  '|88px|)
 (define button-height '|31px|)
+(define buttons-max-width '|60%|)
 
 (define css
   (string-append
@@ -179,18 +180,20 @@
       [|.new| #:color ,color-new
               #:font-size ,font-size-md]
 
+      [|section#contact| #:border-bottom (,border-width solid ,color-dark)]
       [|.buttons| #:display flex
                   #:flex-wrap wrap
+                  #:margin (0 auto)
                   #:justify-content center
                   #:gap ,space-sm
                   #:margin-top ,space-md
-                  #:padding-top ,space-md
-                  #:border-top (,border-width solid ,color-dark)]
+                  #:max-width ,buttons-max-width]
       [|.buttons + .buttons| #:border-top none
                              #:margin-top ,space-sm
                              #:padding-top ,space-sm]
       [|.buttons img| #:image-rendering pixelated
                       #:display block
+                      #:margin-bottom 0
                       #:width ,button-width
                       #:height ,button-height
                       #:border 0]
