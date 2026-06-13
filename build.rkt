@@ -104,6 +104,9 @@
   `(html (@ (lang "en"))
          ,(head-xexp title description path)
          ,@body
+         (div (@ (class "buttons-border")))
+         ,(buttons-xexp my-buttons)
+         ,(buttons-xexp buttons)
          ,(footer-xexp footer-links
                        (footer-license
                          "creativecommons.org/licenses/by-sa/4.0"
@@ -261,6 +264,4 @@
                                     (md->sxml "home/blog.md")
                                     (blog-list metas)
                                     `(p (@ (class "blog-list-end"))))
-                     ,(section-xexp "contact" (md->sxml "home/contact.md"))
-                     ,(buttons-xexp my-buttons)
-                     ,(buttons-xexp buttons))))
+                     ,(section-xexp "contact" (md->sxml "home/contact.md")))))

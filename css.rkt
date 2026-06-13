@@ -180,7 +180,7 @@
       [|.new| #:color ,color-new
               #:font-size ,font-size-md]
 
-      [|section#contact| #:border-bottom (,border-width solid ,color-dark)]
+      [|.buttons-border| #:border-bottom (,border-width solid ,color-dark)]
       [|.buttons| #:display flex
                   #:flex-wrap wrap
                   #:margin (0 auto)
