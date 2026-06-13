@@ -2,7 +2,6 @@
 <time datetime="2026-06-12">Jun 12, 2026</time>
 
 ## Contents
-
 - [Intro](#intro)
 - [RMW and MESI](#rmw-and-mesi)
     - [Read-modify-write in one operation??](#read-modify-write-in-one-operation)
