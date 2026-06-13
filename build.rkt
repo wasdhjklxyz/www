@@ -1,6 +1,6 @@
 #lang racket
 
-(require html-writing html-parsing markdown "css.rkt")
+(require html-writing html-parsing markdown srfi/19 "css.rkt")
 
 ;; Config
 (define host    "wasdhjkl.xyz")
@@ -227,10 +227,19 @@
       (list slug (node-text (find-first 'h1 nodes)) date-text date-sort)))
   (sort metas string>? #:key (lambda (m) (list-ref m 3))))
 
+(define (new? date-str)
+  (define parsed (string->date date-str "~Y-~m-~d"))
+  (define now (current-date))
+  (define delta (time-difference (date->time-utc now) (date->time-utc parsed)))
+  (< (time-second delta) (* 7 24 60 60)))
+
 (define (blog-list metas)
   (for/list ([m (in-list metas)])
     (match-define (list slug title date-text date-sort) m)
     `(p (@ (class "blog-list"))
+        ,@(if (new? date-sort)
+              '((span (@ (class "new")) "NEW!") " ")
+              '())
         (time (@ (datetime ,date-sort)) ,date-text)
         " "
         (a (@ (href ,(string-append "/blog/" slug "/"))) ,title))))

@@ -13,6 +13,7 @@
 (define color-link       '|#7e8aa1|)
 (define color-link-hover '|#8e9ab1|)
 (define color-code       '|#7e8aa1|)
+(define color-new        '|#f88f7f|)
 
 ;(define font '|ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas, "DejaVu Sans Mono", monospace|)
 (define font "Space Grotesk")
@@ -174,6 +175,9 @@
 
       [time #:color ,color-dim
             #:white-space nowrap]
+
+      [|.new| #:color ,color-new
+              #:font-size ,font-size-md]
 
       [|.buttons| #:display flex
                   #:flex-wrap wrap
