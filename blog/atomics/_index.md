@@ -1,17 +1,34 @@
-# x86 Gives You the Ordering for Free, and That's the Problem
+# Atomicity, Memory Ordering, and the x86 Trap
 <time datetime="2026-06-12">Jun 12, 2026</time>
 
 ## Contents
 
-[Intro](#intro)  
-[RMW and MESI](#rmw-and-mesi)  
-[The LOCK Prefix](#the-lock-prefix)  
-[std::atomic](#std-atomic)  
-[Benchmarks](#benchmarks)  
-[Memory Ordering](#memory-ordering)  
-[The Ordering Ladder](#the-ordering-ladder)  
-[Conclusion](#conclusion)  
-[References](#references)
+- [Intro](#intro)
+- [RMW and MESI](#rmw-and-mesi)
+    - [Read-modify-write in one operation??](#read-modify-write-in-one-operation)
+    - [MESI](#mesi)
+    - [Did MESI fail us?](#did-mesi-fail-us)
+- [The LOCK Prefix](#the-lock-prefix)
+    - [What LOCK does](#what-lock-does)
+    - [One-word fix](#one-word-fix)
+    - [Defining the atomic op](#defining-the-atomic-op)
+    - ["Lock-free"](#lock-free)
+- [std::atomic](#std-atomic)
+    - [A quick init gotcha](#a-quick-init-gotcha)
+- [Benchmarks](#benchmarks)
+- [Memory Ordering](#memory-ordering)
+    - [memory_order, the portable knob](#memory-order-the-portable-knob)
+    - [The SB litmus test](#the-sb-litmus-test)
+    - [Fixing it with a fence](#fixing-it-with-a-fence)
+    - [The std::atomic equivalent of mfence](#the-std-atomic-equivalent-of-mfence)
+    - [Release and acquire](#release-and-acquire)
+    - [Breaking it on ARM](#breaking-it-on-arm)
+- [The Ordering Ladder](#the-ordering-ladder)
+    - [Relaxed](#relaxed)
+    - [Acquire/Release](#acquire-release)
+    - [Sequential](#sequential)
+- [Conclusion](#conclusion)
+- [References](#references)
 
 ## Intro
 
@@ -898,7 +915,7 @@ Now let's make some changes to our program:
 ```
 
 We can see in the disassembly that `strb` changed to `stlrb` and `ldrb` to
-`ldarb`! This simple instruction change thats free for my 9700K costs actual
+`ldarb`! This simple instruction change that's free for my 9700K costs actual
 hardware on the RPI.
 
 ![ARM Producer Release Consumer Acquire](arm-producer-consumer-rel-acq.png)
@@ -940,12 +957,12 @@ specified was never implemented correctly.
 
 ## Conclusion
 
-### Atomicity and Ordering Are Two Different Things
+### Atomicity and ordering are two different things
 
 Atomicity is the `LOCK` prefix, bounded exclusive ownership of a cache line through an entire RMW, so no update is lost and no value is torn. Ordering is a *separate* axis, how an
 operation constrains the memory accesses around it.
 
-### x86 (TSO) Does Most of the Ordering for Free, and That’s a Trap
+### x86 (TSO) does most of the ordering for free, and that's a trap
 
 Store-release and load-acquire are just plain `mov`s here, and the only reorder
 the hardware permits is StoreLoad, which a single fence fixes. The danger is
@@ -954,7 +971,7 @@ on your x86 box*, then explodes on ARM. The annotations aren't decoration,
 they're what makes the code portable and what tells the compiler the truth about
 your intent.
 
-### std::atomic Is the Portable Abstraction Over Both
+### std::atomic is the portable abstraction over both
 
 It emits the `LOCK`
 prefix for atomicity, and exactly the barriers (often zero, on x86) your chosen
@@ -962,7 +979,7 @@ prefix for atomicity, and exactly the barriers (often zero, on x86) your chosen
 hand-rolled, and its `seq_cst` fence to a `lock or` standing in for our
 `mfence`.
 
-### Lock-Free Is a Progress Guarantee
+### Lock-free is a progress guarantee
 
 `lock xadd` is lock-free, its serialization is bounded and can't block other threads
 indefinitely. A mutex isn't, because a suspended lock-holder stalls everyone.
@@ -984,7 +1001,7 @@ CppCon 2017](https://www.youtube.com/watch?v=ZQFzMfHIxng)
 5. [Wikipedia, MESI protocol](https://en.wikipedia.org/wiki/MESI_protocol)
 6. [felixcloutier, `LOCK` prefix](https://www.felixcloutier.com/x86/lock)
 7. [felixcloutier, `XADD`](https://www.felixcloutier.com/x86/xadd)
-8. AMD64 Architecture Programmer's Manual, vol 2 (System Programming), rev 3.07, Sept 2002, on locked operations and the write buffer (pp ~194-205)
+8. (Hard-copy) AMD64 Architecture Programmer's Manual, vol 2 (System Programming), rev 3.07, Sept 2002, on locked operations and the write buffer (pp ~194-205)
 9. [Intel, Implementing Scalable Atomic Locks for Multi-Core Intel EM64T and IA32 Architectures](https://web.archive.org/web/20090227095314/http://software.intel.com/en-us/articles/implementing-scalable-atomic-locks-for-multi-core-intel-em64t-and-ia32-architectures)
 10. [Stack Overflow, on the `LOCK#` signal](https://stackoverflow.com/a/65681049)
 11. [x86 instruction reference, `LOCK`-prefixable instructions](https://asm-docs.microagi.org/x86/lock.html)
