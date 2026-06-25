@@ -63,7 +63,7 @@
 
 (define my-buttons
   (list (button "uiop1.png" "wasdhjkl.xyz")
-        (button "uiop2.png" "wasdhjkl.xyz")))
+        (button "uiop1.gif" "wasdhjkl.xyz")))
 
 (define buttons
   (list (button "neovim.gif"      "neovim.io")
