@@ -66,7 +66,8 @@
         (button "uiop1.gif" "wasdhjkl.xyz")))
 
 (define friends-buttons
-  (list (button "luuumine.gif" "luuumine.com")))
+  (list (button "mel.gif" "melqtx.com")
+        (button "luuumine.gif" "luuumine.com")))
 
 (define buttons
   (list (button "neovim.gif"      "neovim.io")
