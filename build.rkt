@@ -65,6 +65,9 @@
   (list (button "uiop1.png" "wasdhjkl.xyz")
         (button "uiop1.gif" "wasdhjkl.xyz")))
 
+(define friends-buttons
+  (list (button "luuumine.gif" "luuumine.com")))
+
 (define buttons
   (list (button "neovim.gif"      "neovim.io")
         (button "nix.png"         "nixos.org")
@@ -107,6 +110,7 @@
          ,@body
          (div (@ (class "buttons-border")))
          ,(buttons-xexp my-buttons)
+         ,(buttons-xexp friends-buttons)
          ,(buttons-xexp buttons)
          ,(footer-xexp footer-links
                        (footer-license
