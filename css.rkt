@@ -174,7 +174,7 @@
                     #:border (,border-width solid ,color-dark)]
       [|.highlight pre| #:margin (0 auto 0)
                         #:line-height ,line-height-code
-                        #:color ,color-code
+                        #:color ,color-dim
                         ;#:white-space pre-wrap
                         ;#:word-break break-all
                         #:padding ,space-sm]
@@ -205,6 +205,8 @@
       [|.buttons a| #:line-height 0]
       [|@media (max-width: 680px)|
                [|.buttons| #:max-width |100%|]]
+
+      [|#contact p| #:margin-bottom ,space-sm]
 
       [footer #:margin-top ,space-md
               #:padding-top ,space-sm
