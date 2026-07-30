@@ -1,0 +1,211 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="kernels / networking / offensive security / nix btw / nvim btw"><meta name="theme-color" content="#000000"><link rel="canonical" href="https://wasdhjkl.xyz/blog/why-you-cant-just-download-a-thought/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&#38;display=swap" rel="stylesheet"><style>.highlight .hll { background-color: #6e7681 }
+.highlight { background: transparent; color: #D4D2C8 }
+.highlight .c { color: #7E8AA1 } /* Comment */
+.highlight .err { color: #F88F7F } /* Error */
+.highlight .esc { color: #D4D2C8 } /* Escape */
+.highlight .g { color: #D4D2C8 } /* Generic */
+.highlight .k { color: #FFAD66 } /* Keyword */
+.highlight .l { color: #D5FF80 } /* Literal */
+.highlight .n { color: #D4D2C8 } /* Name */
+.highlight .o { color: #FFAD66 } /* Operator */
+.highlight .x { color: #D4D2C8 } /* Other */
+.highlight .p { color: #D4D2C8 } /* Punctuation */
+.highlight .ch { color: #F88F7F; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #7E8AA1 } /* Comment.Multiline */
+.highlight .cp { color: #FFAD66; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #7E8AA1 } /* Comment.PreprocFile */
+.highlight .c1 { color: #7E8AA1 } /* Comment.Single */
+.highlight .cs { color: #7E8AA1; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #F88F7F; background-color: #3D1E20 } /* Generic.Deleted */
+.highlight .ge { color: #D4D2C8; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #D4D2C8 } /* Generic.EmphStrong */
+.highlight .gr { color: #F88F7F } /* Generic.Error */
+.highlight .gh { color: #D4D2C8 } /* Generic.Heading */
+.highlight .gi { color: #6AD4AF; background-color: #19362C } /* Generic.Inserted */
+.highlight .go { color: #7E8AA1 } /* Generic.Output */
+.highlight .gp { color: #D4D2C8 } /* Generic.Prompt */
+.highlight .gs { color: #D4D2C8; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #D4D2C8 } /* Generic.Subheading */
+.highlight .gt { color: #F88F7F } /* Generic.Traceback */
+.highlight .kc { color: #FFAD66 } /* Keyword.Constant */
+.highlight .kd { color: #FFAD66 } /* Keyword.Declaration */
+.highlight .kn { color: #FFAD66 } /* Keyword.Namespace */
+.highlight .kp { color: #FFAD66 } /* Keyword.Pseudo */
+.highlight .kr { color: #FFAD66 } /* Keyword.Reserved */
+.highlight .kt { color: #73D0FF } /* Keyword.Type */
+.highlight .ld { color: #D5FF80 } /* Literal.Date */
+.highlight .m { color: #DFBFFF } /* Literal.Number */
+.highlight .s { color: #D5FF80 } /* Literal.String */
+.highlight .na { color: #FFD173 } /* Name.Attribute */
+.highlight .nb { color: #FFD173 } /* Name.Builtin */
+.highlight .nc { color: #73D0FF } /* Name.Class */
+.highlight .no { color: #FFD173 } /* Name.Constant */
+.highlight .nd { color: #7E8AA1; font-weight: bold; font-style: italic } /* Name.Decorator */
+.highlight .ni { color: #95E6CB } /* Name.Entity */
+.highlight .ne { color: #73D0FF } /* Name.Exception */
+.highlight .nf { color: #FFD173 } /* Name.Function */
+.highlight .nl { color: #D4D2C8 } /* Name.Label */
+.highlight .nn { color: #D4D2C8 } /* Name.Namespace */
+.highlight .nx { color: #D4D2C8 } /* Name.Other */
+.highlight .py { color: #FFD173 } /* Name.Property */
+.highlight .nt { color: #5CCFE6 } /* Name.Tag */
+.highlight .nv { color: #D4D2C8 } /* Name.Variable */
+.highlight .ow { color: #FFAD66 } /* Operator.Word */
+.highlight .pm { color: #D4D2C8 } /* Punctuation.Marker */
+.highlight .w { color: #D4D2C8 } /* Text.Whitespace */
+.highlight .mb { color: #DFBFFF } /* Literal.Number.Bin */
+.highlight .mf { color: #DFBFFF } /* Literal.Number.Float */
+.highlight .mh { color: #DFBFFF } /* Literal.Number.Hex */
+.highlight .mi { color: #DFBFFF } /* Literal.Number.Integer */
+.highlight .mo { color: #DFBFFF } /* Literal.Number.Oct */
+.highlight .sa { color: #F29E74 } /* Literal.String.Affix */
+.highlight .sb { color: #D5FF80 } /* Literal.String.Backtick */
+.highlight .sc { color: #D5FF80 } /* Literal.String.Char */
+.highlight .dl { color: #D5FF80 } /* Literal.String.Delimiter */
+.highlight .sd { color: #7E8AA1 } /* Literal.String.Doc */
+.highlight .s2 { color: #D5FF80 } /* Literal.String.Double */
+.highlight .se { color: #95E6CB } /* Literal.String.Escape */
+.highlight .sh { color: #D5FF80 } /* Literal.String.Heredoc */
+.highlight .si { color: #95E6CB } /* Literal.String.Interpol */
+.highlight .sx { color: #95E6CB } /* Literal.String.Other */
+.highlight .sr { color: #95E6CB } /* Literal.String.Regex */
+.highlight .s1 { color: #D5FF80 } /* Literal.String.Single */
+.highlight .ss { color: #DFBFFF } /* Literal.String.Symbol */
+.highlight .bp { color: #5CCFE6 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #FFD173 } /* Name.Function.Magic */
+.highlight .vc { color: #D4D2C8 } /* Name.Variable.Class */
+.highlight .vg { color: #D4D2C8 } /* Name.Variable.Global */
+.highlight .vi { color: #D4D2C8 } /* Name.Variable.Instance */
+.highlight .vm { color: #D4D2C8 } /* Name.Variable.Magic */
+.highlight .il { color: #DFBFFF } /* Literal.Number.Integer.Long */
+*{box-sizing:border-box;}body{margin:0 auto;padding:1.5rem 1rem 1.5rem;background:#000000;color:#bebebe;font-family:"Space Grotesk";overflow-x:hidden;font-size:1.15rem;line-height:1.6;max-width:64rem;}a{color:#7e8aa1;text-decoration:underline;}a:hover{color:#8e9ab1;text-decoration:underline;}img{image-rendering:auto;max-width:100%;margin-bottom:1.5rem;}nav{display:flex;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1d1d1d;}nav .art{color:#bebebe;font-size:1px;margin:0;text-decoration:none;align-self:flex-end;}.links{align-self:flex-end;margin-left:0.5rem;}.links span{font-weight:600;margin-bottom:0.5rem;}.links a{margin-right:0.5rem;font-size:1rem;display:flex;color:#5e5e5e;text-align:left;text-decoration:none;letter-spacing:0.05rem;flex-direction:column;line-height:1;font-weight:400;}.links a:hover{color:#5e5e5e;text-decoration:underline;}.links div{display:flex;}.art{display:block;width:max-content;max-width:100%;margin:0 auto;white-space:pre;font-size:clamp(1px, 2vw, 4px);line-height:0.85;overflow:hidden;}big{text-align:center;display:block;margin:0.5rem 0 0;font-size:1.65rem;font-weight:600;letter-spacing:0.05rem;}small{margin:0.25rem 0 0.25rem;display:block;text-align:center;font-size:1rem;color:#5e5e5e;}h1{margin:0;font-size:1.65rem;font-weight:600;}h2{margin:0 0 0.25rem;font-size:1.65rem;position:relative;font-weight:600;}h3, h4{margin:0 0 0.25rem;font-size:1.4rem;position:relative;font-weight:600;}h2 a, h3 a, h4 a{color:inherit;text-decoration:none;}h2 a::after, h3 a::after, h4 a::after{content:"§ ";color:#cecece;position:absolute;left:-1.2rem;opacity:0;}h2 a:hover, h3 a:hover, h4 a:hover{text-decoration:underline;color:#cecece;}h2 a:hover::after, h3 a:hover::after, h4 a:hover::after{opacity:1;}p{margin:0 0 1.5rem;}ul{margin:0 1rem 1.5rem;padding-left:1rem;}ul ul{margin-bottom:0;}blockquote{color:#9e9e9e;margin-left:1rem;padding:0 1rem 0;border-left:0.25rem solid #1d1d1d;}code{color:#7e8aa1;border:1px solid #1d1d1d;}.figure{display:flex;justify-content:center;}.caption{display:none;}#blog p{margin:0;}#blog .blog-list-end{margin:0 0 1rem;}.highlight{margin:0 0 1.5rem;background:transparent;overflow-x:auto;border:1px solid #1d1d1d;}.highlight pre{margin:0 auto 0;line-height:1.25;color:#5e5e5e;padding:0.5rem;}time{color:#5e5e5e;white-space:nowrap;}.new{color:#f88f7f;font-size:1rem;}.buttons-border{border-bottom:1px solid #1d1d1d;}.buttons{display:flex;flex-wrap:wrap;margin:0 auto;justify-content:center;gap:0.5rem;margin-top:1rem;max-width:60%;}.buttons + .buttons{border-top:none;margin-top:0.5rem;padding-top:0.5rem;}.buttons img{image-rendering:pixelated;display:block;margin-bottom:0;width:88px;height:31px;border:0;}.buttons a{line-height:0;}@media (max-width: 680px){.buttons{max-width:100%;}}#contact p{margin-bottom:0.5rem;}footer{margin-top:1rem;padding-top:0.5rem;border-top:1px solid #1d1d1d;text-align:center;font-size:0.75rem;color:#5e5e5e;}footer a{color:#5e5e5e;text-decoration:none;}footer a:hover{color:#5e5e5e;}footer .sep{margin:0 0.1rem;}</style><title>why-you-cant-just-download-a-thought</title></head><nav><div class="links"><span>wasdhjkl.xyz</span><div><a href="/#about">about</a><a href="/#blog">blog</a><a href="/#contact">contact</a></div></div></nav><section id="why-you-cant-just-download-a-thought">
+<h1 id="why-you-cant-just-download-a-thought">Why You Can&rsquo;t Just Download a Thought</h1>
+<p>
+ <time datetime="2026-07-29">Jul, 29 2026</time></p>
+<h2 id="intro"><a href="#intro">Intro</a></h2>
+<p>My thoughts outrun my mouth. Not in a fun way. In a &ldquo;I have a complete model of the thing in my head and the pipe out of my skull runs at maybe 150 words a minute&rdquo; way. Every time I try to explain something I actually care about, I watch it get flattened on the way out, then watch the person on the other end reconstruct something only somewhat adjacent to it and nod.</p>
+<p>Going in, I had a clean theory about why: <strong>language is a lossy compression of thought, so build a better one.</strong> But this is wrong, in a way that took me a while to see, and the specific shape of the wrongness turned out to be more interesting than the original complaint.</p>
+<p>The thing that kicked this off is Fedorenko, Piantadosi &amp; Gibson&rsquo;s <em>Language is primarily a tool for communication rather than thought</em><sup><a href="#g2189-footnote-1-definition" name="g2189-footnote-1-return">1</a></sup>. The claim: the brain&rsquo;s language network is required to comprehend and produce language, and is not required to reason. Two lines of evidence, and they&rsquo;re worth stating because the headline sounds like philosophy and it isn&rsquo;t.</p>
+<p>First, people with global aphasia, whose language network is wrecked, can still do arithmetic, play chess, follow causal chains, and pass theory-of-mind tasks. Second, fMRI shows the language network sitting quiet during math, formal logic, and even reading source code. Language is how thought gets in and out. It is not the thinking itself.</p>
+<div class="figure"><img src="language-network-relationship-to-other-cognitive-networks.png" alt="The language network and its relationship to other cognitive networks">
+ <p class="caption">The language network and its relationship to other cognitive networks</p></div>
+<p>The thesis of this post:</p>
+<blockquote>
+ <p>Language isn&rsquo;t a lossy compression of thought. It&rsquo;s a way of causing a related-enough idea to happen inside a head that was built differently from yours, and the vagueness is what makes that possible at all. My actual problem was never precision. It&rsquo;s rate.</p></blockquote>
+<p>Everything below is me getting from the first sentence to the second.</p>
+<h2 id="350-years-of-trying-to-fix-language"><a href="#350-years-of-trying-to-fix-language">350 years of trying to fix language</a></h2>
+<p>Leibniz wanted a <em>characteristica universalis</em>, a symbol system where every concept decomposes into primitives, paired with a <em>calculus ratiocinator</em>, a mechanical procedure for reasoning over it<sup><a href="#g2189-footnote-2-definition" name="g2189-footnote-2-return">2</a></sup>. The pitch is one of the best lines in the history of philosophy: two philosophers in a dispute would stop arguing, pick up their pens, and say <em>calculemus</em>. Let us calculate. Disagreements become arithmetic, errors become visible at a glance.</p>
+<p>Every serious attempt since has run the same trajectory:</p>
+<ul>
+ <li>Frege built the <em>Begriffsschrift</em><sup><a href="#g2189-footnote-3-definition" name="g2189-footnote-3-return">3</a></sup>, which is real and load-bearing and became modern formal logic. It also does not let you say &ldquo;I miss my dog&rdquo;</li>
+ <li>Wittgenstein wrote the <em>Tractatus</em><sup><a href="#g2189-footnote-4-definition" name="g2189-footnote-4-return">4</a></sup>, claiming propositions are logical pictures of facts, then spent the rest of his career personally demolishing it</li>
+ <li>Carnap tried to reconstruct all of experience from logical primitives in the <em>Aufbau</em><sup><a href="#g2189-footnote-5-definition" name="g2189-footnote-5-return">5</a></sup> and it didn&rsquo;t hold</li>
+ <li>Loglan<sup><a href="#g2189-footnote-6-definition" name="g2189-footnote-6-return">6</a></sup> and Lojban<sup><a href="#g2189-footnote-7-definition" name="g2189-footnote-7-return">7</a></sup> got built, got communities, and did not get native speakers who think in them</li></ul>
+<p>Notice what actually happened. Formal logic <strong>worked</strong>, and it&rsquo;s one of the best things we have. What didn&rsquo;t work is the part where it swallows meaning. Frege got the calculus and not the characteristic. Every project on this list built something useful and then failed, which is a strong hint that the failure is structural rather than a series of unlucky attempts.</p>
+<h2 id="the-whorf-detour-and-why-its-a-dead-end"><a href="#the-whorf-detour-and-why-its-a-dead-end">The Whorf detour, and why it&rsquo;s a dead end</a></h2>
+<p>Before the actual argument, the objection everyone raises here, because if I don&rsquo;t address it a linguist will and they&rsquo;ll be right to.</p>
+<p><strong>Linguistic relativity</strong>, the Sapir-Whorf hypothesis<sup><a href="#g2189-footnote-8-definition" name="g2189-footnote-8-return">8</a></sup>, comes in two strengths. Strong: language determines thought, you cannot think what your language can&rsquo;t express. Weak: language nudges thought, habitual categories make some distinctions cheaper to notice.</p>
+<p>Strong Whorf is dead. It&rsquo;s been dead for decades. The evidence against it is partly the same evidence from the Fedorenko paper: aphasics who lost language and kept reasoning are a direct refutation of &ldquo;no language, no thought.&rdquo; Weak Whorf survives, with real effects in color discrimination and spatial reasoning, and those effects are small and task-specific.</p>
+<p>This matters because <strong>&ldquo;build a better language and you&rsquo;ll think better&rdquo; is strong Whorf wearing an engineering hat.</strong> If I&rsquo;d noticed that earlier I&rsquo;d have saved myself a section. The whole conlang-as-cognitive-upgrade pitch inherits a hypothesis the field abandoned. Keep it in your pocket, it&rsquo;s about to explain Ithkuil.</p>
+<h2 id="no-two-brains-were-built-to-the-same-spec"><a href="#no-two-brains-were-built-to-the-same-spec">No two brains were built to the same spec</a></h2>
+<p>Here&rsquo;s the reframe that made it click, and it comes from my own code, so give me one paragraph of programming and then I&rsquo;ll drop it.</p>
+<p>I wrote a library called libpak<sup><a href="#g2189-footnote-9-definition" name="g2189-footnote-9-return">9</a></sup> that packs data into a compact binary message so one machine can hand it to another. It works for exactly one reason: both machines were built from the same description of what that message looks like. Same fields, same order, same sizes. Without the shared description the message isn&rsquo;t degraded, it&rsquo;s meaningless. The receiver gets a run of bytes and has no way to know which byte was which.</p>
+<p>Now the point, and this is the whole post. <strong>Two brains have no shared description.</strong> Every brain assembles its own private version of every concept out of its developmental history, its sensory quirks, and whatever happened to it at an early age. &ldquo;Grief&rdquo; in your head and &ldquo;grief&rdquo; in mine are not the same thing stored slightly differently. They are different things that happen to have the same name.</p>
+<p>So a word is not a container that meaning travels inside. A word is a <strong>label</strong>, and the thing hanging off that label is different in every person you say it to. You say <em>grief</em>, and the other person doesn&rsquo;t receive your version. They go look up theirs and run that. This is why poetry works and why arguments don&rsquo;t.</p>
+<blockquote>
+ <p>For the programmers, the compressed version: the word is the header file, the meaning is the implementation, and everyone links against a different <code>.so</code>. That&rsquo;s the whole thing, and it&rsquo;s where the original title of this post came from. I&rsquo;m going to stop talking like that now, because the argument doesn&rsquo;t need it.</p></blockquote>
+<p>Which flips the ambiguity complaint on its head&hellip; Language is vague <strong>because it has to be.</strong> Any system for getting an idea from one head into a differently built head is going to be approximate, because there is nothing shared to be exact <em>about</em>. Strip the vagueness out and you get something that transmits perfectly to exactly one person, which is just&hellip; having a thought.</p>
+<p>I want to be clear that <strong>I did not invent this.</strong> Piantadosi, Tily &amp; Gibson made the formal version of the argument in 2012<sup><a href="#g2189-footnote-10-definition" name="g2189-footnote-10-return">10</a></sup>: any efficient communication system will be ambiguous, given that context carries information about meaning. If the listener can figure out what you meant from context for free, then spelling it out is wasted effort. Ambiguity isn&rsquo;t a defect the system failed to remove, it&rsquo;s how the system stays cheap.</p>
+<p>There&rsquo;s a Pareto frontier here<sup><a href="#g2189-footnote-11-definition" name="g2189-footnote-11-return">11</a></sup> and natural language sits on it. The tradeoff is complexity (how expensive the language is to learn and hold in your head) against informativeness (how precisely its words pin down what you meant). You can move along the curve. You cannot get both for free. And this goes all the way down into grammar: in real languages, words that depend on each other sit measurably closer together than chance would predict, across 37 languages<sup><a href="#g2189-footnote-12-definition" name="g2189-footnote-12-return">12</a></sup>, because holding a sentence open while you wait for the other half is expensive.</p>
+<div class="figure"><img src="pareto-curve.png" alt="Parteo Curve">
+ <p class="caption">Parteo Curve</p></div>
+<p>&ldquo;Alfred gave Batman a briefing.&rdquo; Who&rsquo;s Alfred, what&rsquo;s he wearing, was it in person or over comms, briefing on what. Every word drops context you have to reconstruct. And it works fine, because you already know who Alfred is. The sentence isn&rsquo;t transmitting the scene, it&rsquo;s <strong>naming a scene you can already build.</strong> Same reason &ldquo;can you put the thing away&rdquo; works. Shared context isn&rsquo;t a crutch language leans on, it&rsquo;s the ground language stands on.</p>
+<h2 id="ithkuil-is-the-control-experiment"><a href="#ithkuil-is-the-control-experiment">Ithkuil is the control experiment</a></h2>
+<p>If the theory is &ldquo;our language is too vague, build a sharper one,&rdquo; Ithkuil is the strongest version of that attempt anyone has actually shipped. It&rsquo;s explicitly designed for depth, precision, and conciseness, using a matrix of grammatical categories meant to make explicit what natural languages leave implicit<sup><a href="#g2189-footnote-13-definition" name="g2189-footnote-13-return">13</a></sup><sup><a href="#g2189-footnote-14-definition" name="g2189-footnote-14-return">14</a></sup>.</p>
+<p>And it is unusable. Not according to me, according to its own author, who says the only part he&rsquo;s fluent in is the morphology and that he still looks up rules when writing<sup><a href="#g2189-footnote-15-definition" name="g2189-footnote-15-return">15</a></sup>. That&rsquo;s the whole result. <strong>You can build the more complete language. You cannot pay the cost of learning it.</strong> Which is exactly what the Pareto framing predicts: he didn&rsquo;t beat the frontier, he moved along it, buying precision with complexity until the complexity ate the thing.</p>
+<p>David Peterson makes the complementary point in the Conlang Manifesto<sup><a href="#g2189-footnote-16-definition" name="g2189-footnote-16-return">16</a></sup>: judged on utility, language creation is pointless, and the real case for it is art. Which lands uncomfortably well here. Poetry and literature aren&rsquo;t decoration bolted onto a communication system. They&rsquo;re what you do <strong>because</strong> the system is approximate. You&rsquo;re not transmitting a meaning, you&rsquo;re building a stimulus that makes the other person&rsquo;s own version of things produce something close to yours. A metaphor is a set of words picked so that whatever they already have in their head lands near whatever you have in yours.</p>
+<blockquote>
+ <p>The strongest counterexample to the whole &ldquo;you can&rsquo;t beat the frontier&rdquo; claim is notation. Arabic numerals vs Roman numerals is a real representational upgrade that made previously-hard thinking easy, and so is musical notation, and so is Feynman diagrams! Why do those work when Ithkuil doesn&rsquo;t? Could it be that they are domain-specific and small? They don&rsquo;t try to cover all of meaning like Ithkuil!</p></blockquote>
+<h2 id="what-i-actually-want-is-a-rate-problem"><a href="#what-i-actually-want-is-a-rate-problem">What I actually want is a rate problem</a></h2>
+<p>Here&rsquo;s the thing I had wrong for most of the time I was writing this.</p>
+<p>In principle, two people with unlimited patience <strong>can</strong> converge. You go layer by layer, you check understanding, you build the shared context up from nothing. This is what teaching is. It demonstrably works. It&rsquo;s just brutally slow (in my experience), and both parties have to want it (which makes a beautiful conversation).</p>
+<p>So my complaint was never &ldquo;language is too vague to hold my thought.&rdquo; The complaint is &ldquo;I can get <code>n</code> words a minute out of my mouth and I have a dissertation in my head.&rdquo; That&rsquo;s a <strong>rate</strong> problem, not a <strong>precision</strong> problem. And that distinction decides which technologies are even relevant.</p>
+<h2 id="which-brings-me-to-bcis"><a href="#which-brings-me-to-bcis">Which brings me to BCIs</a></h2>
+<p>A brain-computer interface is a faster wire. It doesn&rsquo;t do anything about the fact that the two ends were built differently. So &ldquo;download the thought and improve on it instantly&rdquo; is the same category error as Ithkuil, one layer down. Worth knowing what&rsquo;s actually real, roughly in order of how well it works.</p>
+<h3 id="motor-decoding"><a href="#motor-decoding">Motor decoding</a></h3>
+<p>Solid, unglamorous, real since BrainGate in the 2000s<sup><a href="#g2189-footnote-17-definition" name="g2189-footnote-17-return">17</a></sup>. Cursor control, robotic arms. It&rsquo;s tractable because the signal is close to the output: you&rsquo;re reading an intended movement off motor cortex, and an intended movement is already almost a command.</p>
+<h3 id="speech-neuroprostheses"><a href="#speech-neuroprostheses">Speech neuroprostheses</a></h3>
+<p>Also real, and the detail that matters is <em>what</em> they decode. They read the articulatory motor plan, the muscle commands you&rsquo;d have sent to your vocal tract. That&rsquo;s downstream of everything interesting. It&rsquo;s a keyboard made of neurons. Meta&rsquo;s Brain2Qwerty<sup><a href="#g2189-footnote-18-definition" name="g2189-footnote-18-return">18</a></sup> does a non-invasive version for typing, which is impressive engineering but requires you to sit inside a magnetically shielded MEG room.</p>
+<h3 id="semantic-decoding"><a href="#semantic-decoding">Semantic decoding</a></h3>
+<p>Tang and Huth&rsquo;s fMRI decoder<sup><a href="#g2189-footnote-19-definition" name="g2189-footnote-19-return">19</a></sup> is the interesting one, and the first thing here that isn&rsquo;t just reading motor commands. It reconstructs continuous language from the brain&rsquo;s representation of <em>meaning</em>, gist-level rather than word-for-word, using a language model as a prior over what you plausibly meant. Two details from that work matter more than the headline: it took roughly 16 hours of training data <em>per person</em>, and a decoder trained on one person did not work on anyone else. Train on me, run on you, get nothing.</p>
+<p>That second result is my entire argument showing up as an experimental finding. Each brain encodes meaning in its own private way, and a reader built for one brain is useless pointed at another. I&rsquo;d have stopped there and called it a day. Except they kept going.</p>
+<h3 id="the-2025-follow-up-is-the-actual-punchline"><a href="#the-2025-follow-up-is-the-actual-punchline">The 2025 follow-up is the actual punchline</a></h3>
+<p>Tang and Huth got cross-participant decoding working<sup><a href="#g2189-footnote-20-definition" name="g2189-footnote-20-return">20</a></sup>. The method: record both brains responding to the same stimuli, including silent movies with no language in them at all, learn the mapping between the two, then run the first person&rsquo;s decoder on the second.</p>
+<p>Read that again, because it isn&rsquo;t a refutation of the problem, it&rsquo;s a confirmation with a receipt. Cross-brain decoding became possible <strong>only</strong> by sitting two people in front of the same things and learning how each one&rsquo;s private encoding lines up with the other&rsquo;s. They didn&rsquo;t skip the shared groundwork. They built it. Which is, notice, language acquisition, automated. You still pay the cost. You just pay it in scanner hours instead of in childhood.</p>
+<div class="figure"><img src="cross-participant-decoding.jpg" alt="Cross-participant Decoding">
+ <p class="caption">Cross-participant Decoding</p></div>
+<h3 id="writing-into-a-brain"><a href="#writing-into-a-brain">Writing into a brain</a></h3>
+<p>Barely a thing. Stimulation gets you crude tactile sensation and phosphenes, dots of light. There is no known operation for &ldquo;insert proposition,&rdquo; and it isn&rsquo;t obvious what that would even mean, since the thought would have to arrive already expressed in whatever private form that particular brain uses. Which is the same wall as before, approached from the other side.</p>
+<blockquote>
+ <p>One correction to a thing I believed going in. I started with the Broca&rsquo;s-does-production / Wernicke&rsquo;s-does-comprehension model, which is a caricature. Lesion-symptom mapping<sup><a href="#g2189-footnote-21-definition" name="g2189-footnote-21-return">21</a></sup> and the modern language network work both make the localization far messier than the textbook picture. Don&rsquo;t build your mental model of BCI targets on a diagram from 1874.</p></blockquote>
+<h2 id="so-what-does-this-actually-get-me"><a href="#so-what-does-this-actually-get-me">So what does this actually get me</a></h2>
+<p>A mature speech prosthesis that beats spoken word rate is plausible on a normal engineering timeline. It attacks the exact bottleneck I have. It buys me a faster mouth.</p>
+<p>It does not buy mutual understanding, and I think I finally see why that isn&rsquo;t a temporary limitation waiting on electrode count. Consider that with a large language model we have <strong>total</strong> access: every number inside it, the ability to freeze it, rerun the same input, delete pieces and watch what breaks, and a full record of what it was trained on. And &ldquo;what does this part of the model actually mean&rdquo; is still an open research field. That&rsquo;s the easy version of the problem&hellip; the brain version has 86 billion neurons, recordings too noisy to reliably tell which cell fired, no way to rerun yesterday, and no answer key.</p>
+<p>And if a faster mouth is all it is, the receiver becomes the bottleneck instantly. There&rsquo;s no point emitting at 500 words a minute into someone parsing at 150. You&rsquo;d need the comprehension side too, and now you&rsquo;re back to lining up two different heads, and the only known way to do that is to point them at the same things for a long time. Which is just&hellip; knowing each other for a long time.</p>
+<p>The honest first step isn&rsquo;t neural at all. It&rsquo;s a translator that works <em>on top of</em> language rather than replacing it: something that knows a specific listener well enough to re-say your idea in the words, structure, and examples that particular person already has. Not a better language. A rewrite of the one we have, per listener. Which, if you want to be depressing about it, is what good teachers and good writers have always done by hand.</p>
+<h2 id="conclusion"><a href="#conclusion">Conclusion</a></h2>
+<h3 id="the-build-a-better-language-branch-has-been-dead-for-350-years"><a href="#the-build-a-better-language-branch-has-been-dead-for-350-years">The build-a-better-language branch has been dead for 350 years</a></h3>
+<p>Leibniz, Frege, Carnap, Lojban, Ithkuil. Every attempt to build a language that can&rsquo;t be misunderstood either narrows into formal logic, which works and can&rsquo;t carry meaning, or buys precision with learning cost until nobody can learn it. That isn&rsquo;t bad luck, it&rsquo;s the shape of the problem.</p>
+<h3 id="ambiguity-is-load-bearing"><a href="#ambiguity-is-load-bearing">Ambiguity is load-bearing</a></h3>
+<p>Any efficient communication system will be ambiguous, because context is informative and spelling out what context already supplies is wasted effort. Natural language sits on the Pareto frontier. It is not a bad system, it&rsquo;s a system solving a harder problem than I gave it credit for.</p>
+<h3 id="my-problem-was-rate-not-precision"><a href="#my-problem-was-rate-not-precision">My problem was rate, not precision</a></h3>
+<p>Given unlimited time, two people can converge on anything. That&rsquo;s what teaching is. The failure mode I actually hit isn&rsquo;t &ldquo;English can&rsquo;t express this,&rdquo; it&rsquo;s &ldquo;building the shared context is slow and I get impatient.&rdquo; Different problem, different fix.</p>
+<h3 id="a-bci-is-a-faster-wire-not-shared-understanding"><a href="#a-bci-is-a-faster-wire-not-shared-understanding">A BCI is a faster wire, not shared understanding</a></h3>
+<p>It genuinely attacks the rate problem, which is my problem, which is why I still find them interesting. It does not get you understanding. The one result that moved toward cross-brain decoding got there by building shared ground between two people first, which is language acquisition with better instruments.</p>
+<h3 id="the-practical-takeaway"><a href="#the-practical-takeaway">The practical takeaway</a></h3>
+<p>When I can&rsquo;t explain something, the failure is almost never that English is too lossy. It&rsquo;s that I haven&rsquo;t built enough shared context yet. That&rsquo;s fixable, the fix is boring, and it doesn&rsquo;t require drilling a hole in anyone!</p>
+<h2 id="references"><a href="#references">References</a></h2>
+<div class="footnotes">
+ <ol>
+  <li id="g2189-footnote-1-definition" class="footnote-definition">
+   <p><a href="https://www.nature.com/articles/s41586-024-07522-w">Fedorenko, Piantadosi &amp; Gibson, &ldquo;Language is primarily a tool for communication rather than thought,&rdquo; Nature 630 (2024)</a>&nbsp;<a href="#g2189-footnote-1-return">↩</a></p></li>
+  <li id="g2189-footnote-2-definition" class="footnote-definition">
+   <p><a href="https://www.youtube.com/watch?v=wNlEQnFhANU">The genius who attempted to unify all knowledge (@0I00I00I)</a>&nbsp;<a href="#g2189-footnote-2-return">↩</a></p></li>
+  <li id="g2189-footnote-3-definition" class="footnote-definition">
+   <p><a href="https://dn720006.ca.archive.org/0/items/gottlob-frege-begriffsschrift-english/Gottlob%20Frege%20-%20Begriffsschrift%20%28English%29_text.pdf">Gottlob Frege, Begriffsschrift (1879), English translation</a>&nbsp;<a href="#g2189-footnote-3-return">↩</a></p></li>
+  <li id="g2189-footnote-4-definition" class="footnote-definition">
+   <p><a href="https://www.gutenberg.org/files/5740/5740-pdf.pdf">Ludwig Wittgenstein, Tractatus Logico-Philosophicus (1922)</a>&nbsp;<a href="#g2189-footnote-4-return">↩</a></p></li>
+  <li id="g2189-footnote-5-definition" class="footnote-definition">
+   <p><a href="https://www.phil.cmu.edu/projects/carnap/editorial/latex_pdf/1928-1e%20part1.pdf">Rudolf Carnap, The Logical Structure of the World, trans. Rolf A. George (1967)</a>&nbsp;<a href="#g2189-footnote-5-return">↩</a></p></li>
+  <li id="g2189-footnote-6-definition" class="footnote-definition">
+   <p><a href="https://loglan.org/">Loglan, James Cooke Brown, late 1950s</a>&nbsp;<a href="#g2189-footnote-6-return">↩</a></p></li>
+  <li id="g2189-footnote-7-definition" class="footnote-definition">
+   <p><a href="https://lojban.org/publications/cll/cll_v1.1_xhtml-no-chunks/">John Woldemar Cowan, The Complete Lojban Language</a>&nbsp;<a href="#g2189-footnote-7-return">↩</a></p></li>
+  <li id="g2189-footnote-8-definition" class="footnote-definition">
+   <p><a href="https://cgdoc.s3.amazonaws.com/Sapir_Whorf.pdf">The Sapir-Whorf Hypothesis</a>&nbsp;<a href="#g2189-footnote-8-return">↩</a></p></li>
+  <li id="g2189-footnote-9-definition" class="footnote-definition">
+   <p><a href="https://github.com/wasdhjklxyz/libpak">wasdhjklxyz/libpak</a>&nbsp;<a href="#g2189-footnote-9-return">↩</a></p></li>
+  <li id="g2189-footnote-10-definition" class="footnote-definition">
+   <p><a href="https://colala.berkeley.edu/papers/piantadosi2012communicative.pdf">Piantadosi, Tily &amp; Gibson, &ldquo;The communicative function of ambiguity in language,&rdquo; Cognition 122(3) (2012)</a>&nbsp;<a href="#g2189-footnote-10-return">↩</a></p></li>
+  <li id="g2189-footnote-11-definition" class="footnote-definition">
+   <p><a href="https://en.wikipedia.org/wiki/Pareto_front">Wikipedia, Pareto front</a>&nbsp;<a href="#g2189-footnote-11-return">↩</a></p></li>
+  <li id="g2189-footnote-12-definition" class="footnote-definition">
+   <p><a href="https://www.pnas.org/doi/10.1073/pnas.1502134112">Futrell, Mahowald &amp; Gibson, &ldquo;Large-scale evidence of dependency length minimization in 37 languages,&rdquo; PNAS 112(33) (2015)</a>&nbsp;<a href="#g2189-footnote-12-return">↩</a></p></li>
+  <li id="g2189-footnote-13-definition" class="footnote-definition">
+   <p><a href="https://www.ithkuil.net/00_intro.html">Ithkuil, Introduction</a>&nbsp;<a href="#g2189-footnote-13-return">↩</a></p></li>
+  <li id="g2189-footnote-14-definition" class="footnote-definition">
+   <p><a href="https://www.youtube.com/watch?v=3B_uGsgXKdk">What People Get Wrong About Language - The Ithkuil Fallacy</a>&nbsp;<a href="#g2189-footnote-14-return">↩</a></p></li>
+  <li id="g2189-footnote-15-definition" class="footnote-definition">
+   <p><a href="https://ithkuil.net/faqs.html">Ithkuil FAQs</a>&nbsp;<a href="#g2189-footnote-15-return">↩</a></p></li>
+  <li id="g2189-footnote-16-definition" class="footnote-definition">
+   <p><a href="https://dedalvs.com/notes/manifesto.php">David J. Peterson, The Conlang Manifesto</a>&nbsp;<a href="#g2189-footnote-16-return">↩</a></p></li>
+  <li id="g2189-footnote-17-definition" class="footnote-definition">
+   <p><a href="https://www.braingate.org/">BrainGate, Turning Thought Into Action</a>&nbsp;<a href="#g2189-footnote-17-return">↩</a></p></li>
+  <li id="g2189-footnote-18-definition" class="footnote-definition">
+   <p><a href="https://ai.meta.com/blog/brain2qwerty-brain-ai-human-communication/">Meta AI, Brain2Qwerty</a>&nbsp;<a href="#g2189-footnote-18-return">↩</a></p></li>
+  <li id="g2189-footnote-19-definition" class="footnote-definition">
+   <p><a href="https://www.nature.com/articles/s41593-023-01304-9">Tang, LeBel, Jain &amp; Huth, &ldquo;Semantic reconstruction of continuous language from non-invasive brain recordings,&rdquo; Nature Neuroscience 26 (2023)</a>&nbsp;<a href="#g2189-footnote-19-return">↩</a></p></li>
+  <li id="g2189-footnote-20-definition" class="footnote-definition">
+   <p><a href="https://pubmed.ncbi.nlm.nih.gov/39919742/">Tang &amp; Huth, &ldquo;Semantic language decoding across participants and stimulus modalities,&rdquo; Current Biology 35(5) (2025)</a>&nbsp;<a href="#g2189-footnote-20-return">↩</a></p></li>
+  <li id="g2189-footnote-21-definition" class="footnote-definition">
+   <p><a href="https://langneurosci.org/papers/bates03natneurosci.pdf">Bates et al., &ldquo;Voxel-based lesion-symptom mapping,&rdquo; Nature Neuroscience 6 (2003)</a>&nbsp;<a href="#g2189-footnote-21-return">↩</a></p></li></ol></div></section><div class="buttons-border"></div><div class="buttons"><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.png" alt="wasdhjkl.xyz"></a><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.gif" alt="wasdhjkl.xyz"></a></div><div class="buttons"><a href="https://melqtx.com"><img src="/buttons/mel.gif" alt="melqtx.com"></a><a href="https://luuumine.com"><img src="/buttons/luuumine.gif" alt="luuumine.com"></a></div><div class="buttons"><a href="https://neovim.io"><img src="/buttons/neovim.gif" alt="neovim.io"></a><a href="https://nixos.org"><img src="/buttons/nix.png" alt="nixos.org"></a><a href="https://archive.org"><img src="/buttons/IA.gif" alt="archive.org"></a><a href="https://ublockorigin.com"><img src="/buttons/ublock.png" alt="ublockorigin.com"></a><img src="/buttons/upallnight.gif" alt="up all night"><a href="https://firefox.com"><img src="/buttons/firefox4.gif" alt="firefox.com"></a><img src="/buttons/cookie-free.png" alt="cookie free"><a href="https://88x31.nl"><img src="/buttons/88x31.gif" alt="88x31.nl"></a><a href="https://en.wikipedia.org/wiki/Serial_Experiments_Lain"><img src="/buttons/lain.gif" alt="lain"></a><img src="/buttons/hasmile.gif" alt="have a smile"><a href="https://creativecommons.org/licenses/by-sa/4.0"><img src="/buttons/by-sa.png" alt="creativecommons.org/licenses/by-sa/4.0"></a></div><footer><a href="https://github.com/wasdhjklxyz">github</a><span class="sep"> · </span><a href="https://x.com/wasdhjklxyz">twitter</a><span class="sep"> · </span><a href="mailto:uiop@wasdhjkl.xyz">email</a><span class="sep"> · </span><a href="https://creativecommons.org/licenses/by-sa/4.0">© 2026 uiop. Licensed under CC BY-SA 4.0</a></footer></html>
