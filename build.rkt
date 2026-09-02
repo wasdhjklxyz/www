@@ -113,7 +113,7 @@
          (div (@ (class "buttons-border")))
          ,(buttons-xexp my-buttons)
          ,(buttons-xexp friends-buttons)
-         ,(buttons-xexp buttons)
+         ;,(buttons-xexp buttons)
          ,(footer-xexp footer-links
                        (footer-license
                          "creativecommons.org/licenses/by-sa/4.0"
