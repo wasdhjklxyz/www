@@ -106,7 +106,7 @@
  <li><a href="#the-fix">The Fix</a></li></ul>
 <h2 id="intro"><a href="#intro">Intro</a></h2>
 <p>For context: <a href="https://omarchy.org">Omarchy</a> is an Arch-based distro, maxed out with skid brainrot levels ricing that makes you laugh, and is I think almost entirely vibe coded.</p>
-<p>People were finding vulns left and riht and I felt a little fomo&hellip; so before I get into it, heres the thesis:</p>
+<p>People were finding vulns left and right and I felt a little fomo&hellip; so before I get into it, heres the thesis:</p>
 <blockquote>
  <p>The bug wasn&rsquo;t exotic. An unprivileged file&rsquo;s contents get spliced, unquoted, into a <code>sed</code> program that runs as root during a routine update. The only &ldquo;clever&rdquo; part is a GNU <code>sed</code> escape that walks straight through the filter that&rsquo;s supposed to stop it.</p></blockquote>
 <h2 id="recon"><a href="#recon">Recon</a></h2>
@@ -267,13 +267,14 @@ rm<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><sp
 <p>Drop that in <code>env.d</code> so the var is live for the whole session, reboot, and the next time the victim does the thing they&rsquo;re told/used to do/doing, root runs <code>id
 &gt; proof</code>.</p>
 <h2 id="root"><a href="#root">Root</a></h2>
-<pre><code>$ id
-uid=1000(uiop) gid=1000(uiop) groups=1000(uiop),998(wheel)
-# ...plant, reboot, apply the pending migration...
-$ cat ~/lpe/proof.txt
-uid=0(root) gid=0(root) groups=0(root)
-$ stat -c '%U' ~/lpe/proof.txt
-root</code></pre>
+<div class="highlight"><pre><span></span>$<span class="w"> </span>id
+<span class="nv">uid</span><span class="o">=</span><span class="m">1000</span><span class="o">(</span>uiop<span class="o">)</span><span class="w"> </span><span class="nv">gid</span><span class="o">=</span><span class="m">1000</span><span class="o">(</span>uiop<span class="o">)</span><span class="w"> </span><span class="nv">groups</span><span class="o">=</span><span class="m">1000</span><span class="o">(</span>uiop<span class="o">)</span>,998<span class="o">(</span>wheel<span class="o">)</span>
+<span class="c1"># ...plant, reboot, apply the pending migration...</span>
+$<span class="w"> </span>cat<span class="w"> </span>~/lpe/proof.txt
+<span class="nv">uid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span><span class="w"> </span><span class="nv">gid</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span><span class="w"> </span><span class="nv">groups</span><span class="o">=</span><span class="m">0</span><span class="o">(</span>root<span class="o">)</span>
+$<span class="w"> </span>stat<span class="w"> </span>-c<span class="w"> </span><span class="s1">'%U'</span><span class="w"> </span>~/lpe/proof.txt
+root
+</pre></div>
 <p>ヽ(°〇°)ﾉ</p>
 <h2 id="disclosure"><a href="#disclosure">Disclosure</a></h2>
 <p>Emailed <code>security@omarchy.org</code> with the affected files and line numbers, the before/after, and the minimal <code>id &gt; proof.txt</code> PoC.</p>

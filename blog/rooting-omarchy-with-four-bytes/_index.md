@@ -26,7 +26,7 @@ For context: [Omarchy](https://omarchy.org) is an Arch-based distro, maxed out
 with skid brainrot levels ricing that makes you laugh, and is I think almost
 entirely vibe coded.
 
-People were finding vulns left and riht and I felt a little fomo... so before I
+People were finding vulns left and right and I felt a little fomo... so before I
 get into it, heres the thesis:
 
 > The bug wasn't exotic. An unprivileged file's contents get spliced, unquoted,
@@ -347,7 +347,7 @@ next time the victim does the thing they're told/used to do/doing, root runs `id
 
 ## Root
 
-```
+```sh
 $ id
 uid=1000(uiop) gid=1000(uiop) groups=1000(uiop),998(wheel)
 # ...plant, reboot, apply the pending migration...
