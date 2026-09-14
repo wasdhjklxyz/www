@@ -375,4 +375,5 @@ I am now posting this blog since the patch is out
 deletes the entire fucking mechanism. `install/config/locate.sh` is gone. The
 migration is gone. lol
 
-> The commit keeps the reporter credit. "Reported by uiop / @wasdhjklxyz." :D
+> Check me out on the [Omarchy security credits
+> page](https://omarchy.org/security/credits/#:~:text=uiop)!
