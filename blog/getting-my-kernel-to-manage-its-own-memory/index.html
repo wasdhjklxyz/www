@@ -1,0 +1,659 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="kernels / networking / offensive security / nix btw / nvim btw"><meta name="theme-color" content="#000000"><link rel="canonical" href="https://wasdhjkl.xyz/blog/getting-my-kernel-to-manage-its-own-memory/"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&#38;display=swap" rel="stylesheet"><style>.highlight .hll { background-color: #6e7681 }
+.highlight { background: transparent; color: #D4D2C8 }
+.highlight .c { color: #7E8AA1 } /* Comment */
+.highlight .err { color: #F88F7F } /* Error */
+.highlight .esc { color: #D4D2C8 } /* Escape */
+.highlight .g { color: #D4D2C8 } /* Generic */
+.highlight .k { color: #FFAD66 } /* Keyword */
+.highlight .l { color: #D5FF80 } /* Literal */
+.highlight .n { color: #D4D2C8 } /* Name */
+.highlight .o { color: #FFAD66 } /* Operator */
+.highlight .x { color: #D4D2C8 } /* Other */
+.highlight .p { color: #D4D2C8 } /* Punctuation */
+.highlight .ch { color: #F88F7F; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #7E8AA1 } /* Comment.Multiline */
+.highlight .cp { color: #FFAD66; font-weight: bold } /* Comment.Preproc */
+.highlight .cpf { color: #7E8AA1 } /* Comment.PreprocFile */
+.highlight .c1 { color: #7E8AA1 } /* Comment.Single */
+.highlight .cs { color: #7E8AA1; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #F88F7F; background-color: #3D1E20 } /* Generic.Deleted */
+.highlight .ge { color: #D4D2C8; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #D4D2C8 } /* Generic.EmphStrong */
+.highlight .gr { color: #F88F7F } /* Generic.Error */
+.highlight .gh { color: #D4D2C8 } /* Generic.Heading */
+.highlight .gi { color: #6AD4AF; background-color: #19362C } /* Generic.Inserted */
+.highlight .go { color: #7E8AA1 } /* Generic.Output */
+.highlight .gp { color: #D4D2C8 } /* Generic.Prompt */
+.highlight .gs { color: #D4D2C8; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #D4D2C8 } /* Generic.Subheading */
+.highlight .gt { color: #F88F7F } /* Generic.Traceback */
+.highlight .kc { color: #FFAD66 } /* Keyword.Constant */
+.highlight .kd { color: #FFAD66 } /* Keyword.Declaration */
+.highlight .kn { color: #FFAD66 } /* Keyword.Namespace */
+.highlight .kp { color: #FFAD66 } /* Keyword.Pseudo */
+.highlight .kr { color: #FFAD66 } /* Keyword.Reserved */
+.highlight .kt { color: #73D0FF } /* Keyword.Type */
+.highlight .ld { color: #D5FF80 } /* Literal.Date */
+.highlight .m { color: #DFBFFF } /* Literal.Number */
+.highlight .s { color: #D5FF80 } /* Literal.String */
+.highlight .na { color: #FFD173 } /* Name.Attribute */
+.highlight .nb { color: #FFD173 } /* Name.Builtin */
+.highlight .nc { color: #73D0FF } /* Name.Class */
+.highlight .no { color: #FFD173 } /* Name.Constant */
+.highlight .nd { color: #7E8AA1; font-weight: bold; font-style: italic } /* Name.Decorator */
+.highlight .ni { color: #95E6CB } /* Name.Entity */
+.highlight .ne { color: #73D0FF } /* Name.Exception */
+.highlight .nf { color: #FFD173 } /* Name.Function */
+.highlight .nl { color: #D4D2C8 } /* Name.Label */
+.highlight .nn { color: #D4D2C8 } /* Name.Namespace */
+.highlight .nx { color: #D4D2C8 } /* Name.Other */
+.highlight .py { color: #FFD173 } /* Name.Property */
+.highlight .nt { color: #5CCFE6 } /* Name.Tag */
+.highlight .nv { color: #D4D2C8 } /* Name.Variable */
+.highlight .ow { color: #FFAD66 } /* Operator.Word */
+.highlight .pm { color: #D4D2C8 } /* Punctuation.Marker */
+.highlight .w { color: #D4D2C8 } /* Text.Whitespace */
+.highlight .mb { color: #DFBFFF } /* Literal.Number.Bin */
+.highlight .mf { color: #DFBFFF } /* Literal.Number.Float */
+.highlight .mh { color: #DFBFFF } /* Literal.Number.Hex */
+.highlight .mi { color: #DFBFFF } /* Literal.Number.Integer */
+.highlight .mo { color: #DFBFFF } /* Literal.Number.Oct */
+.highlight .sa { color: #F29E74 } /* Literal.String.Affix */
+.highlight .sb { color: #D5FF80 } /* Literal.String.Backtick */
+.highlight .sc { color: #D5FF80 } /* Literal.String.Char */
+.highlight .dl { color: #D5FF80 } /* Literal.String.Delimiter */
+.highlight .sd { color: #7E8AA1 } /* Literal.String.Doc */
+.highlight .s2 { color: #D5FF80 } /* Literal.String.Double */
+.highlight .se { color: #95E6CB } /* Literal.String.Escape */
+.highlight .sh { color: #D5FF80 } /* Literal.String.Heredoc */
+.highlight .si { color: #95E6CB } /* Literal.String.Interpol */
+.highlight .sx { color: #95E6CB } /* Literal.String.Other */
+.highlight .sr { color: #95E6CB } /* Literal.String.Regex */
+.highlight .s1 { color: #D5FF80 } /* Literal.String.Single */
+.highlight .ss { color: #DFBFFF } /* Literal.String.Symbol */
+.highlight .bp { color: #5CCFE6 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #FFD173 } /* Name.Function.Magic */
+.highlight .vc { color: #D4D2C8 } /* Name.Variable.Class */
+.highlight .vg { color: #D4D2C8 } /* Name.Variable.Global */
+.highlight .vi { color: #D4D2C8 } /* Name.Variable.Instance */
+.highlight .vm { color: #D4D2C8 } /* Name.Variable.Magic */
+.highlight .il { color: #DFBFFF } /* Literal.Number.Integer.Long */
+*{box-sizing:border-box;}body{margin:0 auto;padding:1.5rem 1rem 1.5rem;background:#000000;color:#bebebe;font-family:"Space Grotesk";overflow-x:hidden;font-size:1.15rem;line-height:1.6;max-width:64rem;}a{color:#7e8aa1;text-decoration:underline;}a:hover{color:#8e9ab1;text-decoration:underline;}img{image-rendering:auto;max-width:100%;margin-bottom:1.5rem;}nav{display:flex;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid #1d1d1d;}nav .art{color:#bebebe;font-size:1px;margin:0;text-decoration:none;align-self:flex-end;}.links{align-self:flex-end;margin-left:0.5rem;}.links span{font-weight:600;margin-bottom:0.5rem;}.links a{margin-right:0.5rem;font-size:1rem;display:flex;color:#5e5e5e;text-align:left;text-decoration:none;letter-spacing:0.05rem;flex-direction:column;line-height:1;font-weight:400;}.links a:hover{color:#5e5e5e;text-decoration:underline;}.links div{display:flex;}.art{display:block;width:max-content;max-width:100%;margin:0 auto;white-space:pre;font-size:clamp(1px, 2vw, 4px);line-height:0.85;overflow:hidden;}big{text-align:center;display:block;margin:0.5rem 0 0;font-size:1.65rem;font-weight:600;letter-spacing:0.05rem;}small{margin:0.25rem 0 0.25rem;display:block;text-align:center;font-size:1rem;color:#5e5e5e;}h1{margin:0;font-size:1.65rem;font-weight:600;}h2{margin:0 0 0.25rem;font-size:1.65rem;position:relative;font-weight:600;}h3, h4{margin:0 0 0.25rem;font-size:1.4rem;position:relative;font-weight:600;}h2 a, h3 a, h4 a{color:inherit;text-decoration:none;}h2 a::after, h3 a::after, h4 a::after{content:"§ ";color:#cecece;position:absolute;left:-1.2rem;opacity:0;}h2 a:hover, h3 a:hover, h4 a:hover{text-decoration:underline;color:#cecece;}h2 a:hover::after, h3 a:hover::after, h4 a:hover::after{opacity:1;}p{margin:0 0 1.5rem;}ul{margin:0 1rem 1.5rem;padding-left:1rem;}ul ul{margin-bottom:0;}blockquote{color:#9e9e9e;margin-left:1rem;padding:0 1rem 0;border-left:0.25rem solid #1d1d1d;}code{color:#7e8aa1;border:1px solid #1d1d1d;}.figure{display:flex;justify-content:center;}.caption{display:none;}#blog p{margin:0;}#blog .blog-list-end{margin:0 0 1rem;}.highlight{margin:0 0 1.5rem;background:transparent;overflow-x:auto;border:1px solid #1d1d1d;}.highlight pre{margin:0 auto 0;line-height:1.25;color:#5e5e5e;padding:0.5rem;}time{color:#5e5e5e;white-space:nowrap;}.new{color:#f88f7f;font-size:1rem;}.buttons-border{border-bottom:1px solid #1d1d1d;}.buttons{display:flex;flex-wrap:wrap;margin:0 auto;justify-content:center;gap:0.5rem;margin-top:1rem;max-width:60%;}.buttons + .buttons{border-top:none;margin-top:0.5rem;padding-top:0.5rem;}.buttons img{image-rendering:pixelated;display:block;margin-bottom:0;width:88px;height:31px;border:0;}.buttons a{line-height:0;}@media (max-width: 680px){.buttons{max-width:100%;}}#contact p{margin-bottom:0.5rem;}footer{margin-top:1rem;padding-top:0.5rem;border-top:1px solid #1d1d1d;text-align:center;font-size:0.75rem;color:#5e5e5e;}footer a{color:#5e5e5e;text-decoration:none;}footer a:hover{color:#5e5e5e;}footer .sep{margin:0 0.1rem;}</style><title>getting-my-kernel-to-manage-its-own-memory</title></head><nav><div class="links"><span>wasdhjkl.xyz</span><div><a href="/#about">about</a><a href="/#blog">blog</a><a href="/#contact">contact</a></div></div></nav><section id="getting-my-kernel-to-manage-its-own-memory">
+<h1 id="getting-my-kernel-to-manage-its-own-memory">Getting My Kernel to Manage Its Own Memory</h1>
+<p>
+ <time datetime="2026-09-15">Sep, 15 2026</time></p>
+<h2 id="contents"><a href="#contents">Contents</a></h2>
+<ul>
+ <li><a href="#intro">Intro</a></li>
+ <li><a href="#where-i-left-off">Where I Left Off</a></li>
+ <li><a href="#asking-the-bios-where-the-ram-is">Asking the BIOS Where the RAM Is</a>
+  <ul>
+   <li><a href="#the-e820-loop">The E820 loop</a></li>
+   <li><a href="#reading-it-back-in-the-kernel">Reading it back in the kernel</a></li>
+   <li><a href="#everything-above-1-mib-is-mine">Everything above 1 MiB is mine</a></li></ul></li>
+ <li><a href="#picking-an-allocator">Picking an Allocator</a>
+  <ul>
+   <li><a href="#buddy">Buddy</a></li>
+   <li><a href="#slab">Slab</a></li>
+   <li><a href="#why-i-went-with-a-bitmap-anyway">Why I went with a bitmap anyway</a></li></ul></li>
+ <li><a href="#the-bitmap">The Bitmap</a>
+  <ul>
+   <li><a href="#sizing-it">Sizing it</a></li>
+   <li><a href="#marking-its-own-frames-used">Marking its own frames used</a></li>
+   <li><a href="#the-excess-bits">The excess bits</a></li></ul></li>
+ <li><a href="#alloc-and-free">Alloc and Free</a></li>
+ <li><a href="#going-higher-half">Going Higher Half</a>
+  <ul>
+   <li><a href="#why-negative-2-gb">Why negative 2 GB</a></li>
+   <li><a href="#canonical-addresses-do-the-bounds-checking-for-you">Canonical addresses do the bounds checking for you</a></li>
+   <li><a href="#the-linker-script-split">The linker script split</a></li></ul></li>
+ <li><a href="#building-the-real-page-tables">Building the Real Page Tables</a>
+  <ul>
+   <li><a href="#4-kb-instead-of-2-mb">4 KB instead of 2 MB</a></li>
+   <li><a href="#the-physmap-trick">The physmap trick</a></li>
+   <li><a href="#mapping-the-kernel-with-real-permissions">Mapping the kernel with real permissions</a></li>
+   <li><a href="#the-bitmap-pointer-has-to-move">The bitmap pointer has to move</a></li></ul></li>
+ <li><a href="#entering-user-mode">Entering User Mode</a></li>
+ <li><a href="#where-this-leaves-me">Where This Leaves Me</a></li>
+ <li><a href="#references">References</a></li></ul>
+<h2 id="intro"><a href="#intro">Intro</a></h2>
+<p>I&rsquo;m back doing OS dev, and the honest state of things is that the kernel does the bare minimum. I hardcoded <em>a lot</em> of quick hacks to speedrun my way to ring 3. It was still one of the hardest things I&rsquo;ve ever built and the thing I&rsquo;m most proud of, but there&rsquo;s a pile of stuff I should&rsquo;ve done properly the first time.</p>
+<p>The goal now is networking and running on real hardware, with a shell so the thing is actually useful. But before any of that, the memory situation is fuzzy and load-bearing, and I don&rsquo;t trust it. So this post is me rebuilding the physical and virtual memory managers from the ground up. Thesis:</p>
+<blockquote>
+ <p>Almost everything my kernel &ldquo;knew&rdquo; about memory was a hardcoded offset that happened to work. Replacing the magic numbers with an actual physical allocator and a real higher-half address space is the whole job.</p></blockquote>
+<h2 id="where-i-left-off"><a href="#where-i-left-off">Where I Left Off</a></h2>
+<p>After the bootloader walks me through real mode into 32-bit protected mode and finally 64-bit long mode, control lands in <code>_start64</code>, which sets up a stack and calls into C:</p>
+<div class="highlight"><pre><span></span><span class="nf">section</span><span class="w"> </span><span class="no">.text</span>
+<span class="nl">_start64:</span>
+<span class="w">    </span><span class="c1">;; Zero .bss while RSP still points at low address bootstrap stack</span>
+<span class="w">    </span><span class="nf">cld</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">rdi</span><span class="p">,</span><span class="w"> </span><span class="no">__bss_start</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">rcx</span><span class="p">,</span><span class="w"> </span><span class="no">__bss_end</span>
+<span class="w">    </span><span class="nf">sub</span><span class="w">   </span><span class="no">rcx</span><span class="p">,</span><span class="w"> </span><span class="no">rdi</span>
+<span class="w">    </span><span class="nf">xor</span><span class="w">   </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="no">eax</span>
+<span class="w">    </span><span class="na">rep</span><span class="w">   </span><span class="nf">stosb</span>
+
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">rsp</span><span class="p">,</span><span class="w"> </span><span class="no">kern_stack</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="no">KERN_STACK_SIZE</span>
+<span class="w">    </span><span class="nf">call</span><span class="w">  </span><span class="no">kern_main</span>
+<span class="w">  </span><span class="nl">.hang:</span>
+<span class="w">    </span><span class="nf">hlt</span>
+<span class="w">    </span><span class="nf">jmp</span><span class="w">   </span><span class="no">.hang</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">kern_main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">__init</span><span class="p">();</span>
+<span class="w">  </span><span class="n">__enter_user_mode</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+<p>That&rsquo;s it. Initialize some devices, jump to user mode, and when the user program returns from <code>main</code> the whole system just hangs. There&rsquo;s no concept of a process, and no virtual memory protection beyond whatever the CPU gives me for free.</p>
+<blockquote>
+ <p>Specifically, <code>__init()</code> sets up COM1 for serial output, update GDT TSS IDT, disables PIC (forgot why), sets up syscall shit (swapgs, efer sce, star/lstar, etc.)</p></blockquote>
+<p>And &ldquo;whatever the CPU gives me for free&rdquo; was set up like this in the bootstrap assembly:</p>
+<div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">;; PDT with first 1GB identity mapped with 2MB pages</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edi</span><span class="p">,</span><span class="w"> </span><span class="no">PDT_PMA</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">ebx</span><span class="p">,</span><span class="w"> </span><span class="no">PTTE_P</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_RW</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_PS</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">ecx</span><span class="p">,</span><span class="w"> </span><span class="no">PTT_ENTS</span><span class="w"> </span><span class="c1">; 512 entries = 1GB</span>
+<span class="w">  </span><span class="nl">.identity_loop:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="p">[</span><span class="no">edi</span><span class="p">],</span><span class="w"> </span><span class="no">ebx</span>
+<span class="w">    </span><span class="nf">add</span><span class="w">   </span><span class="no">ebx</span><span class="p">,</span><span class="w"> </span><span class="mi">0x200000</span><span class="w"> </span><span class="c1">; Next 2MB phys frame</span>
+<span class="w">    </span><span class="nf">add</span><span class="w">   </span><span class="no">edi</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">    </span><span class="nf">loop</span><span class="w">  </span><span class="no">.identity_loop</span>
+</pre></div>
+<p>A flat identity map of the first gigabyte with 2 MB pages. I cant&rsquo;t even verify if I <em>have</em> a gigabyte of RAM. And the &ldquo;user page&rdquo; was just me finding the page directory entry containing my hardcoded <code>USER_OFFSET</code> and flipping the U/S bit:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define PDT 0x3000</span>
+<span class="cp">#define PDTE_USER (USER_OFFSET / 0x200000) </span><span class="c1">// Each entry maps 2MB</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">vm_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="n">pdt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">PDT</span><span class="p">;</span>
+<span class="w">  </span><span class="n">pdt</span><span class="p">[</span><span class="n">PDTE_USER</span><span class="p">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="n">PTT_US</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Then I hand <code>USER_OFFSET</code> and a stack address straight to <code>iretq</code>. There is no memory management here. Everything is a hardcoded offset that happens to land somewhere real. So before I add processes, I want page tables I actually trust, and to trust them I need to know what physical memory even exists. That means I need an allocator, and that means I first need a map.</p>
+<h2 id="asking-the-bios-where-the-ram-is"><a href="#asking-the-bios-where-the-ram-is">Asking the BIOS Where the RAM Is</a></h2>
+<p>The canonical way to get a physical memory map on x86 is <code>INT 15h, EAX=E820h</code>. The catch is that it&rsquo;s a BIOS interrupt, so it only exists in 16-bit real mode. I leave real mode inside my MBR, so the query has to happen there, before I switch into protected mode.</p>
+<h3 id="the-e820-loop"><a href="#the-e820-loop">The E820 loop</a></h3>
+<p>You call it in a loop. Each iteration hands you one memory region, and <code>EBX</code> carries the continuation value until it resets to zero, at which point the list is done. Thank god past-me commented this thing.</p>
+<div class="highlight"><pre><span></span><span class="nl">query_addr_map:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="mi">0xE820</span>
+<span class="w">    </span><span class="nf">xor</span><span class="w">   </span><span class="no">ebx</span><span class="p">,</span><span class="w"> </span><span class="no">ebx</span><span class="w">              </span><span class="c1">; EBX must be 0 to start</span>
+<span class="w">    </span><span class="nf">xor</span><span class="w">   </span><span class="no">bp</span><span class="p">,</span><span class="w"> </span><span class="no">bp</span><span class="w">                </span><span class="c1">; Keep entry count in BP</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edx</span><span class="p">,</span><span class="w"> </span><span class="mi">0x0534D4150</span><span class="w">      </span><span class="c1">; "SMAP"</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">di</span><span class="p">,</span><span class="w"> </span><span class="no">MMAP_ENT_START</span><span class="w">    </span><span class="c1">; Prevent getting stuck in INT 15h</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">ecx</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">               </span><span class="c1">; Ask for 24 bytes</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="p">[</span><span class="no">es</span><span class="p">:</span><span class="no">di</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="mi">20</span><span class="p">],</span><span class="w"> </span><span class="no">dword</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">; Force valid ACPI 3.X entry</span>
+<span class="w">    </span><span class="nf">int</span><span class="w">   </span><span class="mi">0x15</span>
+<span class="w">    </span><span class="nf">jc</span><span class="w">    </span><span class="no">error</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edx</span><span class="p">,</span><span class="w"> </span><span class="mi">0x0534D4150</span><span class="w">      </span><span class="c1">; "SMAP" - some BIOSs trash this register</span>
+<span class="w">    </span><span class="nf">cmp</span><span class="w">   </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="no">edx</span><span class="w">              </span><span class="c1">; EAX set to "SMAP" on success</span>
+<span class="w">    </span><span class="nf">jne</span><span class="w">   </span><span class="no">error</span>
+<span class="w">    </span><span class="nf">test</span><span class="w">  </span><span class="no">ebx</span><span class="p">,</span><span class="w"> </span><span class="no">ebx</span><span class="w">              </span><span class="c1">; EBX=0 implies list only 1 entry (worthless)</span>
+<span class="w">    </span><span class="nf">je</span><span class="w">    </span><span class="no">error</span>
+<span class="w">    </span><span class="nf">jmp</span><span class="w">   </span><span class="no">.jmpin</span>
+<span class="w">  </span><span class="nl">.e820lp:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">eax</span><span class="p">,</span><span class="w"> </span><span class="mi">0xE820</span><span class="w">           </span><span class="c1">; EAX gets trashed on every INT 15h call</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="p">[</span><span class="no">es</span><span class="p">:</span><span class="no">di</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="mi">20</span><span class="p">],</span><span class="w"> </span><span class="no">dword</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="c1">; Force valid ACPI 3.X entry</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">ecx</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">               </span><span class="c1">; Ask for 24 bytes (again)</span>
+<span class="w">    </span><span class="nf">int</span><span class="w">   </span><span class="mi">0x15</span>
+<span class="w">    </span><span class="nf">jc</span><span class="w">    </span><span class="no">.e820f</span><span class="w">                </span><span class="c1">; End of list already reached</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edx</span><span class="p">,</span><span class="w"> </span><span class="mi">0x0534D4150</span><span class="w">      </span><span class="c1">; "SMAP" - some BIOSs trash this register</span>
+<span class="w">  </span><span class="nl">.jmpin:</span>
+<span class="w">    </span><span class="nf">jcxz</span><span class="w">  </span><span class="no">.skipent</span>
+<span class="w">    </span><span class="nf">cmp</span><span class="w">   </span><span class="no">cl</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="w">                </span><span class="c1">; Got a 24 byte ACPI 3.X response?</span>
+<span class="w">    </span><span class="nf">jbe</span><span class="w">   </span><span class="no">.notext</span>
+<span class="w">  </span><span class="nl">.notext:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">ecx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">es</span><span class="p">:</span><span class="no">di</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="mi">8</span><span class="p">]</span><span class="w">      </span><span class="c1">; Get lower uint32_t of memory region length</span>
+<span class="w">    </span><span class="nf">or</span><span class="w">    </span><span class="no">ecx</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="no">es</span><span class="p">:</span><span class="no">di</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="mi">12</span><span class="p">]</span><span class="w">     </span><span class="c1">; OR it with upper uint32_t to test for zero</span>
+<span class="w">    </span><span class="nf">jz</span><span class="w">    </span><span class="no">.skipent</span><span class="w">              </span><span class="c1">; If length uint64_t is 0, skip entry</span>
+<span class="w">    </span><span class="nf">inc</span><span class="w">   </span><span class="no">bp</span><span class="w">                    </span><span class="c1">; Got good entry, increase count</span>
+<span class="w">    </span><span class="nf">add</span><span class="w">   </span><span class="no">di</span><span class="p">,</span><span class="w"> </span><span class="mi">24</span><span class="w">                </span><span class="c1">; Move to next storage spot</span>
+<span class="w">    </span><span class="nf">cmp</span><span class="w">   </span><span class="no">di</span><span class="p">,</span><span class="w"> </span><span class="no">MMAP_ENT_END</span><span class="w"> </span><span class="p">-</span><span class="w"> </span><span class="mi">24</span><span class="w"> </span><span class="c1">; Room for more?</span>
+<span class="w">    </span><span class="nf">ja</span><span class="w">    </span><span class="no">.e820f</span><span class="w">                </span><span class="c1">; Out of space, stop early</span>
+<span class="w">  </span><span class="nl">.skipent:</span>
+<span class="w">    </span><span class="nf">test</span><span class="w">  </span><span class="no">ebx</span><span class="p">,</span><span class="w"> </span><span class="no">ebx</span><span class="w">              </span><span class="c1">; If EBX resets to 0, list is complete</span>
+<span class="w">    </span><span class="nf">jne</span><span class="w">   </span><span class="no">.e820lp</span>
+<span class="w">  </span><span class="nl">.e820f:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="p">[</span><span class="no">es</span><span class="p">:</span><span class="no">MMAP_ENT</span><span class="p">],</span><span class="w"> </span><span class="no">bp</span><span class="w">     </span><span class="c1">; Store entry count</span>
+<span class="w">    </span><span class="nf">clc</span><span class="w">                         </span><span class="c1">; There is "jc" on end of list so clear carry</span>
+</pre></div>
+<p>I write the entries to a fixed physical address and stash the count right before them. Like everything else in the bootloader, these are hardcoded, but at least now they live in <code>config</code> and get shared into both the assembler and the C via generated headers:</p>
+<div class="highlight"><pre><span></span><span class="nv">MMAP_ENT</span><span class="w">       </span><span class="o">=</span><span class="w"> </span>0x500
+<span class="nv">MMAP_ENT_START</span><span class="w"> </span><span class="o">=</span><span class="w"> </span>0x504
+<span class="nv">MMAP_ENT_END</span><span class="w">   </span><span class="o">=</span><span class="w"> </span>0x1000
+</pre></div>
+<blockquote>
+ <p>These addresses take the real-mode address space<sup><a href="#g2188-footnote-1-definition" name="g2188-footnote-1-return">1</a></sup> into account so I&rsquo;m not scribbling over something the BIOS still cares about. The whole region below 1 MiB is a minefield of reserved junk.</p></blockquote>
+<p>I force ACPI 3.0 (24-byte) entries by pre-seeding the extended-attributes dword to 1 before each call. The format of one entry<sup><a href="#g2188-footnote-2-definition" name="g2188-footnote-2-return">2</a></sup>:</p>
+<ul>
+ <li>First <code>u64</code> is the base address</li>
+ <li>Second <code>u64</code> is the length (if zero, ignore the entry)</li>
+ <li>Next <code>u32</code> is the region type
+  <ul>
+   <li>Type 1: usable RAM</li>
+   <li>Type 2: reserved</li>
+   <li>Type 3: ACPI reclaimable</li>
+   <li>Type 4: ACPI NVS</li>
+   <li>Type 5: bad memory</li></ul></li>
+ <li>Next <code>u32</code> is the ACPI 3.0 extended attributes
+  <ul>
+   <li>Bit 0 clear: ignore the whole entry</li>
+   <li>Bit 1 set: non-volatile</li>
+   <li>Rest undefined</li></ul></li></ul>
+<h3 id="reading-it-back-in-the-kernel"><a href="#reading-it-back-in-the-kernel">Reading it back in the kernel</a></h3>
+<p>Before parsing anything, I dumped the raw bytes in GDB to make sure my mental model of the layout was right. Count first, then 24-byte entries back to back:</p>
+<div class="figure"><img src="e820entries.png" alt="Raw E820 entries in GDB: count 7 at the base, then each 24-byte entry walked out with x/6x">
+ <p class="caption">Raw E820 entries in GDB: count 7 at the base, then each 24-byte entry walked out with x/6x</p></div>
+<p>Seven entries. The count <code>0x00000007</code> sits at the front, then each entry is base, length, type, ext-attrs. To make that legible I annotated the parsed output from my serial console:</p>
+<div class="figure"><img src="bios-int15h-e820-results.png" alt="Annotated serial output of the E820 map with each region labeled">
+ <p class="caption">Annotated serial output of the E820 map with each region labeled</p></div>
+<p>You can read the whole machine off that picture. A ~650 KiB usable chunk at the bottom, the extended and system BIOS regions, the 1 MiB line, then the big ~1 GiB usable region starting at <code>0x100000</code>, and some chipset reserved ranges up top. That ~1 GiB region is the prize.</p>
+<p>Modeling one entry in C is straightforward. The type is an enum so the code reads like the wiki table, and I pack the struct so it maps byte-for-byte onto what the BIOS wrote:</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="kt">uint32_t</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">AVAILABLE</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="n">RESERVED</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ACPI_RECLAIMABLE</span><span class="p">,</span>
+<span class="w">  </span><span class="n">ACPI_NVS</span><span class="p">,</span>
+<span class="w">  </span><span class="n">BAD_MEMORY</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="n">pm_ent_type</span><span class="p">;</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">pm_region</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">base</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">pm_ent</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">pm_region</span><span class="w"> </span><span class="n">region</span><span class="p">;</span>
+<span class="w">  </span><span class="n">pm_ent_type</span><span class="w"> </span><span class="n">type</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">ext_attrs</span><span class="p">;</span><span class="w"> </span><span class="c1">// NOTE: ACPI 3.0 extended attributes</span>
+<span class="p">}</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">packed</span><span class="p">));</span>
+</pre></div>
+<p>Here&rsquo;s where I hit the wall that reorganized this whole post: I sat down to write a proper parser, one that validates every entry and coalesces overlaps, and realized I can&rsquo;t. I don&rsquo;t know the entry count until runtime, and I have no dynamic allocator to build a validated list into. The parser would just cast the fixed address to a struct pointer and trust it, which is not parsing, it&rsquo;s casting with extra steps.</p>
+<blockquote>
+ <p>So the physical memory map I wanted in order to <em>fix</em> my memory management turns out to need memory management to consume properly. I can&rsquo;t do it &ldquo;right&rdquo; without knowing the E820 results until runtime, and I can&rsquo;t act on those results at runtime without an allocator. Chicken, meet egg<sup><a href="#g2188-footnote-3-definition" name="g2188-footnote-3-return">3</a></sup>.</p></blockquote>
+<h3 id="everything-above-1-mib-is-mine"><a href="#everything-above-1-mib-is-mine">Everything above 1 MiB is mine</a></h3>
+<p>I briefly worried about how many entries E820 can even return, whether I could overflow my storage. The wiki loops with <code>ECX=24</code> and never states a hard cap, and honestly I don&rsquo;t care enough to go source-diving. I added a bounds check in the loop (<code>MMAP_ENT_END</code>) so overflow is impossible and moved on.</p>
+<p>The real simplification is this: instead of carefully honoring every region boundary, I declare that <strong>everything above the 1 MiB line is fair game</strong> and everything below it doesn&rsquo;t exist to me. Below 1 MiB is where the BIOS data, the EBDA, the VGA window and all the other cursed magic numbers live <sup><a href="#g2188-footnote-4-definition" name="g2188-footnote-4-return">4</a></sup>. Above it, per the map, I&rsquo;ve got one contiguous usable region, so I take the first <code>AVAILABLE</code> entry at or above <code>0x100000</code> and ignore the rest:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">ents</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">type</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">AVAILABLE</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">ents</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mh">0x100000</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ents</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="p">;</span>
+<span class="w">    </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ents</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">region</span><span class="p">.</span><span class="n">len</span><span class="p">;</span>
+<span class="w">    </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">;</span>
+<span class="w">    </span><span class="k">break</span><span class="p">;</span>
+<span class="w">  </span><span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+ <p>This is not the memory-efficient choice. The region above 1 MiB is explicitly not guaranteed contiguous or standardized<sup><a href="#g2188-footnote-4-definition" name="g2188-footnote-4-return">4</a></sup>, so a serious allocator would stitch together every usable entry. Breaking on the first one is a deliberate &ldquo;move the fuck on&rdquo; decision.</p></blockquote>
+<p>I output a little report based on what was found:</p>
+<pre class="brush: txt"><code>Available memory found:
+  base=0x0000000000100000
+  len=0x000000003FEE0000
+  frames=0x000000000003FEE0</code></pre>
+<blockquote>
+ <p>QEMU was booted with <code>-m 1G</code> here, the current state of the repo uses <code>32M</code>.</p></blockquote>
+<p>Base <code>0x100000</code>, length just under 1 GiB, which is <code>0x3FEE0</code> = 261,856 frames of 4 KB each. Now I need something to hand those frames out.</p>
+<h2 id="picking-an-allocator"><a href="#picking-an-allocator">Picking an Allocator</a></h2>
+<p>The OSDev wiki lists the usual physical allocator styles: bitmap, a stack or free-list of pages, sized-portion schemes, the buddy system that Linux uses, or some hybrid<sup><a href="#g2188-footnote-5-definition" name="g2188-footnote-5-return">5</a></sup>. I watched a GWU OS lecture on buddy and slab<sup><a href="#g2188-footnote-6-definition" name="g2188-footnote-6-return">6</a></sup> to refresh, so here&rsquo;s the honest tradeoff before I tell you I picked the boring one.</p>
+<h3 id="buddy"><a href="#buddy">Buddy</a></h3>
+<p>Buddy is a power-of-two allocator. You start with a big block and, to satisfy a request, recursively split it in half until you&rsquo;ve got the smallest block that still fits. Say you start at 256 KB and want 32 KB. You split down the left spine until a 32 KB chunk falls out:</p>
+<div class="figure"><img src="buddyalloc32kb.png" alt="Buddy allocator splitting 256 KB down to a 32 KB allocation">
+ <p class="caption">Buddy allocator splitting 256 KB down to a 32 KB allocation</p></div>
+<p>The nice property shows up on the <em>next</em> request. Ask for 64 KB and one of the blocks you already split off is exactly the right size, no more splitting:</p>
+<div class="figure"><img src="buddyalloc64kb.png" alt="A later 64 KB request served from an already-split block">
+ <p class="caption">A later 64 KB request served from an already-split block</p></div>
+<p>And freeing is where the name earns itself. When you release a block you check its <em>buddy</em>, the adjacent block of the same size at the same level, and if it&rsquo;s also free you <em>coalesce</em> them back into the larger block. Free the 32 KB and it merges with its free neighbor:</p>
+<div class="figure"><img src="buddyfree32kb.png" alt="Freeing a 32 KB block and coalescing it with its buddy">
+ <p class="caption">Freeing a 32 KB block and coalescing it with its buddy</p></div>
+<p>The wrinkle is there are no headers on these blocks, so &ldquo;where&rsquo;s my buddy and is it free&rdquo; isn&rsquo;t answerable from the block itself. You end up needing a side structure, a bitmap, to track which regions are free at each level. So even buddy leans on a bitmap underneath. You get logarithmic allocation and clean coalescing, at the cost of that bookkeeping and the power-of-two rounding that wastes anything not a clean power of two (you can&rsquo;t ask for 90 KB).</p>
+<h3 id="slab"><a href="#slab">Slab</a></h3>
+<p>Slab takes it one step further in the opposite direction: a slab only ever allocates <em>one fixed size</em>. You create a slab for a specific struct and it hands out and reclaims objects of exactly that size:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">slab</span><span class="w"> </span><span class="o">*</span><span class="n">slab_create</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">struct_sz</span><span class="p">);</span>
+<span class="n">slab_alloc</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">slab</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">);</span>
+<span class="n">slab_free</span><span class="p">(</span><span class="k">struct</span><span class="w"> </span><span class="nc">slab</span><span class="w"> </span><span class="o">*</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">);</span>
+</pre></div>
+<p>Internally it&rsquo;s a free-list, so allocation is a single pointer chase with no internal fragmentation and no coalescing to do. It&rsquo;s perfect for the kernel churning through the same object type over and over (think task structs), and in a real system you&rsquo;d layer it <em>on top</em> of buddy: slab gets slabs from buddy, buddy gets frames from the physical allocator. It&rsquo;s not general-purpose on its own, though. Strings and odd sizes don&rsquo;t fit the model.</p>
+<h3 id="why-i-went-with-a-bitmap-anyway"><a href="#why-i-went-with-a-bitmap-anyway">Why I went with a bitmap anyway</a></h3>
+<p>Both of those are the right long-term answer and both are overkill for a kernel that is currently 9.2 KB. What I need <em>right now</em> is the dumbest correct thing that lets me stop bootstrapping off a hand-mapped identity region. A bitmap is one bit per frame, trivially correct, and I can always put buddy or slab on top of it later when there&rsquo;s a workload that cares. So bitmap it is.</p>
+<h2 id="the-bitmap"><a href="#the-bitmap">The Bitmap</a></h2>
+<p>One bit per frame. Set means in use, clear means free. The bitmap itself lives at the very start of the usable region, so it&rsquo;s carved out of the same memory it tracks:</p>
+<div class="figure"><img src="bitmap-pics-bitmap.png" alt="The bitmap as an array of bits at the base of the region">
+ <p class="caption">The bitmap as an array of bits at the base of the region</p></div>
+<p>Bit <code>i</code> maps to the frame at <code>region.base + i * 4 KiB</code>. That&rsquo;s the entire addressing scheme:</p>
+<div class="figure"><img src="bitmap-pics-bitmap-bit-i-frame-i.png" alt="Bit i in the array corresponds to frame i at base + i*4KiB">
+ <p class="caption">Bit i in the array corresponds to frame i at base + i*4KiB</p></div>
+<h3 id="sizing-it"><a href="#sizing-it">Sizing it</a></h3>
+<p>If there are <code>N</code> frames I need <code>N</code> bits, so <code>N/8</code> bytes, rounded up so a frame count that isn&rsquo;t a multiple of 8 doesn&rsquo;t get truncated. That&rsquo;s a <code>+7</code> before the divide, hidden in a macro:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define BITMAP_BYTES(frames) (((frames) + 7) / 8)</span>
+</pre></div>
+<p>The word type is aliased so I can widen it later. Today it&rsquo;s a <code>uint8_t</code>; if I ever want faster scans I swap it for a <code>uint32_t</code> and the bit math follows the <code>sizeof</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">bitmap_word_t</span><span class="p">;</span>
+<span class="cp">#define BITMAP_BITS (8 * sizeof(bitmap_word_t))</span>
+</pre></div>
+<p>The bitmap&rsquo;s byte count comes from <code>BITMAP_BYTES</code>, and its footprint in memory is that rounded up to a whole page, based at the region&rsquo;s base:</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span><span class="w"> </span><span class="nc">pm_bitmap</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">struct</span><span class="w"> </span><span class="nc">pm_region</span><span class="w"> </span><span class="n">region</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">bytes</span><span class="p">;</span>
+<span class="w">  </span><span class="n">bitmap_word_t</span><span class="w"> </span><span class="o">*</span><span class="n">ptr</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">next_hint</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">BITMAP_BYTES</span><span class="p">(</span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">);</span>
+<span class="n">bmp</span><span class="o">-&gt;</span><span class="n">region</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PAGE_ALIGN_UP</span><span class="p">(</span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="p">);</span>
+<span class="n">bmp</span><span class="o">-&gt;</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="p">;</span>
+<span class="n">bmp</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">bitmap_word_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="p">;</span>
+</pre></div>
+<p>Where the page-align macro is the usual round-up-to&ndash;4-KB:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define PAGE_SIZE (0x1000UL)</span>
+<span class="cp">#define PAGE_ALIGN_UP(x) (((x) + (PAGE_SIZE) - 1) &amp; ~((PAGE_SIZE) - 1))</span>
+</pre></div>
+<p>The set/clear/test helpers are internal to the translation unit, so <code>static</code>. To touch bit <code>i</code> you index word <code>i / BITMAP_BITS</code> and mask bit <code>i % BITMAP_BITS</code>:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">_bitmap_clear</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;=</span><span class="w"> </span><span class="o">~</span><span class="p">(</span><span class="mi">1U</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">_bitmap_set</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">]</span><span class="w"> </span><span class="o">|=</span><span class="w"> </span><span class="p">(</span><span class="mi">1U</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">_bitmap_test</span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">ptr</span><span class="p">[</span><span class="n">i</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">]</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="mi">1U</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+<h3 id="marking-its-own-frames-used"><a href="#marking-its-own-frames-used">Marking its own frames used</a></h3>
+<p>Initialization is three passes. First clear everything, because I can&rsquo;t assume this memory is zeroed. Then set the bits for the frames the bitmap itself occupies, because the allocator must never hand out the pages it&rsquo;s living in:</p>
+<div class="figure"><img src="bitmap-pics-bitmap-mark-bitmap-used.png" alt="Setting the first bits because the bitmap occupies those frames">
+ <p class="caption">Setting the first bits because the bitmap occupies those frames</p></div>
+<h3 id="the-excess-bits"><a href="#the-excess-bits">The excess bits</a></h3>
+<p>The bitmap byte count almost never lands exactly on the frame count, so there are leftover high bits in the last byte that don&rsquo;t correspond to any real frame. If I leave those clear, the allocator will happily &ldquo;find&rdquo; a free frame that doesn&rsquo;t physically exist. So I set them too:</p>
+<div class="figure"><img src="bitmap-pics-bitmap-excess-bits.png" alt="Setting the trailing excess bits so the allocator never returns a non-existent frame">
+ <p class="caption">Setting the trailing excess bits so the allocator never returns a non-existent frame</p></div>
+<p>Put together, and folding the bitmap&rsquo;s own frames into a <code>next_hint</code> I&rsquo;ll explain in a second, <code>pm_init</code> ends like this:</p>
+<div class="highlight"><pre><span></span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">  </span><span class="n">_bitmap_clear</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">bytes</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">BITMAP_BITS</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">  </span><span class="n">_bitmap_set</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="n">bmp</span><span class="o">-&gt;</span><span class="n">next_hint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">region</span><span class="p">.</span><span class="n">len</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">;</span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">bmp</span><span class="o">-&gt;</span><span class="n">next_hint</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">  </span><span class="n">_bitmap_set</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="o">&amp;</span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">;</span>
+</pre></div>
+<p>Dumping the state confirms the math. The bitmap sits at <code>0x100000</code>, the first byte is <code>0xFF</code>, and its page-aligned length is <code>0x8000</code>, so it spans 8 frames:</p>
+<div class="highlight"><pre><span></span>Available<span class="w"> </span>memory<span class="w"> </span>found:
+<span class="w">  </span><span class="nv">base</span><span class="o">=</span>0x0000000000100000
+<span class="w">  </span><span class="nv">len</span><span class="o">=</span>0x000000003FEE0000
+<span class="w">  </span><span class="nv">frames</span><span class="o">=</span>0x000000000003FEE0
+Bitmap:
+<span class="w">  </span><span class="nv">bytes</span><span class="o">=</span>0x0000000000007FDC
+<span class="w">  </span>region:
+<span class="w">    </span><span class="nv">base</span><span class="o">=</span>0x0000000000100000
+<span class="w">    </span><span class="nv">len</span><span class="o">=</span>0x0000000000008000
+<span class="w">  </span>*ptr<span class="o">=</span>0xFF,<span class="w"> </span><span class="nv">ptr</span><span class="o">=</span>0x0000000000100000
+<span class="w">  </span>ptr:
+<span class="w">    </span><span class="nv">val</span><span class="o">=</span>0xFF
+<span class="w">    </span><span class="nv">derefed</span><span class="o">=</span>0x0000000000100000
+<span class="w">  </span><span class="nv">data</span><span class="o">=</span>
+<span class="w">    </span>0x00000000000000FF
+<span class="w">    </span>0x0000000000000000
+<span class="w">    </span>0x0000000000000000
+<span class="w">    </span>...
+</pre></div>
+<blockquote>
+ <p>Sorry the coloring is weird. If I set the language to <code>txt</code> the formatting is off so just set it to <code>sh</code>!</p></blockquote>
+<h2 id="alloc-and-free"><a href="#alloc-and-free">Alloc and Free</a></h2>
+<p><code>pm_alloc_frame</code> returns one frame. Scanning the whole bitmap every call is <code>O(n)</code>, so I keep a <code>next_hint</code> and start scanning there, wrapping around the end. It&rsquo;s a cheap next-fit that avoids rescanning the low frames every time:</p>
+<div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">pm_alloc_frame</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span><span class="w"> </span><span class="n">n</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">next_hint</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">_bitmap_test</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="n">_bitmap_set</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">      </span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">next_hint</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">addr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">;</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">addr</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">PM_NULL_FRAME</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>Free is the inverse, with range checks so a bogus address is a no-op rather than memory corruption:</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">pm_free_frame</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">phys_addr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">phys_addr</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">phys_addr</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">region</span><span class="p">.</span><span class="n">base</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">frames</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">_bitmap_test</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">_zero_frame</span><span class="p">(</span><span class="n">phys_addr</span><span class="p">);</span>
+<span class="w">    </span><span class="n">_bitmap_clear</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+<p>I zero the frame on free, so a page later handed to userspace doesn&rsquo;t arrive full of leftover kernel data someone could read. There&rsquo;s no <code>memset</code> yet, so it&rsquo;s a hand-rolled 64-bit-at-a-time loop:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">_zero_frame</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">pa</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="k">sizeof</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">    </span><span class="p">((</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">vm_ptov</span><span class="p">(</span><span class="n">pa</span><span class="p">))[</span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+ <p>That <code>vm_ptov</code> is a forward reference. Once the real page tables are up, the bitmap and every frame get reached through a <em>physmap</em> window instead of by raw physical address. I&rsquo;ll get there. For now just note that <code>_zero_frame</code> already goes through it.</p></blockquote>
+<p>A quick test, alloc then free, watched in GDB:</p>
+<div class="figure"><img src="pm-alloc-free-gdb.png" alt="GDB showing the bitmap at init 0xff, then 0x1ff after an alloc, back to 0xff after free">
+ <p class="caption">GDB showing the bitmap at init 0xff, then 0x1ff after an alloc, back to 0xff after free</p></div>
+<p>At init the bitmap&rsquo;s first byte is <code>0xFF</code>, the 8 frames it occupies. The first allocation returns <code>0x108000</code>, the ninth frame, right after the bitmap, and the byte becomes <code>0x1FF</code>. Freeing it drops back to <code>0xFF</code>. The allocator works. So now I have a source of physical frames, which means I can finally build page tables that aren&rsquo;t a hardcoded identity map!</p>
+<h2 id="going-higher-half"><a href="#going-higher-half">Going Higher Half</a></h2>
+<p>A higher-half kernel has been the goal since I first started thinking about virtual memory<sup><a href="#g2188-footnote-7-definition" name="g2188-footnote-7-return">7</a></sup>. The idea: the kernel lives at the top of every address space, the same virtual range in every process, and the bottom is left for user code. When I add per-process address spaces later, every process shares the kernel&rsquo;s upper mappings, so a syscall or interrupt doesn&rsquo;t need a <code>CR3</code> switch.</p>
+<h3 id="why-negative-2-gb"><a href="#why-negative-2-gb">Why negative 2 GB</a></h3>
+<p>The specific address falls out of a compiler flag, not a preference. GCC&rsquo;s <code>-mcmodel=kernel</code> <sup><a href="#g2188-footnote-8-definition" name="g2188-footnote-8-return">8</a></sup> says the kernel &ldquo;runs in the negative 2 GB of the address space.&rdquo; Decode that literally: the max 64-bit virtual address is <code>0xFFFF_FFFF_FFFF_FFFF</code>, subtract 2 GB (<code>0x8000_0000</code>) and add 1, and you land on <code>0xFFFF_FFFF_8000_0000</code>.</p>
+<div class="highlight"><pre><span></span><span class="mh">0xFFFF_FFFF_FFFF_FFFF</span> <span class="o">-</span> <span class="mh">0x8000_0000</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">=</span> <span class="mh">0xFFFF_FFFF_8000_0000</span>
+</pre></div>
+<p>That&rsquo;s my <code>KERN_VMA</code>. The kernel model tells GCC every symbol lives in the top 2 GB, so it emits 32-bit sign-extended displacements to reach them. Put the kernel anywhere else in the high half and those relocations can&rsquo;t reach, and you get the <code>relocation truncated to fit</code> error from the other direction. The number isn&rsquo;t a design choice, it&rsquo;s two&rsquo;s complement.</p>
+<h3 id="canonical-addresses-do-the-bounds-checking-for-you"><a href="#canonical-addresses-do-the-bounds-checking-for-you">Canonical addresses do the bounds checking for you</a></h3>
+<p>x86&ndash;64 doesn&rsquo;t actually use all 64 bits for addressing; it uses 48 (before 5-level paging). Bits 63:48 must be a sign-extension of bit 47, or the address is <em>non-canonical</em> and touching it faults with <code>#GP</code>. That carves the space into three:</p>
+<div class="highlight"><pre><span></span><span class="mh">0x0000000000000000</span> <span class="o">-</span> <span class="mh">0x00007FFFFFFFFFFF</span>  <span class="c1"># bit 47 = 0, upper bits 0 (low half)</span>
+<span class="mh">0x0000800000000000</span> <span class="o">-</span> <span class="mh">0xFFFF7FFFFFFFFFFF</span>  <span class="c1"># NON-CANONICAL, GP on use</span>
+<span class="mh">0xFFFF800000000000</span> <span class="o">-</span> <span class="mh">0xFFFFFFFFFFFFFFFF</span>  <span class="c1"># bit 47 = 1, upper bits 1 (high half)</span>
+</pre></div>
+<p>The PML4 index is bits 47:39. Index 256 is <code>0b100000000</code>, i.e. bit 47 set, so <em>every</em> high-half address lands in <code>PML4[256..511]</code> and every low-half address in <code>PML4[0..255]</code>. The user/kernel split is exactly the canonical boundary, expressed as table indices. That&rsquo;s the elegance: it&rsquo;s literally impossible for a non-kernel pointer to carry a leading <code>0xFFFF</code>.</p>
+<p>And you get free debugging out of it. Glance at any address:</p>
+<ul>
+ <li><code>0xFFFF...</code> is kernel</li>
+ <li><code>0x0000...</code> is user</li>
+ <li>anything else is a corrupt pointer</li></ul>
+<p>That third case is the underrated one. A garbage value is overwhelmingly likely to be non-canonical, so it faults <em>immediately</em> instead of silently reading something.</p>
+<blockquote>
+ <p>My kernel has to fit in that 2 GB window, which, no worries, I&rsquo;m not writing a 2 GB kernel.</p></blockquote>
+<h3 id="the-linker-script-split"><a href="#the-linker-script-split">The linker script split</a></h3>
+<p>The problem: I start executing at low physical addresses because that&rsquo;s mandatory when jumping up through real, protected, and long mode. You can&rsquo;t load a 64-bit virtual address into anything until you&rsquo;re already in long mode with paging on. So a slice of code has to run at its physical address while the rest is linked high.</p>
+<p>The linker script solves this cleanly. <code>.text.boot</code> stays at its load address (<code>0x8000</code>), and everything after it is linked at <code>KERN_VMA + LMA</code>, with <code>AT()</code> telling the linker the physical load address is still low:</p>
+<div class="highlight"><pre><span></span><span class="n">ENTRY</span><span class="p">(</span><span class="n">_start</span><span class="p">)</span>
+<span class="n">SECTIONS</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KERN_OFFSET</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/* Runs in 32-bit pmode before paging reaches the higher half, so VMA == LMA</span>
+<span class="cm">   * here. This is the only code linked at a physical address. */</span>
+<span class="w">  </span><span class="p">.</span><span class="n">text</span><span class="p">.</span><span class="n">boot</span><span class="w"> </span><span class="n">ALIGN</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">*</span><span class="p">(.</span><span class="n">text</span><span class="p">.</span><span class="n">boot</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ALIGN</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="n">__kern_lma</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.;</span>
+<span class="w">  </span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">KERN_VMA</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">__kern_lma</span><span class="p">;</span>
+
+<span class="w">  </span><span class="p">.</span><span class="n">text</span><span class="w"> </span><span class="n">ALIGN</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">AT</span><span class="p">(</span><span class="n">ADDR</span><span class="p">(.</span><span class="n">text</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">KERN_VMA</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">__text_start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.;</span>
+<span class="w">    </span><span class="o">*</span><span class="p">(.</span><span class="n">text</span><span class="o">*</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ALIGN</span><span class="p">(</span><span class="mh">0x1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">__text_end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">.;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="cm">/* .rodata, .data, .bss follow the same AT(ADDR - KERN_VMA) pattern */</span>
+</pre></div>
+<p>To reach the high-linked code I add a second mapping in the boot assembly: <code>PML4[511]</code> points at a high PDPT, whose entry 510 points at the <em>same</em> page directory the identity map uses. Both <code>PML4_IDX(KERN_VMA)</code> and <code>PDP_IDX(KERN_VMA)</code> are computed from the config value so the indices can&rsquo;t drift:</p>
+<div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">;; PML4[511] -&gt; PDPT_HI</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edi</span><span class="p">,</span><span class="w"> </span><span class="no">PML4T_PMA</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="no">PML4_IDX</span><span class="p">(</span><span class="no">KERN_VMA</span><span class="p">)</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="no">PTTE_SIZE</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">dword</span><span class="w"> </span><span class="p">[</span><span class="no">edi</span><span class="p">],</span><span class="w"> </span><span class="no">PDPT_HI_PMA</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_P</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_RW</span>
+
+<span class="w">    </span><span class="c1">;; PDPT_HI[510] -&gt; PDT</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">edi</span><span class="p">,</span><span class="w"> </span><span class="no">PDPT_HI_PMA</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="no">PDP_IDX</span><span class="p">(</span><span class="no">KERN_VMA</span><span class="p">)</span><span class="w"> </span><span class="p">*</span><span class="w"> </span><span class="no">PTTE_SIZE</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">dword</span><span class="w"> </span><span class="p">[</span><span class="no">edi</span><span class="p">],</span><span class="w"> </span><span class="no">PDT_PMA</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_P</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="no">PTTE_RW</span>
+</pre></div>
+<p>Both halves now point at the same page directory, so physical <code>0x0</code>-<code>0x40000000</code> is visible at both <code>0x0</code> and <code>0xFFFFFFFF80000000</code>. That&rsquo;s what lets the far jump into the high-half kernel land somewhere real. To get there I trampoline through a register, because you can&rsquo;t directly <code>jmp</code> to a full 64-bit immediate:</p>
+<div class="highlight"><pre><span></span><span class="w">    </span><span class="nf">jmp</span><span class="w">   </span><span class="no">KERN_CODE_SEL</span><span class="p">:</span><span class="no">_trampoline</span>
+
+<span class="err">[</span><span class="nf">bits</span><span class="w"> </span><span class="mi">64</span><span class="p">]</span>
+<span class="nl">_trampoline:</span>
+<span class="w">    </span><span class="nf">mov</span><span class="w">   </span><span class="no">rax</span><span class="p">,</span><span class="w"> </span><span class="no">_start64</span>
+<span class="w">    </span><span class="nf">jmp</span><span class="w">   </span><span class="no">rax</span>
+</pre></div>
+<h2 id="building-the-real-page-tables"><a href="#building-the-real-page-tables">Building the Real Page Tables</a></h2>
+<p>The boot-time tables were a means to an end: get into long mode with <em>something</em> mapped. Now that I have a physical allocator, I throw them away and build proper 4 KB tables from allocated frames.</p>
+<h3 id="4-kb-instead-of-2-mb"><a href="#4-kb-instead-of-2-mb">4 KB instead of 2 MB</a></h3>
+<p>The 2 MB identity map was fine for bootstrapping but wrong for a real kernel. With 2 MB pages the entire kernel shares one giant page, which means <code>.text</code> is writable because the stack lives in the same page. That&rsquo;s the opposite of what I want. 4 KB pages let me give each section its true permissions, and they add the fourth level of table (the PT) that all the documentation actually talks about. On the CPU side it&rsquo;s just clearing the <code>PS</code> bit in the PDE<sup><a href="#g2188-footnote-9-definition" name="g2188-footnote-9-return">9</a></sup>.</p>
+<h3 id="the-physmap-trick"><a href="#the-physmap-trick">The physmap trick</a></h3>
+<p>Here&rsquo;s the problem building tables in the high half: to install an entry I need to <em>write</em> to a page table, but a page table is addressed by its <em>physical</em> frame, and once I drop the identity map I have no virtual address for arbitrary physical memory. The standard fix is a <em>physmap</em>: map all of physical RAM once at a fixed high base (<code>PHYSMAP_BASE</code>), so physical address <code>pa</code> is always reachable at <code>pa + PHYSMAP_BASE</code>. Two tiny inlines capture the whole convention:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="nf">vm_ptov</span><span class="p">(</span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">addr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">addr</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">PHYSMAP_BASE</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kr">inline</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="nf">vm_vtop</span><span class="p">(</span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="n">addr</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">addr</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">PHYSMAP_BASE</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>The top-level <code>pml4</code> is a static, page-aligned array in <code>.bss</code>, so it has a real symbol I can point <code>CR3</code> at. Every lower table is a fresh physical frame from <code>pm_alloc_frame</code>, reached for writing through <code>table_base</code> (which is <code>PHYSMAP_BASE</code> once the physmap exists):</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">pml4</span><span class="p">[</span><span class="n">PTT_ENTS</span><span class="p">]</span><span class="w"> </span><span class="n">__attribute__</span><span class="p">((</span><span class="n">aligned</span><span class="p">(</span><span class="n">PAGE_SIZE</span><span class="p">)));</span>
+<span class="k">static</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">table_base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="nf">_table_ptr</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">pa</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="p">)(</span><span class="n">pa</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">table_base</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="nf">_alloc_table</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">ptte</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">flags</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ptte</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">*</span><span class="n">ptte</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">pa</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pm_alloc_frame</span><span class="p">();</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">pa</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">PM_NULL_FRAME</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">  </span><span class="o">*</span><span class="n">ptte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">pa</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="mh">0x000FFFFFFFFFF000UL</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PTTE_P</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">flags</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">pa</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p><code>vm_map</code> walks the four levels, allocating any missing intermediate table, and writes the leaf. The index macros just slice the virtual address into its 9-bit fields:</p>
+<div class="highlight"><pre><span></span><span class="cp">#define PML4_IDX(va) (((va) &gt;&gt; 39) &amp; 0x1FF)</span>
+<span class="cp">#define PDP_IDX(va)  (((va) &gt;&gt; 30) &amp; 0x1FF)</span>
+<span class="cp">#define PD_IDX(va)   (((va) &gt;&gt; 21) &amp; 0x1FF)</span>
+<span class="cp">#define PT_IDX(va)   (((va) &gt;&gt; 12) &amp; 0x1FF)</span>
+</pre></div>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">vm_map</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">va</span><span class="p">,</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">pa</span><span class="p">,</span><span class="w"> </span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">flags</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pml4e</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="n">pml4</span><span class="p">[</span><span class="n">PML4_IDX</span><span class="p">(</span><span class="n">va</span><span class="p">)];</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">pml4e</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">_alloc_table</span><span class="p">(</span><span class="n">pml4e</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pdpe</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">_table_ptr</span><span class="p">(</span><span class="n">PTTE_ADDR</span><span class="p">(</span><span class="o">*</span><span class="n">pml4e</span><span class="p">)))[</span><span class="n">PDP_IDX</span><span class="p">(</span><span class="n">va</span><span class="p">)];</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">pdpe</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">_alloc_table</span><span class="p">(</span><span class="n">pdpe</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pde</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">_table_ptr</span><span class="p">(</span><span class="n">PTTE_ADDR</span><span class="p">(</span><span class="o">*</span><span class="n">pdpe</span><span class="p">)))[</span><span class="n">PD_IDX</span><span class="p">(</span><span class="n">va</span><span class="p">)];</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">pde</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">_alloc_table</span><span class="p">(</span><span class="n">pde</span><span class="p">,</span><span class="w"> </span><span class="n">flags</span><span class="p">))</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="o">*</span><span class="n">pte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">&amp;</span><span class="p">(</span><span class="n">_table_ptr</span><span class="p">(</span><span class="n">PTTE_ADDR</span><span class="p">(</span><span class="o">*</span><span class="n">pde</span><span class="p">)))[</span><span class="n">PT_IDX</span><span class="p">(</span><span class="n">va</span><span class="p">)];</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">pte</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">))</span>
+<span class="w">    </span><span class="o">*</span><span class="n">pte</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PTTE_ADDR</span><span class="p">(</span><span class="n">pa</span><span class="p">)</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">flags</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PTTE_P</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<blockquote>
+ <p>There&rsquo;s a real footgun here: if an intermediate table already exists, <code>_alloc_table</code> bails and the new mapping&rsquo;s <code>flags</code> never reach that level. Passing leaf flags down to the table entries was only ever for the user mapping, and it means the caller has to know about intermediate tables, which is TERRIBLE.</p></blockquote>
+<h3 id="mapping-the-kernel-with-real-permissions"><a href="#mapping-the-kernel-with-real-permissions">Mapping the kernel with real permissions</a></h3>
+<p><code>vm_init</code> lays down the physmap first (NX and writable, because it&rsquo;s data not code), then each kernel section with the permissions it should actually have, then swings <code>CR3</code> over to the new <code>pml4</code>. The section boundaries come straight from the linker symbols:</p>
+<div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">vm_init</span><span class="p">(</span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">physmap_pa</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">physmap_len</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_map_range</span><span class="p">(</span><span class="n">PHYSMAP_BASE</span><span class="p">,</span><span class="w"> </span><span class="n">physmap_pa</span><span class="p">,</span><span class="w"> </span><span class="n">physmap_len</span><span class="p">,</span><span class="w"> </span><span class="n">PTTE_NX</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PTTE_RW</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_map_range</span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">__text_start</span><span class="p">,</span><span class="w"> </span><span class="n">_kern_v2p</span><span class="p">(</span><span class="n">__text_start</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">_seclen</span><span class="p">(</span><span class="n">__text_start</span><span class="p">,</span><span class="w"> </span><span class="n">__text_end</span><span class="p">),</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_map_range</span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">__rodata_start</span><span class="p">,</span><span class="w"> </span><span class="n">_kern_v2p</span><span class="p">(</span><span class="n">__rodata_start</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">_seclen</span><span class="p">(</span><span class="n">__rodata_start</span><span class="p">,</span><span class="w"> </span><span class="n">__rodata_end</span><span class="p">),</span><span class="w"> </span><span class="n">PTTE_NX</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_map_range</span><span class="p">((</span><span class="kt">uintptr_t</span><span class="p">)</span><span class="n">__data_start</span><span class="p">,</span><span class="w"> </span><span class="n">_kern_v2p</span><span class="p">(</span><span class="n">__data_start</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">_seclen</span><span class="p">(</span><span class="n">__data_start</span><span class="p">,</span><span class="w"> </span><span class="n">__bss_end</span><span class="p">),</span><span class="w"> </span><span class="n">PTTE_RW</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PTTE_NX</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+
+<span class="w">  </span><span class="n">table_base</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PHYSMAP_BASE</span><span class="p">;</span>
+<span class="w">  </span><span class="n">_load_cr3</span><span class="p">(</span><span class="n">_kern_v2p</span><span class="p">((</span><span class="kt">char</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">pml4</span><span class="p">));</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>So the sections finally get honest bits:</p>
+<ul>
+ <li><code>.text</code> executable, read-only (flags <code>0</code>, so present + read + execute)</li>
+ <li><code>.rodata</code> read-only, NX</li>
+ <li><code>.data</code> and <code>.bss</code> read-write, NX</li></ul>
+<p>I enabled <code>NXE</code> back in the boot assembly (the <code>0x900</code> into <code>EFER</code> sets LME and NXE together) so the NX bit is actually respected.</p>
+<p>To sanity-check that the higher-half linking really lines up with what&rsquo;s on disk, I opened the kernel ELF and the disk image side by side in Cutter:</p>
+<div class="figure"><img src="confirming-text-section-phys-addr.png" alt="Cutter comparing kern.elf and disk.img: .text at VMA 0xffffffff80009000 matches the bytes on disk, sections table showing r-x/.text, r--/.rodata, rw-/.data">
+ <p class="caption">Cutter comparing kern.elf and disk.img: .text at VMA 0xffffffff80009000 matches the bytes on disk, sections table showing r-x/.text, r&mdash;/.rodata, rw-/.data</p></div>
+<p>The <code>.text</code> section is linked at virtual <code>0xFFFFFFFF80009000</code> but its bytes sit at physical <code>0x9000</code>, which on disk is offset <code>0x1200</code> (the kernel starts at sector 1, <code>0x200</code>, and <code>.text</code> is one page into it). Same bytes in both panes. The sections pane shows the permissions landing exactly as intended: <code>r-x</code> for <code>.text</code>, <code>r--</code> for <code>.rodata</code>, <code>rw-</code> for <code>.data</code> and <code>.bss</code>.</p>
+<h3 id="the-bitmap-pointer-has-to-move"><a href="#the-bitmap-pointer-has-to-move">The bitmap pointer has to move</a></h3>
+<p>One consequence of the physmap that bit me and is worth calling out. During <code>pm_init</code>, the identity map is still live, so the bitmap pointer is a raw physical address (<code>0x100000</code>) and dereferencing it just works. But <code>vm_init</code> drops the identity map. After that, <code>0x100000</code> is no longer mapped, and the bitmap has to be reached through the physmap like everything else. So there&rsquo;s an explicit fixup that runs right after <code>vm_init</code>:</p>
+<div class="highlight"><pre><span></span><span class="cm">/* FIXME: Refactor. This function is weird and a footgun */</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">pm_update_ptr</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">avail</span><span class="p">.</span><span class="n">bitmap</span><span class="p">.</span><span class="n">ptr</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">PHYSMAP_BASE</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+</pre></div>
+<p>And the init sequence in <code>kern_main</code> is ordered around exactly that dependency: build the map, hand its length to the VMM, <em>then</em> relocate the bitmap pointer:</p>
+<div class="highlight"><pre><span></span><span class="k">const</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">pm_region</span><span class="w"> </span><span class="o">*</span><span class="n">physmap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pm_init</span><span class="p">();</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">physmap</span><span class="p">)</span>
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">physmap</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">  </span><span class="k">return</span><span class="p">;</span>
+<span class="n">pm_update_ptr</span><span class="p">();</span><span class="w"> </span><span class="c1">// FIXME: See fn definition</span>
+</pre></div>
+<p>It&rsquo;s tagged <code>FIXME</code> because a function that silently adds a constant to a pointer is exactly the kind of thing that fucks me over in six months when I forget it exists.</p>
+<h2 id="entering-user-mode"><a href="#entering-user-mode">Entering User Mode</a></h2>
+<p>With real page tables I can finally map a user program properly instead of poking a U/S bit into a 2 MB identity page. <code>__enter_user_mode</code> maps a fresh user-accessible range at virtual address <code>0</code>, reads the program in off disk, and <code>iretq</code>s down to ring 3 with the stack one page up:</p>
+<div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="nf">__enter_user_mode</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">uintptr_t</span><span class="w"> </span><span class="n">va</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">  </span><span class="c1">// FIXME: The flags =&gt; executable AND read/write. Need I say more?</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vm_map_range</span><span class="p">(</span><span class="n">va</span><span class="p">,</span><span class="w"> </span><span class="n">USER_OFFSET</span><span class="p">,</span>
+<span class="w">                   </span><span class="n">PAGE_ALIGN_UP</span><span class="p">(</span><span class="n">USER_SECTORS</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">DISK_BLOCK_SIZE</span><span class="p">),</span>
+<span class="w">                   </span><span class="n">PTTE_RW</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">PTTE_US</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">-1</span><span class="p">;</span>
+<span class="w">  </span><span class="n">io_ata_pio_read</span><span class="p">(</span><span class="n">USER_LBA</span><span class="p">,</span><span class="w"> </span><span class="n">USER_SECTORS</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="p">)</span><span class="n">va</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">asm</span><span class="p">(</span><span class="s">"movq %0, %%rax</span><span class="se">\n\t</span><span class="s">"</span>
+<span class="w">      </span><span class="s">"movw %%ax, %%ds</span><span class="se">\n\t</span><span class="s">"</span>
+<span class="w">      </span><span class="cm">/* ... load the other data segments ... */</span>
+<span class="w">      </span><span class="s">"pushq %0</span><span class="se">\n\t</span><span class="s">"</span><span class="w">     </span><span class="c1">// SS  = user data selector</span>
+<span class="w">      </span><span class="s">"pushq %1</span><span class="se">\n\t</span><span class="s">"</span><span class="w">     </span><span class="c1">// RSP = va + PAGE_SIZE</span>
+<span class="w">      </span><span class="s">"pushq $0x202</span><span class="se">\n\t</span><span class="s">"</span><span class="w"> </span><span class="c1">// RFLAGS with IF set</span>
+<span class="w">      </span><span class="s">"pushq %2</span><span class="se">\n\t</span><span class="s">"</span><span class="w">     </span><span class="c1">// CS  = user code selector</span>
+<span class="w">      </span><span class="s">"pushq %3</span><span class="se">\n\t</span><span class="s">"</span><span class="w">     </span><span class="c1">// RIP = va</span>
+<span class="w">      </span><span class="s">"iretq"</span>
+<span class="w">      </span><span class="o">:</span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="s">"r"</span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">GDT_USER_DATA_SEL</span><span class="p">),</span><span class="w"> </span><span class="s">"r"</span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)(</span><span class="n">va</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">PAGE_SIZE</span><span class="p">)),</span>
+<span class="w">        </span><span class="s">"r"</span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">GDT_USER_CODE_SEL</span><span class="p">),</span><span class="w"> </span><span class="s">"r"</span><span class="p">((</span><span class="kt">uint64_t</span><span class="p">)</span><span class="n">va</span><span class="p">)</span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="s">"rax"</span><span class="p">,</span><span class="w"> </span><span class="s">"memory"</span><span class="p">);</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>It works, and it&rsquo;s already better than the old scheme, which read the program into a fixed offset <em>before paging was even up</em>. But look at the flag on that mapping: <code>PTTE_RW | PTTE_US</code>, no NX. The user page is writable <em>and</em> executable&hellip; which I&rsquo;ll fix later, I just wanna get this blog post out.</p>
+<h2 id="where-this-leaves-me"><a href="#where-this-leaves-me">Where This Leaves Me</a></h2>
+<p>I set out to replace the memory management vibes with something real, and that&rsquo;s done: a physical allocator backed by the E820 map, a genuine higher-half address space, 4 KB page tables built from allocated frames with per-section permissions, and a physmap so I can actually manipulate those tables. The kernel no longer runs on an identity map and a prayer.</p>
+<p>The next OS dev post will either be the shell, so I can actually run things in userspace against the syscall API I already have, or networking (probably the shell).</p>
+<h2 id="references"><a href="#references">References</a></h2>
+<div class="footnotes">
+ <ol>
+  <li id="g2188-footnote-1-definition" class="footnote-definition">
+   <p><a href="https://wiki.osdev.org/Memory_Map_(x86)#Real_mode_address_space_(%3C_1_MiB)">Memory Map (x86), Real mode address space - OSDev Wiki</a>&nbsp;<a href="#g2188-footnote-1-return">↩</a></p></li>
+  <li id="g2188-footnote-2-definition" class="footnote-definition">
+   <p><a href="https://wiki.osdev.org/Detecting_Memory_(x86)#BIOS_Function:_INT_0x15,_EAX_=_0xE820">Detecting Memory (x86), INT 0x15 EAX=0xE820 - OSDev Wiki</a>&nbsp;<a href="#g2188-footnote-2-return">↩</a></p></li>
+  <li id="g2188-footnote-3-definition" class="footnote-definition">
+   <p><a href="https://x.com/wasdhjklxyz/status/2086322304640778573">My own tweet whining about this exact chicken-and-egg</a>&nbsp;<a href="#g2188-footnote-3-return">↩</a></p></li>
+  <li id="g2188-footnote-4-definition" class="footnote-definition">
+   <p><a href="https://wiki.osdev.org/Memory_Map_(x86)#Extended_Memory_(%3E_1_MiB)">Memory Map (x86), Extended Memory (&gt; 1 MiB) - OSDev Wiki</a>&nbsp;<a href="#g2188-footnote-4-return">↩</a></p></li>
+  <li id="g2188-footnote-5-definition" class="footnote-definition">
+   <p><a href="https://wiki.osdev.org/Page_Frame_Allocation#Physical_Memory_Allocators">Page Frame Allocation, Physical Memory Allocators - OSDev Wiki</a>&nbsp;<a href="#g2188-footnote-5-return">↩</a></p></li>
+  <li id="g2188-footnote-6-definition" class="footnote-definition">
+   <p><a href="https://www.youtube.com/watch?v=DRAHRJEAEso">GWU OS: Memory Allocation - Slab and Buddy Allocators, Gabriel Parmer</a>&nbsp;<a href="#g2188-footnote-6-return">↩</a></p></li>
+  <li id="g2188-footnote-7-definition" class="footnote-definition">
+   <p><a href="https://osdev.wiki/wiki/Higher_Half_Kernel">Higher Half Kernel - OSDev Wiki</a>&nbsp;<a href="#g2188-footnote-7-return">↩</a></p></li>
+  <li id="g2188-footnote-8-definition" class="footnote-definition">
+   <p><a href="https://gcc.gnu.org/onlinedocs/gcc/x86-Options.html#index-mcmodel_003dkernel">x86 Options, -mcmodel=kernel - GCC</a>&nbsp;<a href="#g2188-footnote-8-return">↩</a></p></li>
+  <li id="g2188-footnote-9-definition" class="footnote-definition">
+   <p><a href="#">Hard-copy AMD64 Architecture Programmer&rsquo;s Manual, vol 2 (System Programming), rev 3.07, on the PDE PS bit (pp ~161) and 4 KB page translation (pp ~226&ndash;227)</a>&nbsp;<a href="#g2188-footnote-9-return">↩</a></p></li></ol></div></section><div class="buttons-border"></div><div class="buttons"><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.png" alt="wasdhjkl.xyz"></a><a href="https://wasdhjkl.xyz"><img src="/buttons/uiop1.gif" alt="wasdhjkl.xyz"></a></div><div class="buttons"><a href="https://melqtx.com"><img src="/buttons/mel.gif" alt="melqtx.com"></a><a href="https://luuumine.com"><img src="/buttons/luuumine.gif" alt="luuumine.com"></a><a href="https://lain.ovh"><img src="/buttons/lainovh.gif" alt="lain.ovh"></a></div><footer><a href="https://github.com/wasdhjklxyz">github</a><span class="sep"> · </span><a href="https://x.com/wasdhjklxyz">twitter</a><span class="sep"> · </span><a href="mailto:uiop@wasdhjkl.xyz">email</a><span class="sep"> · </span><a href="https://creativecommons.org/licenses/by-sa/4.0">© 2026 uiop. Licensed under CC BY-SA 4.0</a></footer></html>
